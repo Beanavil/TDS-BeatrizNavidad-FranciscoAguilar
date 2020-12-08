@@ -1,10 +1,10 @@
-package es.um.tds.AppMusic;
+package controlador;
 
 /**
  * Hello world!
  *
  */
-public class App 
+public class AppMusic 
 {
     public static void main( String[] args )
     {
