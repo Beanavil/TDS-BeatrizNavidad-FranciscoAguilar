@@ -9,8 +9,7 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <name>AppMusic</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/Bea99/TDS-BeatrizNavidad-FranciscoAguilar</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,6 +57,13 @@
       <artifactId>jcalendar</artifactId>
       <version>1.4</version>
     </dependency>
+    
+    <dependency>
+      <groupId>es.um.tds</groupId>
+      <artifactId>DriverPersistencia</artifactId>
+      <version>1.0</version>
+    </dependency>
+    
   </dependencies>
 
   <build>
