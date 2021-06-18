@@ -93,8 +93,20 @@ public class TDSCancionDAO implements CancionDAO {
 			System.err.println("Entity not registered yet. " + e);
 			return;
 		}
+		servPersistencia.eliminarPropiedadEntidad(eCancion, TITULO);
+		servPersistencia.anadirPropiedadEntidad(eCancion, TITULO, cancion.getTitulo());
+		
+		servPersistencia.eliminarPropiedadEntidad(eCancion, ESTILO);
+		servPersistencia.anadirPropiedadEntidad(eCancion, ESTILO, cancion.getEstilo());
+		
+		servPersistencia.eliminarPropiedadEntidad(eCancion, INTERPRETE);
+		servPersistencia.anadirPropiedadEntidad(eCancion, INTERPRETE, cancion.getInterprete());
+		
 		servPersistencia.eliminarPropiedadEntidad(eCancion, RUTAFICHERO);
 		servPersistencia.anadirPropiedadEntidad(eCancion, RUTAFICHERO, cancion.getRutaFichero());
+		
+		servPersistencia.eliminarPropiedadEntidad(eCancion, REPRODUCCIONES);
+		servPersistencia.anadirPropiedadEntidad(eCancion, REPRODUCCIONES, String.valueOf(cancion.getNumReproducciones()));
 	}
 
 	/**
@@ -113,31 +125,6 @@ public class TDSCancionDAO implements CancionDAO {
 		return entidadToCancion(eCancion);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Cancion> getAllStyle(String estilo) {
-		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
-		entidades.stream()
-		.filter(e -> e.getPropiedades().get(1).getValor().compareToIgnoreCase(estilo) == 0)
-		.forEach(e -> canciones.add(entidadToCancion(e)));
-		return canciones;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Cancion> getAllArtist(String artista) {
-		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
-		entidades.stream()
-		.filter(e -> e.getPropiedades().get(2).getValor().compareToIgnoreCase(artista) == 0)
-		.forEach(e -> canciones.add(entidadToCancion(e)));
-		return canciones;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -151,8 +138,35 @@ public class TDSCancionDAO implements CancionDAO {
 		return canciones;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Cancion> getAllStyle(String estilo) {
+		List<Cancion> canciones = new ArrayList<Cancion>();
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
+		entidades.stream()
+		// estilo can be a substring of a song' style or the whole string
+		.filter(e -> containsIgnoreCase(e.getPropiedades().get(1).getValor(), estilo)) 
+		.forEach(e -> canciones.add(entidadToCancion(e)));
+		return canciones;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Cancion> getAllArtist(String artista) {
+		List<Cancion> canciones = new ArrayList<Cancion>();
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
+		entidades.stream()
+		.filter(e -> containsIgnoreCase(e.getPropiedades().get(2).getValor(), artista)) 
+		.forEach(e -> canciones.add(entidadToCancion(e)));
+		return canciones;
+	}
+	
 	// Métodos auxiliares
-	// TODO ¿necesarios?
+
 	/**
 	 * Método auxiliar que convierte una entidad en un objeto de tipo Cancion.
 	 * @param eCancion entidad con los datos de una instancia de Cancion.
@@ -192,4 +206,16 @@ public class TDSCancionDAO implements CancionDAO {
 				new Propiedad(REPRODUCCIONES, String.valueOf(cancion.getNumReproducciones())))));
 		return eCancion;
 	}
+	
+	
+	/**
+	 * Método auxiliar para ver si un string contiene a otro como subcadena sin tener en 
+	 * cuenta las mayúsculas.
+	 * @param str String en el que buscamos la subcadena
+	 * @param subStr Posible subcadena de str
+	 * @return Si subStr está contenido en str, case insensitive
+	 */
+	public static boolean containsIgnoreCase(String str, String subStr) {
+        return str.toLowerCase().contains(subStr.toLowerCase());
+    }
 }

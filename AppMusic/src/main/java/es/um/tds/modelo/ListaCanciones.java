@@ -71,6 +71,13 @@ public class ListaCanciones {
 			this.numCanciones = numCanciones;
 	}
 	
+	
+	
+	public void addCancion(Cancion cancion) {
+		// TODO 
+	}
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */

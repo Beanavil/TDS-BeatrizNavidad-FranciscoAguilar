@@ -131,7 +131,6 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	}
 	
 	// Métodos auxiliares
-	// TODO ¿necesarios?
 	
 	/**
 	 * Método auxiliar que convierte una entidad en un objeto de tipo ListaCanciones.

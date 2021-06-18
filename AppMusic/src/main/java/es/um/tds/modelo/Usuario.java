@@ -16,8 +16,8 @@ public class Usuario implements RolUsuario, Descuento {
 	private String apellidos;
 	private LocalDate fechaNacimiento;
 	private String email;
-	private String nombreUsuario;
-	private String contrasena;
+	private String login;
+	private String password;
 	private boolean premium;
 	private List<ListaCanciones> listasCanciones;
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES"));
@@ -29,8 +29,8 @@ public class Usuario implements RolUsuario, Descuento {
 	 * @param apellidos apellidos.
 	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
 	 * @param email dirección de correo electrónico.
-	 * @param nombreUsuario nombre de usuario en la app.
-	 * @param contrasena contraseña de la cuenta.
+	 * @param login nombre de usuario en la app.
+	 * @param password contraseña de la cuenta.
 	 * @param premium si es premium o no.
 	 * @param listasCanciones listas de canciones del usuario.
 	 */
@@ -42,10 +42,32 @@ public class Usuario implements RolUsuario, Descuento {
 		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
 		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
 		this.email = email;
-		this.nombreUsuario = nombreUsuario;
-		this.contrasena = contrasena;
+		this.login = nombreUsuario;
+		this.password = contrasena;
 		this.premium = premium;
 		this.listasCanciones = new ArrayList<>(listasCanciones);
+	}
+	
+	/**
+	 * Constructor sin premium ni listas.
+	 * @param nombre nombre real.
+	 * @param apellidos apellidos.
+	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
+	 * @param email dirección de correo electrónico.
+	 * @param login nombre de usuario en la app.
+	 * @param password contraseña de la cuenta.
+	 */
+	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
+			String email, String nombreUsuario, String contrasena) {
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
+		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
+		this.email = email;
+		this.login = nombreUsuario;
+		this.password = contrasena;
+		this.premium = false;
+		this.listasCanciones = new ArrayList<>();
 	}
 
 	// Getters
@@ -66,12 +88,12 @@ public class Usuario implements RolUsuario, Descuento {
 		return email;
 	}
 
-	public String getNombreUsuario() {
-		return nombreUsuario;
+	public String getLogin() {
+		return login;
 	}
 
-	public String getContrasena() {
-		return contrasena;
+	public String getPassword() {
+		return password;
 	}
 	
 	public boolean isPremium() {
@@ -110,13 +132,13 @@ public class Usuario implements RolUsuario, Descuento {
 		this.email = email;
 	}
 
-	public void setNombreUsuario(String nombreUsuario) {
-		this.nombreUsuario = nombreUsuario;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
-	public void setContrasena(String contrasena) {
-		// TODO: comprobar el formato de la contrasena en la vista o aquí?
-		this.contrasena = contrasena;
+	public void setPassword(String password) {
+		// TODO: comprobar el formato de la password en la vista o aquí?
+		this.password = password;
 	}
 	
 	public void setListasCanciones(ArrayList<ListaCanciones> listasCanciones) {
@@ -130,12 +152,12 @@ public class Usuario implements RolUsuario, Descuento {
 	/**
 	 * {@inheritDoc}
 	 */
-	// TODO ¿incluir listas de cantiones en el toString?
+	// TODO ¿incluir listas de canciones en el toString?
 	@Override
 	public String toString() {
 		return "Usuario [nombre= " + nombre + ", apellidos= " + apellidos + ", mail=" + email +
-			   "fecha de nacimiento= " + fechaNacimiento.format(formatter) + ", usuario=" + nombreUsuario +
-			   ", contraseña=" + contrasena + ", id=" + id + "]";
+			   "fecha de nacimiento= " + fechaNacimiento.format(formatter) + ", usuario=" + login +
+			   ", contraseña=" + password + ", id=" + id + "]";
 	}
 
 	/**

@@ -15,7 +15,7 @@ public class Cancion {
 	
 	/**
 	 * Constructor
-	 * @param titulo titulo de la canción
+	 * @param titulo título de la canción
 	 * @param estilo estilo musical
 	 * @param interprete cantante que interpreta la canción
 	 * @param rutaFichero ruta al fichero correspondiente a la canción
