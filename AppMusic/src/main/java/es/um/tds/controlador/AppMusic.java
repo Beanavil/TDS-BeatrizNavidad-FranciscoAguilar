@@ -137,7 +137,7 @@ public final class AppMusic
      * @return False si el usuario no está registrado o la contraseña no
      * coincide, true en caso contrario
      */
-    public boolean login(String login, String password) {
+    public boolean loginUsuario(String login, String password) {
     	if(!esUsuarioRegistrado(login))
     		return false;
     	Usuario usuario = catalogoUsuarios.getUsuario(login);
