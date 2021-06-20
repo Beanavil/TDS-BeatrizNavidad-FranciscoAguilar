@@ -17,13 +17,13 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
-public class VentanaPrincipalSinTabs {
+public class VentanaPrincipalConTabs {
 private JFrame frmVentanaPrincipal;
 	
 	/**
 	 * Constructor
 	 */
-	public VentanaPrincipalSinTabs() { // TODO saber el usuario actual
+	public VentanaPrincipalConTabs() { // TODO saber el usuario actual
 		initialize();
 	}
 
