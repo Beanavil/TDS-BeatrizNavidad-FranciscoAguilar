@@ -64,6 +64,18 @@
       <version>1.0</version>
     </dependency>
     
+    <dependency> 
+	    <groupId>org.glassfish.jaxb</groupId>
+	    <artifactId>jaxb-runtime</artifactId> 
+	    <version>2.3.1</version>
+    </dependency>
+    
+    <dependency> 
+    	<groupId>org.openjfx</groupId> 
+    	<artifactId>javafx-media</artifactId> 
+    	<version>11-ea+25</version>
+    </dependency>
+    
   </dependencies>
 
   <build>
@@ -107,6 +119,23 @@
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
+        </plugin>
+        <plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-assembly-plugin</artifactId>
+        	<executions>
+        		<execution>
+        			<phase>package</phase>
+        			<goals>
+        				<goal>single</goal>
+        			</goals>
+        			<configuration>
+        				<descriptorRefs>
+        					<descriptorRef>jar-with-dependencies</descriptorRef>
+        				</descriptorRefs>
+        			</configuration>
+        		</execution>
+        	</executions>
         </plugin>
       </plugins>
     </pluginManagement>

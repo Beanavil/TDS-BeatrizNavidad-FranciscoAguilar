@@ -1,5 +1,6 @@
 package es.um.tds.controlador;
 
+import java.io.IOException;
 import java.util.List;
 
 import es.um.tds.modelo.Cancion;
@@ -11,6 +12,7 @@ import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
+import es.um.tds.vista.VentanaLogin;
 import es.um.tds.vista.VentanaPrincipal;
 import es.um.tds.vista.VentanaRegistro;
 
@@ -37,9 +39,11 @@ public final class AppMusic
 	 * Método principal
 	 * @param args
 	 */
-	public static void main( String[] args )
+	public static void main( String[] args ) throws IOException
 	{
-		VentanaRegistro vp = new VentanaRegistro();
+		//VentanaLogin vl = new VentanaLogin();
+		//VentanaRegistro vr = new VentanaRegistro();
+		VentanaPrincipal vp = new VentanaPrincipal();
 	}
 
 	
@@ -103,11 +107,7 @@ public final class AppMusic
     public boolean registrarUsuario(String nombre, String apellidos, String fechaNacimiento, String email,
     		String login, String password) {
     	
-    	// Si el usuario ya está registrado, no hacemos nada
-    	if (esUsuarioRegistrado(login))
-    		return false;
-    	
-    	// Si no, se crea el usuario y se añade a la bbdd y al catálogo
+    	// En la ventana de registro ya se comprueba que no haya otro usuario con el mismo login
     	Usuario usuario = new Usuario(nombre, apellidos, fechaNacimiento, email, login, password);
     	adaptadorUsuario.store(usuario);
     	catalogoUsuarios.addUsuario(usuario);

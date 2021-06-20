@@ -7,7 +7,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,10 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-
-import com.toedter.calendar.JCalendar;
-
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.modelo.Usuario;
 import es.um.tds.vista.VentanaLogin;
 
 import javax.swing.border.Border;
@@ -30,8 +30,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 import com.toedter.calendar.JDateChooser;
 
+
+/**
+ * Ventana de registro de AppMusic
+ * 
+ * @author Beatriz y Francisco
+ */
 public class VentanaRegistro {
+	// Ventanas
 	private JFrame frmRegistro;
+	
+	// Labels
 	private JLabel lblNombre;
 	private JLabel lblApellidos;
 	private JLabel lblFechaNacimiento;
@@ -39,15 +48,22 @@ public class VentanaRegistro {
 	private JLabel lblUsuario;
 	private JLabel lblPassword;
 	private JLabel lblPasswordChk;
+	
+	// Campos de texto
 	private JTextField txtNombre;
 	private JTextField txtApellidos;
 	private JTextField txtEmail;
 	private JTextField txtUsuario;
+	
+	// Campos de contraseña
 	private JPasswordField txtPassword;
 	private JPasswordField txtPasswordChk;
+	
+	// Botones
 	private JButton btnRegistrar;
 	private JButton btnCancelar;
-
+	
+	// Labels de error
 	private JLabel lblNombreError;
 	private JLabel lblApellidosError;
 	private JLabel lblFechaNacimientoError;
@@ -60,67 +76,85 @@ public class VentanaRegistro {
 	private JPanel panelCamposEmail;
 	private JPanel panelCamposUsuario;
 	private JPanel panelCamposFechaNacimiento;
+	
+	// Seleccionador de fecha
 	private JDateChooser dateChooser;
 
+	/**
+	 * Constructor
+	 */
 	public VentanaRegistro() {
 		initialize();
 	}
 	
+	
+	/**
+	 * Muestra la ventana de registro
+	 */
 	public void mostrarVentana() {
 		frmRegistro.setLocationRelativeTo(null);
 		frmRegistro.setVisible(true);
 	}
 
+	
+	/**
+	 * Inicializar la ventana
+	 */
 	public void initialize() {
 		frmRegistro = new JFrame();
 		frmRegistro.setTitle("Registro AppMusic");
 		frmRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmRegistro.getContentPane().setLayout(new BorderLayout());
 		frmRegistro.setResizable(false);
-		frmRegistro.getContentPane().setLayout(new BorderLayout());
 		frmRegistro.setSize(700, 500);
 		frmRegistro.setMinimumSize(new Dimension(700, 500));
 
 		Container contentPane = frmRegistro.getContentPane();
+		contentPane.setLayout(new BorderLayout());
 
 		JPanel datosPersonales = new JPanel();
-		contentPane.add(datosPersonales);
+		contentPane.add(datosPersonales, BorderLayout.CENTER);
 		datosPersonales.setBorder(new TitledBorder(null, "Introduce tus datos.", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		datosPersonales.setLayout(new BoxLayout(datosPersonales, BoxLayout.Y_AXIS));
 
-		datosPersonales.add(creaLineaNombre());
+		datosPersonales.add(crearLineaNombre());
 		datosPersonales.add(crearLineaApellidos());
 		datosPersonales.add(crearLineaFechaNacimiento());
 		datosPersonales.add(crearLineaEmail());
 		datosPersonales.add(crearLineaUsuario());
 		datosPersonales.add(crearLineaPassword());
 		
+		// Botones y sus manejadores
 		crearPanelBotones();
 
+		// Ocultar mensajes de error
 		ocultarErrores();
-
+		
 		frmRegistro.revalidate();
 		frmRegistro.pack();
 		
 		mostrarVentana();
 	}
 
-	private JPanel creaLineaNombre() {
+	
+	/**
+	 * Crea el panel con el campo para introducir el nombre
+	 */
+	private JPanel crearLineaNombre() {
 		JPanel lineaNombre = new JPanel();
-		//lineaNombre.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaNombre.setLayout(new BoxLayout(lineaNombre, BoxLayout.X_AXIS));
+		lineaNombre.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaNombre.setLayout(new BorderLayout());
 		
 		panelCampoNombre = new JPanel();
 		lineaNombre.add(panelCampoNombre, BorderLayout.CENTER);
 		
 		lblNombre = new JLabel("Nombre: ", JLabel.RIGHT);
 		panelCampoNombre.add(lblNombre);
-		fixedSize(lblNombre, 75, 20);
+		fixedSize(lblNombre, 160, 20);
 		txtNombre = new JTextField();
 		panelCampoNombre.add(txtNombre);
-		fixedSize(txtNombre, 270, 20);
+		fixedSize(txtNombre, 285, 20);
 		
-		lblNombreError = new JLabel("El nombre es obligatorio", SwingConstants.CENTER);
+		lblNombreError = new JLabel("El campo 'Nombre' es obligatorio", SwingConstants.CENTER);
 		lineaNombre.add(lblNombreError, BorderLayout.SOUTH);
 		fixedSize(lblNombreError, 224, 15);
 		lblNombreError.setForeground(Color.RED);
@@ -128,23 +162,27 @@ public class VentanaRegistro {
 		return lineaNombre;
 	}
 
+	
+	/**
+	 * Crea el panel con el campo para introducir los apellidos
+	 */
 	private JPanel crearLineaApellidos() {
 		JPanel lineaApellidos = new JPanel();
-		//lineaApellidos.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaApellidos.setLayout(new BoxLayout(lineaApellidos, BoxLayout.X_AXIS));
+		lineaApellidos.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaApellidos.setLayout(new BorderLayout());
 		
 		panelCampoApellidos = new JPanel();
 		lineaApellidos.add(panelCampoApellidos);
 		
 		lblApellidos = new JLabel("Apellidos: ", JLabel.RIGHT);
 		panelCampoApellidos.add(lblApellidos);
-		fixedSize(lblApellidos, 75, 20);
+		fixedSize(lblApellidos, 160, 20);
 		txtApellidos = new JTextField();
 		panelCampoApellidos.add(txtApellidos);
-		fixedSize(txtApellidos, 270, 20);
+		fixedSize(txtApellidos, 285, 20);
 
 		
-		lblApellidosError = new JLabel("Los apellidos son obligatorios", SwingConstants.CENTER);
+		lblApellidosError = new JLabel("El campo 'Apellidos' es obligatorio", SwingConstants.CENTER);
 		lineaApellidos.add(lblApellidosError, BorderLayout.SOUTH);
 		fixedSize(lblApellidosError, 255, 15);
 		lblApellidosError.setForeground(Color.RED);
@@ -152,21 +190,25 @@ public class VentanaRegistro {
 		return lineaApellidos;
 	}
 	
+	
+	/**
+	 * Crea el panel con el campo para introducir la fecha de nacimiento
+	 */
 	private JPanel crearLineaFechaNacimiento() {
 		JPanel lineaFechaNacimiento = new JPanel();
-		//lineaFechaNacimiento.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaFechaNacimiento.setLayout(new BoxLayout(lineaFechaNacimiento, BoxLayout.X_AXIS));
+		lineaFechaNacimiento.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaFechaNacimiento.setLayout(new BorderLayout());
 		
 		panelCamposFechaNacimiento = new JPanel();
-		lineaFechaNacimiento.add(panelCamposFechaNacimiento);
+		lineaFechaNacimiento.add(panelCamposFechaNacimiento, BorderLayout.CENTER);
 		
 		lblFechaNacimiento = new JLabel("Fecha de Nacimiento: ", JLabel.RIGHT);
 		panelCamposFechaNacimiento.add(lblFechaNacimiento);
-		fixedSize(lblFechaNacimiento, 170, 20);
+		fixedSize(lblFechaNacimiento, 160, 20);
 		
 		dateChooser = new JDateChooser();
 		panelCamposFechaNacimiento.add(dateChooser);
-		fixedSize(dateChooser, 200, 20);
+		fixedSize(dateChooser, 285, 20);
 		lblFechaNacimientoError = new JLabel("Introduce la fecha de nacimiento", SwingConstants.CENTER);
 		fixedSize(lblFechaNacimientoError, 150, 15);
 		lblFechaNacimientoError.setForeground(Color.RED);
@@ -175,21 +217,25 @@ public class VentanaRegistro {
 		return lineaFechaNacimiento;
 	}
 
+	
+	/**
+	 * Crea el panel con el campo para introducir el email
+	 */
 	private JPanel crearLineaEmail() {
 		JPanel lineaEmail = new JPanel();
-		//lineaEmail.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaEmail.setLayout(new BoxLayout(lineaEmail, BoxLayout.X_AXIS));
+		lineaEmail.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaEmail.setLayout(new BorderLayout());
 		
 		panelCamposEmail = new JPanel();
 		lineaEmail.add(panelCamposEmail, BorderLayout.CENTER);
 		
 		lblEmail = new JLabel("Email: ", JLabel.RIGHT);
 		panelCamposEmail.add(lblEmail);
-		fixedSize(lblEmail, 75, 20);
+		fixedSize(lblEmail, 160, 20);
 		txtEmail = new JTextField();
 		panelCamposEmail.add(txtEmail);
-		fixedSize(txtEmail, 270, 20);
-		lblEmailError = new JLabel("El email es obligatorio", SwingConstants.CENTER);
+		fixedSize(txtEmail, 285, 20);
+		lblEmailError = new JLabel("El campo 'Email' es obligatorio", SwingConstants.CENTER);
 		fixedSize(lblEmailError, 150, 15);
 		lblEmailError.setForeground(Color.RED);
 		lineaEmail.add(lblEmailError, BorderLayout.SOUTH);
@@ -197,20 +243,24 @@ public class VentanaRegistro {
 		return lineaEmail;
 	}
 
+	
+	/**
+	 * Crea el panel con el campo para introducir el nombre de usuario
+	 */
 	private JPanel crearLineaUsuario() {
 		JPanel lineaUsuario = new JPanel();
-		//lineaUsuario.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaUsuario.setLayout(new BoxLayout(lineaUsuario, BoxLayout.X_AXIS));
+		lineaUsuario.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaUsuario.setLayout(new BorderLayout());
 		
 		panelCamposUsuario = new JPanel();
 		lineaUsuario.add(panelCamposUsuario, BorderLayout.CENTER);
 		
 		lblUsuario = new JLabel("Usuario: ", JLabel.RIGHT);
 		panelCamposUsuario.add(lblUsuario);
-		fixedSize(lblUsuario, 75, 20);
+		fixedSize(lblUsuario, 160, 20);
 		txtUsuario = new JTextField();
 		panelCamposUsuario.add(txtUsuario);
-		fixedSize(txtUsuario, 270, 20);
+		fixedSize(txtUsuario, 285, 20);
 		lblUsuarioError = new JLabel("El usuario ya existe", SwingConstants.CENTER);
 		fixedSize(lblUsuarioError, 150, 15);
 		lblUsuarioError.setForeground(Color.RED);
@@ -219,35 +269,43 @@ public class VentanaRegistro {
 		return lineaUsuario;
 	}
 
+	
+	/**
+	 * Crea el panel con los campos de contraseñas
+	 */
 	private JPanel crearLineaPassword() {
 		JPanel lineaPassword = new JPanel();
-		//lineaPassword.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaPassword.setLayout(new BoxLayout(lineaPassword, BoxLayout.X_AXIS));
+		lineaPassword.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaPassword.setLayout(new BorderLayout());
 		
 		panel = new JPanel();
 		lineaPassword.add(panel, BorderLayout.CENTER);
 		
 		lblPassword = new JLabel("Password: ", JLabel.RIGHT);
 		panel.add(lblPassword);
-		fixedSize(lblPassword, 75, 20);
+		fixedSize(lblPassword,80, 20);
 		txtPassword = new JPasswordField();
 		panel.add(txtPassword);
-		fixedSize(txtPassword, 100, 20);
+		fixedSize(txtPassword, 142, 20);
 		lblPasswordChk = new JLabel("Otra vez:", JLabel.RIGHT);
 		panel.add(lblPasswordChk);
-		fixedSize(lblPasswordChk, 60, 20);
+		fixedSize(lblPasswordChk, 70, 20);
 		txtPasswordChk = new JPasswordField();
 		panel.add(txtPasswordChk);
-		fixedSize(txtPasswordChk, 100, 20);
+		fixedSize(txtPasswordChk, 142, 20);
 
-		lblPasswordError = new JLabel("Error al introducir las contraseñas", JLabel.CENTER);
+		lblPasswordError = new JLabel("Las contraseñas no coinciden", JLabel.CENTER);
 		lineaPassword.add(lblPasswordError, BorderLayout.SOUTH);
 		lblPasswordError.setForeground(Color.RED);
 		
 		return lineaPassword;
 	}
 
-
+	
+	/**
+	 * Crea el panel que contiene los botones de 'registrar' y 
+	 * 'cancelar' y definir sus manejadores
+	 */
 	private void crearPanelBotones() {
 		JPanel lineaBotones = new JPanel(); 
 		frmRegistro.getContentPane().add(lineaBotones, BorderLayout.SOUTH);
@@ -264,6 +322,10 @@ public class VentanaRegistro {
 		crearManejadorBotonCancelar();
 	}
 
+	
+	/**
+	 * Define un manejador de eventos para el botón de registrar
+	 */
 	private void crearManejadorBotonRegistar() {
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -271,12 +333,13 @@ public class VentanaRegistro {
 				OK = checkFields();
 				if (OK) {
 					boolean registrado = false;
+					LocalDate date = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+					String fecha = date.format(Usuario.formatter);
 					registrado = AppMusic.getUnicaInstancia().registrarUsuario(txtNombre.getText(),
-							txtApellidos.getText(), txtEmail.getText(), txtUsuario.getText(),
-							new String(txtPassword.getPassword()), 
-							dateChooser.getDateFormatString()); // TODO modificado esto
+							txtApellidos.getText(), fecha, txtEmail.getText(), txtUsuario.getText(),
+							new String(txtPassword.getPassword())); // TODO ver esto
 					if (registrado) {
-						JOptionPane.showMessageDialog(frmRegistro, "Asistente registrado correctamente.", "Registro",
+						JOptionPane.showMessageDialog(frmRegistro, "Usuario registrado correctamente.", "Registro",
 								JOptionPane.INFORMATION_MESSAGE);
 						
 						VentanaLogin ventanaLogin = new VentanaLogin();
@@ -292,6 +355,10 @@ public class VentanaRegistro {
 		});
 	}
 
+	
+	/**
+	 * Define un manejador de eventos para el botón de cancelar
+	 */
 	private void crearManejadorBotonCancelar() {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -321,14 +388,35 @@ public class VentanaRegistro {
 			txtApellidos.setBorder(BorderFactory.createLineBorder(Color.RED));
 			salida = false;
 		}
+		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+		Pattern pat = Pattern.compile(emailRegex);
+		if(!pat.matcher(txtEmail.getText().trim()).matches()) {
+			lblEmailError.setText("Introduce una dirección de correo electrónico válida: ejemplo@gmail.com");
+			lblEmailError.setVisible(true);
+			lblEmail.setForeground(Color.RED);
+			txtEmail.setBorder(BorderFactory.createLineBorder(Color.RED));
+			salida = false;
+		}
 		if (txtEmail.getText().trim().isEmpty()) {
+			lblEmailError.setText("El campo 'Email' es obligatorio");
 			lblEmailError.setVisible(true);
 			lblEmail.setForeground(Color.RED);
 			txtEmail.setBorder(BorderFactory.createLineBorder(Color.RED));
 			salida = false;
 		}
 		if (txtUsuario.getText().trim().isEmpty()) {
-			lblUsuarioError.setText("El usuario es obligatorio");
+			lblUsuarioError.setText("Introduce un nombre de usuario");
+			lblUsuarioError.setVisible(true);
+			lblUsuario.setForeground(Color.RED);
+			txtUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
+			salida = false;
+		}
+		// Comprobar que no exista otro usuario con igual login 
+		if (!lblUsuarioError.getText().isEmpty() && AppMusic.getUnicaInstancia().esUsuarioRegistrado(txtUsuario.getText())) {
+			lblUsuarioError.setText("Usuario ya registrado");
 			lblUsuarioError.setVisible(true);
 			lblUsuario.setForeground(Color.RED);
 			txtUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
@@ -336,16 +424,11 @@ public class VentanaRegistro {
 		}
 		String password = new String(txtPassword.getPassword());
 		String password2 = new String(txtPasswordChk.getPassword());
-		if (password.isEmpty()) {
-			lblPasswordError.setText("El campo 'password' no puede estar vacío");
+		if (password.isEmpty() || password2.isEmpty()) {
+			lblPasswordError.setText("Los campos de contraseña no pueden estar vacíos");
 			lblPasswordError.setVisible(true);
 			lblPassword.setForeground(Color.RED);
 			txtPassword.setBorder(BorderFactory.createLineBorder(Color.RED));
-			salida = false;
-		} 
-		if (password2.isEmpty()) {
-			lblPasswordError.setText("El campo 'password' no puede estar vacío");
-			lblPasswordError.setVisible(true);
 			lblPasswordChk.setForeground(Color.RED);
 			txtPasswordChk.setBorder(BorderFactory.createLineBorder(Color.RED));
 			salida = false;
@@ -359,21 +442,23 @@ public class VentanaRegistro {
 			txtPasswordChk.setBorder(BorderFactory.createLineBorder(Color.RED));
 			salida = false;
 		}
-		/* Comprobar que no exista otro usuario con igual login */
-		if (!lblUsuarioError.getText().isEmpty() && AppMusic.getUnicaInstancia().esUsuarioRegistrado(txtUsuario.getText())) {
-			lblUsuarioError.setText("Ya existe ese usuario");
-			lblUsuarioError.setVisible(true);
-			lblUsuario.setForeground(Color.RED);
-			txtUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
-			salida = false;
-		}
-		if (dateChooser.getDateFormatString().isEmpty()) { // TODO modificado esto
+		if (dateChooser.getDate() == null) { 
 			lblFechaNacimientoError.setVisible(true);
 			lblFechaNacimiento.setForeground(Color.RED);
-			dateChooser.setBorder(BorderFactory.createLineBorder(Color.RED)); // TODO modificado esto
+			dateChooser.setBorder(BorderFactory.createLineBorder(Color.RED)); 
 			salida = false;
+		} else {
+			LocalDate date = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			LocalDate today = LocalDate.now();
+			if (date.isAfter(today)) {
+				lblFechaNacimientoError.setText("Fecha de nacimiento no válida");
+				lblFechaNacimientoError.setVisible(true);
+				lblFechaNacimiento.setForeground(Color.RED);
+				dateChooser.setBorder(BorderFactory.createLineBorder(Color.RED));
+				salida = false;
+			}
 		}
-
+		
 		frmRegistro.revalidate();
 		frmRegistro.pack();
 		
@@ -402,6 +487,7 @@ public class VentanaRegistro {
 		txtPassword.setBorder(border);
 		txtPasswordChk.setBorder(border);
 		txtUsuario.setBorder(border);
+		dateChooser.setBorder(border);
 		
 		lblNombre.setForeground(Color.BLACK);
 		lblApellidos.setForeground(Color.BLACK);
@@ -410,6 +496,7 @@ public class VentanaRegistro {
 		lblPassword.setForeground(Color.BLACK);
 		lblPasswordChk.setForeground(Color.BLACK);
 		lblFechaNacimiento.setForeground(Color.BLACK);
+		dateChooser.setForeground(Color.BLACK);
 	}
 
 	/**
