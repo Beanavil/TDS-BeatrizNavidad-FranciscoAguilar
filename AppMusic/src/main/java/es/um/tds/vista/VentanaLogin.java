@@ -4,10 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,7 +49,6 @@ public class VentanaLogin {
 	
 	private void initialize() {
 		frmLogin = new JFrame();
-		frmLogin.setTitle("Login AppMusic");
 		frmLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmLogin.getContentPane().setLayout(new BorderLayout());
 
@@ -59,6 +64,17 @@ public class VentanaLogin {
 		frmLogin.getContentPane().add(panel_Norte, BorderLayout.NORTH);
 		panel_Norte.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 15));
 
+		BufferedImage logo = null;
+		try {
+			logo = ImageIO.read(new File("/home/bea/git/TDS-BeatrizNavidad-FranciscoAguilar/AppMusic/resources/appmusic.png")); //TODO ¿cómo poner el path para que sea relativo al proyecto?
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ImageIcon imageIcon = new ImageIcon(logo);
+		Image image = imageIcon.getImage();
+		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		imageIcon = new ImageIcon(scaledimage);
+		panel_Norte.add(new JLabel(imageIcon));
 		JLabel lblTitulo = new JLabel("AppMusic");
 		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblTitulo.setForeground(Color.DARK_GRAY);

@@ -20,12 +20,15 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import com.toedter.calendar.JCalendar;
+
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.vista.VentanaLogin;
 
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
+import com.toedter.calendar.JDateChooser;
 
 public class VentanaRegistro {
 	private JFrame frmRegistro;
@@ -38,7 +41,6 @@ public class VentanaRegistro {
 	private JLabel lblPasswordChk;
 	private JTextField txtNombre;
 	private JTextField txtApellidos;
-	private JTextField txtFechaNacimiento;
 	private JTextField txtEmail;
 	private JTextField txtUsuario;
 	private JPasswordField txtPassword;
@@ -58,6 +60,7 @@ public class VentanaRegistro {
 	private JPanel panelCamposEmail;
 	private JPanel panelCamposUsuario;
 	private JPanel panelCamposFechaNacimiento;
+	private JDateChooser dateChooser;
 
 	public VentanaRegistro() {
 		initialize();
@@ -75,20 +78,22 @@ public class VentanaRegistro {
 		frmRegistro.getContentPane().setLayout(new BorderLayout());
 		frmRegistro.setResizable(false);
 		frmRegistro.getContentPane().setLayout(new BorderLayout());
+		frmRegistro.setSize(700, 500);
+		frmRegistro.setMinimumSize(new Dimension(700, 500));
 
 		Container contentPane = frmRegistro.getContentPane();
 
 		JPanel datosPersonales = new JPanel();
 		contentPane.add(datosPersonales);
-		datosPersonales.setBorder(new TitledBorder(null, "Datos personales", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		datosPersonales.setBorder(new TitledBorder(null, "Introduce tus datos.", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		datosPersonales.setLayout(new BoxLayout(datosPersonales, BoxLayout.Y_AXIS));
 
 		datosPersonales.add(creaLineaNombre());
 		datosPersonales.add(crearLineaApellidos());
+		datosPersonales.add(crearLineaFechaNacimiento());
 		datosPersonales.add(crearLineaEmail());
 		datosPersonales.add(crearLineaUsuario());
 		datosPersonales.add(crearLineaPassword());
-		datosPersonales.add(crearLineaFechaNacimiento());
 		
 		crearPanelBotones();
 
@@ -96,12 +101,14 @@ public class VentanaRegistro {
 
 		frmRegistro.revalidate();
 		frmRegistro.pack();
+		
+		mostrarVentana();
 	}
 
 	private JPanel creaLineaNombre() {
 		JPanel lineaNombre = new JPanel();
-		lineaNombre.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaNombre.setLayout(new BorderLayout(0, 0));
+		//lineaNombre.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaNombre.setLayout(new BoxLayout(lineaNombre, BoxLayout.X_AXIS));
 		
 		panelCampoNombre = new JPanel();
 		lineaNombre.add(panelCampoNombre, BorderLayout.CENTER);
@@ -123,8 +130,8 @@ public class VentanaRegistro {
 
 	private JPanel crearLineaApellidos() {
 		JPanel lineaApellidos = new JPanel();
-		lineaApellidos.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaApellidos.setLayout(new BorderLayout(0, 0));
+		//lineaApellidos.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaApellidos.setLayout(new BoxLayout(lineaApellidos, BoxLayout.X_AXIS));
 		
 		panelCampoApellidos = new JPanel();
 		lineaApellidos.add(panelCampoApellidos);
@@ -144,11 +151,34 @@ public class VentanaRegistro {
 		
 		return lineaApellidos;
 	}
+	
+	private JPanel crearLineaFechaNacimiento() {
+		JPanel lineaFechaNacimiento = new JPanel();
+		//lineaFechaNacimiento.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaFechaNacimiento.setLayout(new BoxLayout(lineaFechaNacimiento, BoxLayout.X_AXIS));
+		
+		panelCamposFechaNacimiento = new JPanel();
+		lineaFechaNacimiento.add(panelCamposFechaNacimiento);
+		
+		lblFechaNacimiento = new JLabel("Fecha de Nacimiento: ", JLabel.RIGHT);
+		panelCamposFechaNacimiento.add(lblFechaNacimiento);
+		fixedSize(lblFechaNacimiento, 170, 20);
+		
+		dateChooser = new JDateChooser();
+		panelCamposFechaNacimiento.add(dateChooser);
+		fixedSize(dateChooser, 200, 20);
+		lblFechaNacimientoError = new JLabel("Introduce la fecha de nacimiento", SwingConstants.CENTER);
+		fixedSize(lblFechaNacimientoError, 150, 15);
+		lblFechaNacimientoError.setForeground(Color.RED);
+		lineaFechaNacimiento.add(lblFechaNacimientoError, BorderLayout.SOUTH);
+		
+		return lineaFechaNacimiento;
+	}
 
 	private JPanel crearLineaEmail() {
 		JPanel lineaEmail = new JPanel();
-		lineaEmail.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaEmail.setLayout(new BorderLayout(0, 0));
+		//lineaEmail.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaEmail.setLayout(new BoxLayout(lineaEmail, BoxLayout.X_AXIS));
 		
 		panelCamposEmail = new JPanel();
 		lineaEmail.add(panelCamposEmail, BorderLayout.CENTER);
@@ -169,8 +199,8 @@ public class VentanaRegistro {
 
 	private JPanel crearLineaUsuario() {
 		JPanel lineaUsuario = new JPanel();
-		lineaUsuario.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaUsuario.setLayout(new BorderLayout(0, 0));
+		//lineaUsuario.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaUsuario.setLayout(new BoxLayout(lineaUsuario, BoxLayout.X_AXIS));
 		
 		panelCamposUsuario = new JPanel();
 		lineaUsuario.add(panelCamposUsuario, BorderLayout.CENTER);
@@ -191,8 +221,8 @@ public class VentanaRegistro {
 
 	private JPanel crearLineaPassword() {
 		JPanel lineaPassword = new JPanel();
-		lineaPassword.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaPassword.setLayout(new BorderLayout(0, 0));
+		//lineaPassword.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		lineaPassword.setLayout(new BoxLayout(lineaPassword, BoxLayout.X_AXIS));
 		
 		panel = new JPanel();
 		lineaPassword.add(panel, BorderLayout.CENTER);
@@ -217,27 +247,6 @@ public class VentanaRegistro {
 		return lineaPassword;
 	}
 
-	private JPanel crearLineaFechaNacimiento() {
-		JPanel lineaFechaNacimiento = new JPanel();
-		lineaFechaNacimiento.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		lineaFechaNacimiento.setLayout(new BorderLayout(0, 0));
-		
-		panelCamposFechaNacimiento = new JPanel();
-		lineaFechaNacimiento.add(panelCamposFechaNacimiento, BorderLayout.CENTER);
-		
-		lblFechaNacimiento = new JLabel("Fecha de Nacimiento: ", JLabel.RIGHT);
-		panelCamposFechaNacimiento.add(lblFechaNacimiento);
-		fixedSize(lblFechaNacimiento, 130, 20);
-		txtFechaNacimiento = new JTextField();
-		panelCamposFechaNacimiento.add(txtFechaNacimiento);
-		fixedSize(txtFechaNacimiento, 215, 20);
-		lblFechaNacimientoError = new JLabel("Introduce la fecha de nacimiento", SwingConstants.CENTER);
-		fixedSize(lblFechaNacimientoError, 150, 15);
-		lblFechaNacimientoError.setForeground(Color.RED);
-		lineaFechaNacimiento.add(lblFechaNacimientoError, BorderLayout.SOUTH);
-		
-		return lineaFechaNacimiento;
-	}
 
 	private void crearPanelBotones() {
 		JPanel lineaBotones = new JPanel(); 
@@ -265,7 +274,7 @@ public class VentanaRegistro {
 					registrado = AppMusic.getUnicaInstancia().registrarUsuario(txtNombre.getText(),
 							txtApellidos.getText(), txtEmail.getText(), txtUsuario.getText(),
 							new String(txtPassword.getPassword()), 
-							txtFechaNacimiento.getText());
+							dateChooser.getDateFormatString()); // TODO modificado esto
 					if (registrado) {
 						JOptionPane.showMessageDialog(frmRegistro, "Asistente registrado correctamente.", "Registro",
 								JOptionPane.INFORMATION_MESSAGE);
@@ -358,10 +367,10 @@ public class VentanaRegistro {
 			txtUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
 			salida = false;
 		}
-		if (txtFechaNacimiento.getText().isEmpty()) {
+		if (dateChooser.getDateFormatString().isEmpty()) { // TODO modificado esto
 			lblFechaNacimientoError.setVisible(true);
 			lblFechaNacimiento.setForeground(Color.RED);
-			txtFechaNacimiento.setBorder(BorderFactory.createLineBorder(Color.RED));
+			dateChooser.setBorder(BorderFactory.createLineBorder(Color.RED)); // TODO modificado esto
 			salida = false;
 		}
 
@@ -393,7 +402,6 @@ public class VentanaRegistro {
 		txtPassword.setBorder(border);
 		txtPasswordChk.setBorder(border);
 		txtUsuario.setBorder(border);
-		txtFechaNacimiento.setBorder(border);
 		
 		lblNombre.setForeground(Color.BLACK);
 		lblApellidos.setForeground(Color.BLACK);

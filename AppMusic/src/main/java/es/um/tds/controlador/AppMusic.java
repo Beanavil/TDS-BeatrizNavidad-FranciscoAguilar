@@ -11,6 +11,8 @@ import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
+import es.um.tds.vista.VentanaPrincipal;
+import es.um.tds.vista.VentanaRegistro;
 
 /**
  * Clase controlador de AppMusic
@@ -37,7 +39,7 @@ public final class AppMusic
 	 */
 	public static void main( String[] args )
 	{
-		System.out.println( "Hello World!" );
+		VentanaRegistro vp = new VentanaRegistro();
 	}
 
 	
