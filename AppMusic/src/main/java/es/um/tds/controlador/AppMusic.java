@@ -14,7 +14,6 @@ import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
 import es.um.tds.vista.VentanaLogin;
 import es.um.tds.vista.VentanaPrincipal;
-import es.um.tds.vista.VentanaPrincipal;
 import es.um.tds.vista.VentanaRegistro;
 
 /**
@@ -33,7 +32,7 @@ public final class AppMusic
 	private CatalogoUsuarios catalogoUsuarios;
 	private CatalogoCanciones catalogoCanciones;
 	
-	private Usuario usuarioActual;
+	private static Usuario usuarioActual;
 	
 	
 	/**
@@ -42,9 +41,10 @@ public final class AppMusic
 	 */
 	public static void main( String[] args ) throws IOException
 	{
+		AppMusic.getUnicaInstancia().registrarUsuario("bea", "navidad", "25/11/1999", "beatriznavidad@yahoo.es", "bea", "123");
 		//VentanaLogin vl = new VentanaLogin();
 		//VentanaRegistro vr = new VentanaRegistro();
-		VentanaPrincipal vp = new VentanaPrincipal();
+		//VentanaPrincipal vp = new VentanaPrincipal();
 	}
 
 	
@@ -134,7 +134,7 @@ public final class AppMusic
     
     
     /**
-     * Método para confirmar si un usuario puede hacer login
+     * Método para hacer el login de un usuario
      * @param login Nickname del usuario
      * @param password Contraseña del usuario
      * @return False si el usuario no está registrado o la contraseña no
@@ -144,6 +144,7 @@ public final class AppMusic
     	if(!esUsuarioRegistrado(login))
     		return false;
     	Usuario usuario = catalogoUsuarios.getUsuario(login);
+    	usuarioActual = usuario;
     	return usuario.getPassword().equals(password);
     }
     

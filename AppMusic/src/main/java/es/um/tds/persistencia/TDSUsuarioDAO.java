@@ -147,8 +147,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	public List<Usuario> getAll() {
 		List<Usuario> usuarios = new ArrayList<>();
 		List<Entidad> eUsuarios = servPersistencia.recuperarEntidades(USUARIO);
-		eUsuarios.stream().forEach(e -> usuarios.add(get(e.getId())));
+		if (eUsuarios != null)
+			eUsuarios.stream().forEach(e -> usuarios.add(get(e.getId())));
 		return usuarios;
+		
 	}
 
 	// Métodos auxiliares

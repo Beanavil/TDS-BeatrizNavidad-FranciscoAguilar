@@ -12,6 +12,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import es.um.tds.controlador.AppMusic;
 import pulsador.Luz;
 
 import javax.swing.BorderFactory;
@@ -21,15 +22,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 
 public class VentanaPrincipal {
-private JFrame frmVentanaPrincipal;
-	
-	JPanel panelExplorar;
-	
-	JPanel panelNuevaLista;
-	
-	JPanel panelReciente;
-	
-	JPanel panelMisListas;
+	private AppMusic controlador = AppMusic.getUnicaInstancia();
+	private JFrame frmVentanaPrincipal;
+	private JPanel panelExplorar;
+	private JPanel panelNuevaLista;
+	private JPanel panelRecientes;
+	private JPanel panelMisListas;
 	
 	/**
 	 * Constructor
@@ -65,7 +63,7 @@ private JFrame frmVentanaPrincipal;
 		JPanel panelSuperior_2 = new JPanel();
 		panelSuperior_2.setLayout(new BoxLayout(panelSuperior_2, BoxLayout.X_AXIS));
 		panelSuperior_2.add(Box.createRigidArea(new Dimension(105,40)));
-		panelSuperior_2.add(new JLabel("Hola usuario"));
+		panelSuperior_2.add(new JLabel("Hola " + controlador.getUsuarioActual().getLogin()));
 		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
 		panelSuperior_2.add(new JButton("Mejora tu cuenta"));
 		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
@@ -94,14 +92,14 @@ private JFrame frmVentanaPrincipal;
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 		panelCentral.add(tabbedPane);
 		
-		panelExplorar = new JPanel();
+		panelExplorar = crearPanelExplorar();
 		tabbedPane.addTab("Explorar", null, panelExplorar, null);
 		
 		panelNuevaLista = new JPanel();
 		tabbedPane.addTab("Nueva lista", null, panelNuevaLista, null);
 		
-		panelReciente = new JPanel();
-		tabbedPane.addTab("Reciente", null, panelReciente, null);
+		panelRecientes = crearPanelRecientes();
+		tabbedPane.addTab("Reciente", null, panelRecientes, null);
 		
 		panelMisListas = new JPanel();
 		tabbedPane.addTab("Mis listas", null, panelMisListas, null);
@@ -133,10 +131,31 @@ private JFrame frmVentanaPrincipal;
 		panelPrincipal.add(panelDerecho,BorderLayout.EAST);
 		panelPrincipal.add(panelCentral, BorderLayout.CENTER);
 		
-
-
 		frmVentanaPrincipal.pack();
 		
 		mostrarVentana();
+	}
+	
+	
+	/**
+	 * Crea la pestaña de Explorar
+	 */
+	private JPanel crearPanelExplorar() {
+		JPanel pane = new JPanel(new BorderLayout());
+		
+		// Parte superior (
+		JPanel panelSuperior = new JPanel();
+		panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.X_AXIS));
+		
+		return pane;
+	}
+	
+	
+	/**
+	 * Crea la pestaña de Recientes
+	 */
+	private JPanel crearPanelRecientes() {
+		JPanel pane = new JPanel();
+		return pane;
 	}
 }
