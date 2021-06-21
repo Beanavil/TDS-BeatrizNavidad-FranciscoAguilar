@@ -14,6 +14,7 @@ import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
 import es.um.tds.vista.VentanaLogin;
 import es.um.tds.vista.VentanaPrincipal;
+import es.um.tds.vista.VentanaPrincipal;
 import es.um.tds.vista.VentanaRegistro;
 
 /**
