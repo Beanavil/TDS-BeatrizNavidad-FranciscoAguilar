@@ -1,7 +1,6 @@
 package es.um.tds.vista;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
@@ -13,11 +12,9 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import es.um.tds.controlador.AppMusic;
@@ -38,6 +35,7 @@ public class VentanaPrincipal {
 	private JPanel panelNuevaLista;
 	private JPanel panelRecientes;
 	private JPanel panelMisListas;
+	private JPanel panelPulsador;
 	
 	/**
 	 * Constructor
@@ -94,22 +92,38 @@ public class VentanaPrincipal {
 		BufferedImage iconNL = null;
 		BufferedImage iconR = null;
 		BufferedImage iconML = null;
+		BufferedImage iconAC = null;
 		try {
 			iconE = ImageIO.read(new File("./resources/explorar-icon.png")); 
 			iconNL = ImageIO.read(new File("./resources/nueva-lista-icon.png")); 
 			iconR = ImageIO.read(new File("./resources/recientes-icon.png")); 
 			iconML = ImageIO.read(new File("./resources/mis-listas-icon.png")); 
+			iconAC = ImageIO.read(new File("./resources/add-canciones-icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		// Pestañas con los iconos correspondientes
-		panelExplorar = crearPanelExplorar();
-		ImageIcon tabIcon = new ImageIcon(iconE);
+		panelRecientes = crearPanelRecientes();
+		ImageIcon tabIcon = new ImageIcon(iconR);
 		Image image = tabIcon.getImage();
 		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
+		
+		panelExplorar = crearPanelExplorar();
+		tabIcon = new ImageIcon(iconE);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Explorar", tabIcon, panelExplorar);
+		
+		panelPulsador = new JPanel();
+		tabIcon = new ImageIcon(iconAC);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Añadir canciones", tabIcon, panelPulsador);
 		
 		panelNuevaLista = new JPanel();
 		tabIcon = new ImageIcon(iconNL);
@@ -118,19 +132,14 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Nueva lista", tabIcon, panelNuevaLista);
 		
-		panelRecientes = crearPanelRecientes();
-		tabIcon = new ImageIcon(iconR);
-		image = tabIcon.getImage();
-		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
-		tabIcon = new ImageIcon(scaledimage);
-		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
 		
 		panelMisListas = new JPanel();
 		tabIcon = new ImageIcon(iconML);
 		image = tabIcon.getImage();
-		scaledimage = image.getScaledInstance(43, 43, java.awt.Image.SCALE_SMOOTH);
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Mis listas", tabIcon, panelMisListas);
+		
 		
 		// Lista visible de las listas de canciones del usuario
 //		DefaultListModel<String> model = new DefaultListModel<String>(); 
@@ -188,6 +197,7 @@ public class VentanaPrincipal {
 		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
+		crearManejadorBotonMejora(btnMejora);
 		crearManejadorBotonLogout(btnLogout);
 		
 		return panel;
@@ -208,6 +218,24 @@ public class VentanaPrincipal {
 					window.mostrarVentana();
 					frmVentanaPrincipal.dispose();
 				}
+			}
+		});
+	}
+	
+	/**
+	 * Crea manejador para el botón de mejora de la cuenta
+	 */
+	private void crearManejadorBotonMejora(JButton btnMejora) {
+		btnMejora.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
+//						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
+//						JOptionPane.YES_NO_OPTION);
+//				if (result == JOptionPane.YES_OPTION) {
+//					VentanaLogin window = new VentanaLogin();
+//					window.mostrarVentana();
+//					frmVentanaPrincipal.dispose();
+//				}
 			}
 		});
 	}
