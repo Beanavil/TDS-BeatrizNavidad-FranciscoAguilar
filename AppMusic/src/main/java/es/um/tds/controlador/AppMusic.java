@@ -41,10 +41,10 @@ public final class AppMusic
 	 */
 	public static void main( String[] args ) throws IOException
 	{
-		AppMusic.getUnicaInstancia().registrarUsuario("bea", "navidad", "25/11/1999", "beatriznavidad@yahoo.es", "bea", "123");
+		//AppMusic.getUnicaInstancia().registrarUsuario("bea", "navidad", "25/11/1999", "beatriznavidad@yahoo.es", "bea", "123");
 		//VentanaLogin vl = new VentanaLogin();
 		//VentanaRegistro vr = new VentanaRegistro();
-		//VentanaPrincipal vp = new VentanaPrincipal();
+		VentanaPrincipal vp = new VentanaPrincipal();
 	}
 
 	
@@ -144,8 +144,11 @@ public final class AppMusic
     	if(!esUsuarioRegistrado(login))
     		return false;
     	Usuario usuario = catalogoUsuarios.getUsuario(login);
-    	usuarioActual = usuario;
-    	return usuario.getPassword().equals(password);
+    	if (usuario.getPassword().equals(password)) {
+    		usuarioActual = usuario;
+    		return true;
+    	}
+    	return false;
     }
     
     

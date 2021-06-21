@@ -4,9 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -15,10 +23,12 @@ import javax.swing.border.EmptyBorder;
 import es.um.tds.controlador.AppMusic;
 import pulsador.Luz;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class VentanaPrincipal {
@@ -58,19 +68,8 @@ public class VentanaPrincipal {
 		
 		//Parte superior
 		JPanel panelSuperior = new JPanel();
-		panelSuperior.setLayout(new BorderLayout());
-		
-		JPanel panelSuperior_2 = new JPanel();
-		panelSuperior_2.setLayout(new BoxLayout(panelSuperior_2, BoxLayout.X_AXIS));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(105,40)));
-		panelSuperior_2.add(new JLabel("Hola " + controlador.getUsuarioActual().getLogin()));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
-		panelSuperior_2.add(new JButton("Mejora tu cuenta"));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
-		panelSuperior_2.add(new JButton("Logout"));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
-		
-		panelSuperior.add(panelSuperior_2, BorderLayout.EAST);
+		panelSuperior.setLayout(new BorderLayout());		
+		panelSuperior.add(crearPanelBotones(), BorderLayout.EAST);
 		
 		
 		// Parte izquierda
@@ -81,8 +80,6 @@ public class VentanaPrincipal {
 		panelIzquierdo.add(panelIzquierdo_2, BorderLayout.NORTH);
 		
 		
-		
-		
 		// Parte central
 		
 		JPanel panelCentral = new JPanel();
@@ -90,19 +87,50 @@ public class VentanaPrincipal {
 		
 		// Pestañas
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+		tabbedPane.setUI(new CustomTabbedPaneUI());
 		panelCentral.add(tabbedPane);
 		
+		BufferedImage iconE = null;
+		BufferedImage iconNL = null;
+		BufferedImage iconR = null;
+		BufferedImage iconML = null;
+		try {
+			iconE = ImageIO.read(new File("./resources/explorar-icon.png")); 
+			iconNL = ImageIO.read(new File("./resources/nueva-lista-icon.png")); 
+			iconR = ImageIO.read(new File("./resources/recientes-icon.png")); 
+			iconML = ImageIO.read(new File("./resources/mis-listas-icon.png")); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Pestañas con los iconos correspondientes
 		panelExplorar = crearPanelExplorar();
-		tabbedPane.addTab("Explorar", null, panelExplorar, null);
+		ImageIcon tabIcon = new ImageIcon(iconE);
+		Image image = tabIcon.getImage();
+		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Explorar", tabIcon, panelExplorar);
 		
 		panelNuevaLista = new JPanel();
-		tabbedPane.addTab("Nueva lista", null, panelNuevaLista, null);
+		tabIcon = new ImageIcon(iconNL);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Nueva lista", tabIcon, panelNuevaLista);
 		
 		panelRecientes = crearPanelRecientes();
-		tabbedPane.addTab("Reciente", null, panelRecientes, null);
+		tabIcon = new ImageIcon(iconR);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
 		
 		panelMisListas = new JPanel();
-		tabbedPane.addTab("Mis listas", null, panelMisListas, null);
+		tabIcon = new ImageIcon(iconML);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(43, 43, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Mis listas", tabIcon, panelMisListas);
 		
 		// Lista visible de las listas de canciones del usuario
 //		DefaultListModel<String> model = new DefaultListModel<String>(); 
@@ -135,8 +163,56 @@ public class VentanaPrincipal {
 		
 		mostrarVentana();
 	}
+
+
+	/**
+	 * Crea botones superiores (mejorar cuenta y logout)
+	 */
+	public JPanel crearPanelBotones() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		panel.add(Box.createRigidArea(new Dimension(105,40)));
+		
+		panel.add(new JLabel("Hola, " + "usuario")); //+ controlador.getUsuarioActual().getLogin()));
+		
+		panel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		JButton btnMejora = new JButton("Mejora tu cuenta");
+		panel.add(btnMejora);
+		
+		panel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		JButton btnLogout = new JButton("Logout");
+		panel.add(btnLogout);
+		
+		panel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		crearManejadorBotonLogout(btnLogout);
+		
+		return panel;
+	}
 	
 	
+	/**
+	 * Crea manejador para el botón de logout
+	 */
+	private void crearManejadorBotonLogout(JButton btnLogout) {
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
+						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
+						JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
+					VentanaLogin window = new VentanaLogin();
+					window.mostrarVentana();
+					frmVentanaPrincipal.dispose();
+				}
+			}
+		});
+	}
+
+
 	/**
 	 * Crea la pestaña de Explorar
 	 */
