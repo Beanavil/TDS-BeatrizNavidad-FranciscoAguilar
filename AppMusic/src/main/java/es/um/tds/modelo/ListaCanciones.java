@@ -41,7 +41,12 @@ public class ListaCanciones {
 	public List<Cancion> getCanciones() {
 		return new ArrayList<>(canciones);
 	}
-
+	
+	//TODO
+	public Cancion getCancion(int indice) {
+		return this.canciones.get(indice);
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -70,7 +75,6 @@ public class ListaCanciones {
 		if(numCanciones == canciones.size())
 			this.numCanciones = numCanciones;
 	}
-	
 	
 	
 	public void addCancion(Cancion cancion) {

@@ -44,6 +44,7 @@ public final class AppMusic
 		//VentanaLogin vl = new VentanaLogin();
 		//VentanaRegistro vr = new VentanaRegistro();
 		VentanaPrincipal vp = new VentanaPrincipal();
+		
 	}
 
 	

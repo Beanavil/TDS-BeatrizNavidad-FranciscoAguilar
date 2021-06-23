@@ -6,24 +6,35 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import pulsador.Luz;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 
-public class VentanaPrincipalConTabs {
+public class VentanaPrincipal {
 private JFrame frmVentanaPrincipal;
-	
+private JPanel panelExplorar;
+private JPanel panelNuevaLista;
+private JPanel panelReciente;
+private JPanel panelMisListas;
+
 	/**
 	 * Constructor
 	 */
-	public VentanaPrincipalConTabs() { // TODO saber el usuario actual
+	public VentanaPrincipal() { // TODO saber el usuario actual
 		initialize();
 	}
 
@@ -69,24 +80,30 @@ private JFrame frmVentanaPrincipal;
 		JPanel panelIzquierdo = new JPanel(new BorderLayout());
 		JPanel panelIzquierdo_2 = new JPanel();
 		panelIzquierdo_2.setLayout(new BoxLayout(panelIzquierdo_2, BoxLayout.Y_AXIS));
-		JTabbedPane tabPane = new JTabbedPane(JTabbedPane.VERTICAL, JTabbedPane.WRAP_TAB_LAYOUT);
+		panelIzquierdo.add(panelIzquierdo_2, BorderLayout.NORTH);
 		
-		// Paneles para cada pestaña
-		JPanel panelExplorar = new JPanel(new BorderLayout());
-		panelExplorar.add(new JTextArea(20,60));
-		JPanel panelNuevaLista = new JPanel(new BorderLayout());
-		panelNuevaLista.add(new JTextArea(30,30));
-		JPanel panelReciente = new JPanel(new BorderLayout());
-		panelReciente.add(new JTextArea(30,30));
-		JPanel panelMisListas = new JPanel(new BorderLayout());
-		panelMisListas.add(new JTextArea(30,30));
 		
-		// Añadimos las pestañas
-		tabPane.addTab("Mis listas", null, panelReciente, null);
-		tabPane.addTab("Reciente", null, panelReciente, null);
-		tabPane.addTab("Nueva lista", null, panelNuevaLista, null);
-		tabPane.addTab("Explorar", null, panelExplorar, null);
+		// Parte central
 		
+		JPanel panelCentral = new JPanel();
+		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		
+		// Pestañas
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+		panelCentral.add(tabbedPane);
+		
+		panelExplorar = new JPanel();
+		tabbedPane.addTab("Explorar", null, panelExplorar, null);
+		
+		//Falta traerse aquí la declaración
+		panelNuevaLista = new PanelNuevaLista();
+		tabbedPane.addTab("Nueva lista", null, panelNuevaLista, null);
+		
+		panelReciente = new JPanel();
+		tabbedPane.addTab("Reciente", null, panelReciente, null);
+		
+		panelMisListas = new JPanel();
+		tabbedPane.addTab("Mis listas", null, panelMisListas, null);
 		
 		// Lista visible de las listas de canciones del usuario
 //		DefaultListModel<String> model = new DefaultListModel<String>(); 
@@ -94,14 +111,8 @@ private JFrame frmVentanaPrincipal;
 //		model.add(1, "Lista 2");
 //		JList<String> list = new JList<String>(model); 
 //		list.setBorder(BorderFactory.createLineBorder(Color.GRAY)); 
+//        panelIzquierdo.add(list, BorderLayout.CENTER);
 		
-		panelIzquierdo_2.add(tabPane);
-		panelIzquierdo.add(panelIzquierdo_2, BorderLayout.NORTH);
-		//panelIzquierdo.add(list, BorderLayout.CENTER);
-		
-		// Parte central
-		JPanel panelCentral = new JPanel();
-		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 		
 		// Parte derecha
 		JPanel panelDerecho = new JPanel();
@@ -120,8 +131,7 @@ private JFrame frmVentanaPrincipal;
 		panelPrincipal.add(panelIzquierdo,BorderLayout.WEST);
 		panelPrincipal.add(panelDerecho,BorderLayout.EAST);
 		panelPrincipal.add(panelCentral, BorderLayout.CENTER);
-
-
+		
 		frmVentanaPrincipal.pack();
 		
 		mostrarVentana();
