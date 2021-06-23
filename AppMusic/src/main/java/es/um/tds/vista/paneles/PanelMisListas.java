@@ -28,7 +28,7 @@ public class PanelMisListas extends JPanel{
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		JPanel panelSuperior = crearPanelSuperior();
-		//Puede ser que esto haya que hacerlo con el reproductor
+		//TODO Puede ser que esto haya que hacerlo con el reproductor
 		//JPanel panelInferior = crearPanelInferior();
 		
 		this.add(panelSuperior);
@@ -49,11 +49,4 @@ public class PanelMisListas extends JPanel{
 		panel.add(scrollPane);
 		return panel;
 	}
-	
-// Lista visible de las listas de canciones del usuario
-//  DefaultListModel<String> model = new DefaultListModel<String>(); 
-//  model.add(0, "Lista 1");
-//  model.add(1, "Lista 2");
-//  JList<String> list = new JList<String>(model); 
-//  list.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 }

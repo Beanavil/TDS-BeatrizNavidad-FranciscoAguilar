@@ -40,7 +40,7 @@ public class PanelExplorar extends JPanel {
 	private JTextField campoInterprete;
 	
 	private final JLabel lblTitulo = new JLabel("Título");
-	private final JLabel lblInterprete = new JLabel("Interprete");
+	private final JLabel lblInterprete = new JLabel("Intérprete");
 	private final JLabel lblEstilo = new JLabel("Estilo");
 	
 	private JComboBox<Estilo> boxEstilo;
