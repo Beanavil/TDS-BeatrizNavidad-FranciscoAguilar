@@ -1,4 +1,4 @@
-package es.um.tds.vista;
+package es.um.tds.vista.paneles;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,6 +16,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.vista.ModeloLista;
+import es.um.tds.vista.ModeloTabla;
 
 public class PanelMisListas extends JPanel{
 

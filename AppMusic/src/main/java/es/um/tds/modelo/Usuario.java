@@ -104,6 +104,10 @@ public class Usuario implements RolUsuario, Descuento {
 		return new ArrayList<>(listasCanciones);
 	}
 	
+	public void addListaCanciones(ListaCanciones lista) {
+		listasCanciones.add(lista); // TODO ver si hay que pasar una copia
+	}
+	
 	public int getId() {
 		return id;
 	}

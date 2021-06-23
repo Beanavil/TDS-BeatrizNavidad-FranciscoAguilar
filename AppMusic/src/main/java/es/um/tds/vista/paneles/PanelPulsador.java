@@ -1,4 +1,4 @@
-package es.um.tds.vista;
+package es.um.tds.vista.paneles;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;

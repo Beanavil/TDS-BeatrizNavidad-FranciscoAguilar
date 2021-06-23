@@ -1,11 +1,14 @@
 package es.um.tds.vista;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +18,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.vista.paneles.PanelExplorar;
+import es.um.tds.vista.paneles.PanelMisListas;
+import es.um.tds.vista.paneles.PanelNuevaLista;
+import es.um.tds.vista.paneles.PanelPulsador;
+import es.um.tds.vista.paneles.PanelRecientes;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -33,6 +43,7 @@ public class VentanaPrincipal {
 	private JPanel panelRecientes;
 	private JPanel panelMisListas;
 	private JPanel panelPulsador;
+	private JPanel panelMasReproducidas;
 	
 	/**
 	 * Constructor
@@ -86,12 +97,14 @@ public class VentanaPrincipal {
 		BufferedImage iconR = null;
 		BufferedImage iconML = null;
 		BufferedImage iconAC = null;
+		BufferedImage iconMR = null;
 		try {
 			iconE = ImageIO.read(new File("./resources/explorar-icon.png")); 
 			iconNL = ImageIO.read(new File("./resources/nueva-lista-icon.png")); 
 			iconR = ImageIO.read(new File("./resources/recientes-icon.png")); 
 			iconML = ImageIO.read(new File("./resources/mis-listas-icon.png")); 
 			iconAC = ImageIO.read(new File("./resources/add-canciones-icon.png"));
+			iconMR = ImageIO.read(new File("./resources/most-repr-icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -132,6 +145,13 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Mis listas", tabIcon, panelMisListas);
 		
+		panelMasReproducidas = new PanelMasReproducidas();
+		tabIcon = new ImageIcon(iconMR);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 35, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Más reproducidas", tabIcon, panelMasReproducidas);
+		
 		// Parte derecha
 		JPanel panelDerecho = new JPanel();
 		panelDerecho.setLayout(new BoxLayout(panelDerecho, BoxLayout.Y_AXIS));
@@ -169,17 +189,82 @@ public class VentanaPrincipal {
 		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
-		JButton btnMejora = new JButton("Mejora tu cuenta");
-		panel.add(btnMejora);
+		// Botón mejora
+		JButton btnUpgrade = new JButton("Hazte premium");
+		panel.add(btnUpgrade);
+		
+		BufferedImage icon = null;
+		try {
+			icon = ImageIO.read(new File("./resources/premium-icon.png")); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		ImageIcon tabIcon = new ImageIcon(icon);
+		Image image = tabIcon.getImage();
+		Image scaledimage = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		btnUpgrade.setIcon(tabIcon);
+		btnUpgrade.setBorder(new LineBorder(new Color(164, 230, 246)));
+		btnUpgrade.setOpaque(false);
+		btnUpgrade.setContentAreaFilled(false);
+		btnUpgrade.setBorderPainted(false);
+		
+		btnUpgrade.addMouseListener(new MouseAdapter() {
+	         public void mouseEntered(MouseEvent evt) {
+	        	 btnUpgrade.setOpaque(true);
+	     		 btnUpgrade.setContentAreaFilled(true);
+	     		 btnUpgrade.setBorderPainted(true);
+	     		 btnUpgrade.setBackground(new Color(164, 230, 246));
+	         }
+	         public void mouseExited(MouseEvent evt) {
+	        	 btnUpgrade.setOpaque(false);
+	     		 btnUpgrade.setContentAreaFilled(false);
+	     		 btnUpgrade.setBorderPainted(false);
+	          }
+		});
 		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
+		// Botón logout
 		JButton btnLogout = new JButton("Logout");
 		panel.add(btnLogout);
 		
+		icon = null;
+		try {
+			icon = ImageIO.read(new File("./resources/logout-icon.png")); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		tabIcon = new ImageIcon(icon);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		btnLogout.setIcon(tabIcon);
+		btnLogout.setBorder(new LineBorder(new Color(164, 230, 246)));
+		btnLogout.setOpaque(false);
+		btnLogout.setContentAreaFilled(false);
+		btnLogout.setBorderPainted(false);
+		
+		btnLogout.addMouseListener(new MouseAdapter() {
+	         public void mouseEntered(MouseEvent evt) {
+	        	 btnLogout.setOpaque(true);
+	        	 btnLogout.setContentAreaFilled(true);
+	        	 btnLogout.setBorderPainted(true);
+	        	 btnLogout.setBackground(new Color(164, 230, 246));
+	         }
+	         public void mouseExited(MouseEvent evt) {
+	        	 btnLogout.setOpaque(false);
+	     		 btnLogout.setContentAreaFilled(false);
+	     		 btnLogout.setBorderPainted(false);
+	          }
+		});
+		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
-		crearManejadorBotonMejora(btnMejora);
+		// Manejadores
+		crearManejadorBotonMejora(btnUpgrade);
 		crearManejadorBotonLogout(btnLogout);
 		
 		return panel;

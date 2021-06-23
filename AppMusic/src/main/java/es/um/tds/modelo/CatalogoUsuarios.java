@@ -64,7 +64,6 @@ public class CatalogoUsuarios {
 		usuariosNombreUsuario.remove(usuario.getLogin());
 	}
 	
-	
 	/**
 	 * Método para recuperar un usuario del catálogo por su id
 	 * @param id Id del usuario que se quiere recuperar
