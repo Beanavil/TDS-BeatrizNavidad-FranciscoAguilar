@@ -1,11 +1,10 @@
-package es.um.tds.vista;
+package es.um.tds.vista.paneles;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -18,13 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
-import es.um.tds.modelo.Usuario;
+import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.vista.ModeloDefinido;
+//import es.um.tds.vista.Reproductor;
+import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelExplorar extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -33,6 +34,7 @@ public class PanelExplorar extends JPanel {
 	
 	private JPanel panelCampos;
 	private JPanel panelCentral;
+	private JPanel panelInferior;
 	
 	private JTextField campoTitulo;
 	private JTextField campoInterprete;
@@ -57,7 +59,8 @@ public class PanelExplorar extends JPanel {
 	}
 	
 	private void inicialize() {
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		//this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new BorderLayout());
 		
 		// Parte superior
 		JPanel panelSuperior = new JPanel();
@@ -69,14 +72,24 @@ public class PanelExplorar extends JPanel {
 		panelSuperior.add(panelCampos);
 		panelSuperior.add(Box.createRigidArea(new Dimension(60, 20)));
 		panelSuperior.add(panelBotones);
-		this.add(panelSuperior);
+		this.add(panelSuperior, BorderLayout.NORTH);
 		
 		// Parte central
 		panelCentral = new JPanel();
 		panelCentral.setVisible(false);
-		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.X_AXIS));
-		this.add(Box.createRigidArea(new Dimension(20, 20)));
-		this.add(panelCentral);
+		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		panelCentral.add(Box.createRigidArea(new Dimension(40, 40)));
+		this.add(panelCentral, BorderLayout.CENTER);
+		
+		// Parte inferior
+//		Reproductor repr = new Reproductor();
+//		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
+//		panelInferior = new JPanel();
+//		panelInferior.setVisible(false);
+//		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.X_AXIS));
+//		VentanaPrincipal.fixedSize(panelRepr, 1000, 100);
+//		panelInferior.add(panelRepr);
+//		this.add(panelInferior, BorderLayout.SOUTH);
 	}
 	
 	
@@ -164,13 +177,15 @@ public class PanelExplorar extends JPanel {
 				}
 				
 				// Añadimos la tabla con las canciones encontradas al panel central y lo hacemos visible
-				JTable tablaCanciones = new JTable(new ModeloDefinido());
-			    tablaCanciones.setPreferredScrollableViewportSize(new Dimension(500,70));
-			    tablaCanciones.setFillsViewportHeight(true);
+				JTable tablaCanciones = new JTable(new ModeloDefinido(new ListaCanciones("Canciones encontradas", canciones)));
+				tablaCanciones.setFillsViewportHeight(true);
 			    
 			    JScrollPane scrollPane = new JScrollPane(tablaCanciones);
 			    panelCentral.add(scrollPane);
 				panelCentral.setVisible(true);
+				
+				// Añadimos panel inferior(reproductor)
+				panelInferior.setVisible(true);
 			}
 		});
 	}
@@ -191,6 +206,7 @@ public class PanelExplorar extends JPanel {
 					boxEstilo.setSelectedItem(null);
 					panelCentral.removeAll();
 					panelCentral.setVisible(false);
+					panelInferior.setVisible(false);
 				}
 			}
 		});

@@ -1,4 +1,4 @@
-package es.um.tds.vista;
+package es.um.tds.vista.paneles;
 
 import java.awt.EventQueue;
 import java.awt.Dimension;
@@ -12,19 +12,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import es.um.tds.vista.ModeloDefinido;
+
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private static final int TAM_CUADRO_TEXTO = 10;
 	
-//TODO No sé si serán necesarios
-//	private JPanel panel1;
-//	private JPanel panel2;
-//	private JPanel panel3;
-//	private JPanel panel4;
-//	private JPanel panelBtn;
-	
-	//TODO tiene pinta de que es bastante recomendable hacer un initialize(), preguntar
-	//si se hace siempre es más bien para el caso de los JFrame
 	/**
 	 * Constructor de la clase
 	 */
@@ -71,7 +64,7 @@ public class PanelNuevaLista extends JPanel{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		JTable tablaIzq = new JTable(new ModeloDefinido());
-		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
+		//tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
 		tablaIzq.setFillsViewportHeight(true);
 		
 		JScrollPane scrollPaneIzq = new JScrollPane(tablaIzq);
@@ -85,7 +78,7 @@ public class PanelNuevaLista extends JPanel{
 		JPanel panelTablaDer = new JPanel();
 		panelTablaDer.setBorder(new TitledBorder(null, "PlayList", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		JTable tablaDer = new JTable(new ModeloDefinido());
-		tablaDer.setPreferredScrollableViewportSize(new Dimension(350,70));
+		//tablaDer.setPreferredScrollableViewportSize(new Dimension(350,70));
 		tablaDer.setFillsViewportHeight(true);
 		
 		JScrollPane scrollPaneDer = new JScrollPane(tablaDer);

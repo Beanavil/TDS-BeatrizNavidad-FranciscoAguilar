@@ -4,10 +4,10 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
-public class PanelRecientes extends JPanel {
+public class PanelMasReproducidas extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	public PanelRecientes() {
+	public PanelMasReproducidas() {
 		super();
 		inicialize();
 	}

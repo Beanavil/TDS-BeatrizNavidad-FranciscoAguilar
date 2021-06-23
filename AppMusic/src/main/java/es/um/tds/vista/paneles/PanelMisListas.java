@@ -1,4 +1,4 @@
-package es.um.tds.vista;
+package es.um.tds.vista.paneles;
 
 import java.awt.EventQueue;
 import javax.swing.JPanel;

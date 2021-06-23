@@ -16,6 +16,7 @@ import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.CatalogoCanciones;
 import es.um.tds.modelo.CatalogoUsuarios;
 import es.um.tds.modelo.Estilo;
+import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.modelo.Usuario;
 import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.DAOException;
@@ -337,6 +338,28 @@ public final class AppMusic implements ICargadoListener{
 		}
 	}
     
+    
+    // Funcionalidad lista de canciones
+    
+    public void crearLista(String nombre) {
+    	if (usuarioActual != null) {
+    		ListaCanciones lista = new ListaCanciones(nombre);
+    		catalogoUsuarios.removeUsuario(usuarioActual);
+    		usuarioActual.addListaCanciones(lista);
+    		adaptadorUsuario.update(usuarioActual);
+    		catalogoUsuarios.addUsuario(usuarioActual); // TODO ver lo del update en el catálogo
+    	}
+    }
+    
+    
+    public void addCancion(ListaCanciones lista, List<Cancion> cancion) {
+    	
+    }
+    
+    
+    public void removeCancion(ListaCanciones lista, List<Cancion> cancion) {
+    	
+    }
     
     /**
 	 * Método auxiliar para ver si un string contiene a otro como subcadena sin tener en 
