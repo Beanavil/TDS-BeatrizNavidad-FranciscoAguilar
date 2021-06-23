@@ -1,36 +1,38 @@
 package es.um.tds.vista;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-
-import pulsador.Luz;
-
-import javax.swing.BorderFactory;
+import es.um.tds.controlador.AppMusic;
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 
 public class VentanaPrincipal {
-private JFrame frmVentanaPrincipal;
-private JPanel panelExplorar;
-private JPanel panelNuevaLista;
-private JPanel panelReciente;
-private JPanel panelMisListas;
 
+	private AppMusic controlador = AppMusic.getUnicaInstancia();
+	private JFrame frmVentanaPrincipal;
+	private JPanel panelExplorar;
+	private JPanel panelNuevaLista;
+	private JPanel panelRecientes;
+	private JPanel panelMisListas;
+	private JPanel panelPulsador;
+	
 	/**
 	 * Constructor
 	 */
@@ -60,19 +62,8 @@ private JPanel panelMisListas;
 		
 		//Parte superior
 		JPanel panelSuperior = new JPanel();
-		panelSuperior.setLayout(new BorderLayout());
-		
-		JPanel panelSuperior_2 = new JPanel();
-		panelSuperior_2.setLayout(new BoxLayout(panelSuperior_2, BoxLayout.X_AXIS));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(105,40)));
-		panelSuperior_2.add(new JLabel("Hola usuario"));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
-		panelSuperior_2.add(new JButton("Mejora tu cuenta"));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
-		panelSuperior_2.add(new JButton("Logout"));
-		panelSuperior_2.add(Box.createRigidArea(new Dimension(10,10)));
-		
-		panelSuperior.add(panelSuperior_2, BorderLayout.EAST);
+		panelSuperior.setLayout(new BorderLayout());		
+		panelSuperior.add(crearPanelBotones(), BorderLayout.EAST);
 		
 		
 		// Parte izquierda
@@ -87,32 +78,75 @@ private JPanel panelMisListas;
 		
 		JPanel panelCentral = new JPanel();
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-		
-		// Pestañas
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+		tabbedPane.setUI(new CustomTabbedPaneUI());
 		panelCentral.add(tabbedPane);
 		
-		panelExplorar = new JPanel();
-		tabbedPane.addTab("Explorar", null, panelExplorar, null);
+//		// Pestañas
+//		
+//		panelExplorar = new JPanel();
+//		tabbedPane.addTab("Explorar", null, panelExplorar, null);
+//		
+//		//Falta traerse aquí la declaración
+//		panelNuevaLista = new PanelNuevaLista();
+//		tabbedPane.addTab("Nueva lista", null, panelNuevaLista, null);
+//		
+//		panelRecientes = new JPanel();
+//		tabbedPane.addTab("Reciente", null, panelRecientes, null);
+//		
+//		panelMisListas = new JPanel();
+//		tabbedPane.addTab("Mis listas", null, panelMisListas, null);
 		
-		//Falta traerse aquí la declaración
+		BufferedImage iconE = null;
+		BufferedImage iconNL = null;
+		BufferedImage iconR = null;
+		BufferedImage iconML = null;
+		BufferedImage iconAC = null;
+		try {
+			iconE = ImageIO.read(new File("./resources/explorar-icon.png")); 
+			iconNL = ImageIO.read(new File("./resources/nueva-lista-icon.png")); 
+			iconR = ImageIO.read(new File("./resources/recientes-icon.png")); 
+			iconML = ImageIO.read(new File("./resources/mis-listas-icon.png")); 
+			iconAC = ImageIO.read(new File("./resources/add-canciones-icon.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Pestañas con los iconos correspondientes
+		panelRecientes = new PanelRecientes();
+		ImageIcon tabIcon = new ImageIcon(iconR);
+		Image image = tabIcon.getImage();
+		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
+		
+		panelExplorar = new PanelExplorar(frmVentanaPrincipal);
+		tabIcon = new ImageIcon(iconE);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Explorar", tabIcon, panelExplorar);
+		
+		panelPulsador = new PanelPulsador();
+		tabIcon = new ImageIcon(iconAC);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Cargar canciones", tabIcon, panelPulsador);
+		
 		panelNuevaLista = new PanelNuevaLista();
-		tabbedPane.addTab("Nueva lista", null, panelNuevaLista, null);
-		
-		panelReciente = new JPanel();
-		tabbedPane.addTab("Reciente", null, panelReciente, null);
+		tabIcon = new ImageIcon(iconNL);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Nueva lista", tabIcon, panelNuevaLista);
 		
 		panelMisListas = new JPanel();
-		tabbedPane.addTab("Mis listas", null, panelMisListas, null);
-		
-		// Lista visible de las listas de canciones del usuario
-//		DefaultListModel<String> model = new DefaultListModel<String>(); 
-//		model.add(0, "Lista 1");
-//		model.add(1, "Lista 2");
-//		JList<String> list = new JList<String>(model); 
-//		list.setBorder(BorderFactory.createLineBorder(Color.GRAY)); 
-//        panelIzquierdo.add(list, BorderLayout.CENTER);
-		
+		tabIcon = new ImageIcon(iconML);
+		image = tabIcon.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		tabIcon = new ImageIcon(scaledimage);
+		tabbedPane.addTab("Mis listas", tabIcon, panelMisListas);
 		
 		// Parte derecha
 		JPanel panelDerecho = new JPanel();
@@ -136,4 +170,84 @@ private JPanel panelMisListas;
 		
 		mostrarVentana();
 	}
+
+
+	/**
+	 * Crea botones superiores (mejorar cuenta y logout)
+	 */
+	public JPanel crearPanelBotones() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		panel.add(Box.createRigidArea(new Dimension(105,40)));
+		
+		panel.add(new JLabel("Hola, " + controlador.getUsuarioActual().getLogin()));
+		
+		panel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		JButton btnMejora = new JButton("Mejora tu cuenta");
+		panel.add(btnMejora);
+		
+		panel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		JButton btnLogout = new JButton("Logout");
+		panel.add(btnLogout);
+		
+		panel.add(Box.createRigidArea(new Dimension(10,10)));
+		
+		crearManejadorBotonMejora(btnMejora);
+		crearManejadorBotonLogout(btnLogout);
+		
+		return panel;
+	}
+	
+	
+	/**
+	 * Crea manejador para el botón de logout
+	 */
+	private void crearManejadorBotonLogout(JButton btnLogout) {
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
+						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
+						JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
+					controlador.setUsuarioActual(null);
+					VentanaLogin window = new VentanaLogin();
+					window.mostrarVentana();
+					frmVentanaPrincipal.dispose();
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Crea manejador para el botón de mejora de la cuenta
+	 */
+	private void crearManejadorBotonMejora(JButton btnMejora) {
+		btnMejora.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
+//						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
+//						JOptionPane.YES_NO_OPTION);
+//				if (result == JOptionPane.YES_OPTION) {
+//					VentanaLogin window = new VentanaLogin();
+//					window.mostrarVentana();
+//					frmVentanaPrincipal.dispose();
+//				}
+			}
+		});
+	}
+
+	
+	/**
+	 * Fija el tamaño de un componente
+	 */
+	public static void fixedSize(JComponent o, int x, int y) {
+		Dimension d = new Dimension(x, y);
+		o.setMinimumSize(d);
+		o.setMaximumSize(d);
+		o.setPreferredSize(d);
+	}
+	
 }

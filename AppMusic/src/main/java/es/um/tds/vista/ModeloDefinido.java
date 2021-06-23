@@ -1,39 +1,43 @@
 package es.um.tds.vista;
 
 import javax.swing.table.AbstractTableModel;
-//TODO quitar se ha añadido para la prueba
-import java.util.ArrayList;
 import es.um.tds.modelo.Cancion;
+import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
 
 public class ModeloDefinido extends AbstractTableModel{
 	private static final long serialVersionUID = 1L;
-	  
+	
 	private static final int N_COLUMNAS = 2;
 	private static final int COLUMNA_TITULO = 0;
 	private static final int COLUMNA_AUTOR = 1;
 	private static final String NOMBRE_CT = "Titulo";
-	private static final String NOMBRE_CA = "Artista";
-
+	private static final String NOMBRE_CA = "Intérprete";
+	private static final String NOMBRE_LC_DEFECTO = "Lista";
+	
 	private ListaCanciones playlist;
 	
 	public ModeloDefinido(ListaCanciones playlist) {
-	  this.playlist = playlist;
+		this.playlist = playlist;
 	}
 	
-	//TODO Esto se debería de poder hacer llamando al constructor previo pero me da error
-//	public ModeloDefinido() {
-//		this.playlist = new ListaCanciones(NOMBRE_LC_DEFECTO);
-//	}
-
+	
+	 public ModeloDefinido() {
+		 this.playlist = new ListaCanciones(NOMBRE_LC_DEFECTO);
+		 Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
+		 playlist.addCancion(cancion);
+		 
+	 }
+		  
 	//TODO prueba de funcionamiento
-	public ModeloDefinido() {
-		Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", "SatanicRitual", "SoFucked", 10);
-		ArrayList<Cancion> canciones = new ArrayList<Cancion>();
-		canciones.add(cancion);
-		ListaCanciones playList = new ListaCanciones("Prueba", canciones); 
-		this.playlist = playList;
-	}
+//	public ModeloDefinido() {
+//		Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
+//		ArrayList<Cancion> canciones = new ArrayList<Cancion>();
+//		canciones.add(cancion);
+//		ListaCanciones playList = new ListaCanciones("Prueba", canciones); 
+//		this.playlist = playList;
+//	}
+	 
 	public ListaCanciones getListaCanciones() {
 	  return playlist;
 	}
@@ -76,3 +80,5 @@ public class ModeloDefinido extends AbstractTableModel{
 	  }
 	}	
 }
+
+

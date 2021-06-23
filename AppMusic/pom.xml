@@ -31,6 +31,7 @@
     	<version>5.5.13.2</version>
     </dependency>
     
+     <!--  Comentado por excepción UnmarshalException
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -52,16 +53,17 @@
 		<scope>compile</scope>
 	</dependency>
 	
-	<dependency>
-      <groupId>com.toedter</groupId>
-      <artifactId>jcalendar</artifactId>
-      <version>1.4</version>
-    </dependency>
-    
     <dependency>
       <groupId>es.um.tds</groupId>
       <artifactId>DriverPersistencia</artifactId>
       <version>1.0</version>
+    </dependency>
+	-->
+    
+	<dependency>
+      <groupId>com.toedter</groupId>
+      <artifactId>jcalendar</artifactId>
+      <version>1.4</version>
     </dependency>
     
     <dependency> 

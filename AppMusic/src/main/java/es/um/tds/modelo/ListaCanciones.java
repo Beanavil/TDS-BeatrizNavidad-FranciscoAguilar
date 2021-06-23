@@ -42,7 +42,6 @@ public class ListaCanciones {
 		return new ArrayList<>(canciones);
 	}
 	
-	//TODO
 	public Cancion getCancion(int indice) {
 		return this.canciones.get(indice);
 	}

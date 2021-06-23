@@ -7,7 +7,7 @@ package es.um.tds.modelo;
  */
 public class Cancion {
 	private String titulo;
-	private String estilo;
+	private Estilo estilo;
 	private String interprete;
 	private String rutaFichero;
 	private int numReproducciones;
@@ -21,13 +21,14 @@ public class Cancion {
 	 * @param rutaFichero ruta al fichero correspondiente a la canción
 	 * @param numReproducciones número de veces que se ha reproducido en la aplicación
 	 */
-	public Cancion (String titulo, String interprete, String estilo, 
+	public Cancion (String titulo, String interprete, Estilo estilo, 
 				String rutaFichero, int numReproducciones) {
 		this.titulo = titulo;
 		this.interprete = interprete;
 		this.estilo = estilo;
 		this.rutaFichero = rutaFichero;
 		this.numReproducciones = numReproducciones;
+		this.id = -1;
 	}
 	
 	/**
@@ -37,7 +38,7 @@ public class Cancion {
 	 * @param interprete cantante que interpreta la canción
 	 * @param rutaFichero ruta al fichero correspondiente a la canción
 	 */
-	public Cancion (String titulo, String interprete, String estilo, 
+	public Cancion (String titulo, String interprete, Estilo estilo, 
 			String rutaFichero) {
 		this(titulo, interprete, estilo, rutaFichero, 0);
 	}
@@ -48,7 +49,7 @@ public class Cancion {
 	 * @param rutaFichero ruta al fichero correspondiente a la canción
 	 */
 	public Cancion (String titulo, String rutaFichero) {
-		this(titulo, "", "", rutaFichero);
+		this(titulo, "", Estilo.UNKNOWN, rutaFichero);
 	}
 	
 	// Getters
@@ -60,8 +61,12 @@ public class Cancion {
 		return interprete;
 	}
 	
-	public String getEstilo() {
+	public Estilo getEstilo() {
 		return estilo;
+	}
+	
+	public String getNombreEstilo() {
+		return estilo.getNombre();
 	}
 	
 	public String getRutaFichero() {
@@ -87,7 +92,7 @@ public class Cancion {
 		this.interprete = interprete;
 	}
 	
-	public void setEstilo(String estilo) {
+	public void setEstilo(Estilo estilo) {
 		this.estilo = estilo;
 	}
 	

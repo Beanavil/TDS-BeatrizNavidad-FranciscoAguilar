@@ -1,5 +1,6 @@
 package es.um.tds.vista;
 
+import java.awt.EventQueue;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.Box;

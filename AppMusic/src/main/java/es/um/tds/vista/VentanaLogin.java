@@ -37,6 +37,7 @@ import javax.swing.border.EmptyBorder;
  * @author Beatriz y Francisco
  */
 public class VentanaLogin {
+	private AppMusic controlador = AppMusic.getUnicaInstancia();
 	private JFrame frmLogin;
 	private JTextField textUsuario;
 	private JPasswordField textPassword;
