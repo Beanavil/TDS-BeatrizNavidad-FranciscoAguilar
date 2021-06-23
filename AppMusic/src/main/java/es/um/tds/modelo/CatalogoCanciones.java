@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.um.tds.controlador.AppMusic;
 import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
-import es.um.tds.persistencia.TDSCancionDAO;
 
 /**
  * Catálogo (repositorio) de canciones de la app
@@ -92,7 +92,7 @@ public class CatalogoCanciones {
 	public List<Cancion> getAllArtist(String artista) {
 		ArrayList<Cancion> lista = new ArrayList<>();
 		canciones.values().stream()
-		.filter(c -> TDSCancionDAO.containsIgnoreCase(c.getInterprete(), artista)) 
+		.filter(c -> AppMusic.containsIgnoreCase(c.getInterprete(), artista)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}
@@ -107,7 +107,7 @@ public class CatalogoCanciones {
 	public List<Cancion> getAllStyle(String estilo) {
 		ArrayList<Cancion> lista = new ArrayList<>();
 		canciones.values().stream()
-		.filter(c -> TDSCancionDAO.containsIgnoreCase(c.getInterprete(), estilo)) 
+		.filter(c -> AppMusic.containsIgnoreCase(c.getInterprete(), estilo)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}

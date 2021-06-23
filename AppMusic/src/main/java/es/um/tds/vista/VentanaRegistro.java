@@ -335,9 +335,9 @@ public class VentanaRegistro {
 					boolean registrado = false;
 					LocalDate date = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 					String fecha = date.format(Usuario.formatter);
-//					registrado = AppMusic.getUnicaInstancia().registrarUsuario(txtNombre.getText(),
-//							txtApellidos.getText(), fecha, txtEmail.getText(), txtUsuario.getText(),
-//							new String(txtPassword.getPassword())); // TODO ver esto
+					registrado = AppMusic.getUnicaInstancia().registrarUsuario(txtNombre.getText(),
+							txtApellidos.getText(), fecha, txtEmail.getText(), txtUsuario.getText(),
+							new String(txtPassword.getPassword())); 
 					if (registrado) {
 						JOptionPane.showMessageDialog(frmRegistro, "Usuario registrado correctamente.", "Registro",
 								JOptionPane.INFORMATION_MESSAGE);

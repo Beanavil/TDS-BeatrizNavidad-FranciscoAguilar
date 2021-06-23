@@ -1,6 +1,7 @@
 package es.um.tds.vista;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Image;
@@ -9,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.EventObject;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,9 +18,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 import es.um.tds.controlador.AppMusic;
+import pulsador.IEncendidoListener;
 import pulsador.Luz;
+import umu.tds.componente.Canciones;
+import umu.tds.componente.MapperCancionesXMLtoJava;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -27,6 +34,11 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 public class VentanaPrincipal {
 	private AppMusic controlador = AppMusic.getUnicaInstancia();
@@ -104,26 +116,26 @@ public class VentanaPrincipal {
 		}
 		
 		// Pestañas con los iconos correspondientes
-		panelRecientes = crearPanelRecientes();
+		panelRecientes = new PanelRecientes();
 		ImageIcon tabIcon = new ImageIcon(iconR);
 		Image image = tabIcon.getImage();
 		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
 		
-		panelExplorar = crearPanelExplorar();
+		panelExplorar = new PanelExplorar(frmVentanaPrincipal);
 		tabIcon = new ImageIcon(iconE);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Explorar", tabIcon, panelExplorar);
 		
-		panelPulsador = new JPanel();
+		panelPulsador = new PanelPulsador();
 		tabIcon = new ImageIcon(iconAC);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
-		tabbedPane.addTab("Añadir canciones", tabIcon, panelPulsador);
+		tabbedPane.addTab("Cargar canciones", tabIcon, panelPulsador);
 		
 		panelNuevaLista = new JPanel();
 		tabIcon = new ImageIcon(iconNL);
@@ -139,16 +151,6 @@ public class VentanaPrincipal {
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Mis listas", tabIcon, panelMisListas);
-		
-		
-		// Lista visible de las listas de canciones del usuario
-//		DefaultListModel<String> model = new DefaultListModel<String>(); 
-//		model.add(0, "Lista 1");
-//		model.add(1, "Lista 2");
-//		JList<String> list = new JList<String>(model); 
-//		list.setBorder(BorderFactory.createLineBorder(Color.GRAY)); 
-//        panelIzquierdo.add(list, BorderLayout.CENTER);
-		
 		
 		// Parte derecha
 		JPanel panelDerecho = new JPanel();
@@ -183,7 +185,7 @@ public class VentanaPrincipal {
 		
 		panel.add(Box.createRigidArea(new Dimension(105,40)));
 		
-		panel.add(new JLabel("Hola, " + "usuario")); //+ controlador.getUsuarioActual().getLogin()));
+		panel.add(new JLabel("Hola, " + controlador.getUsuarioActual().getLogin()));
 		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
@@ -214,6 +216,7 @@ public class VentanaPrincipal {
 						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
+					controlador.setUsuarioActual(null);
 					VentanaLogin window = new VentanaLogin();
 					window.mostrarVentana();
 					frmVentanaPrincipal.dispose();
@@ -240,26 +243,15 @@ public class VentanaPrincipal {
 		});
 	}
 
-
-	/**
-	 * Crea la pestaña de Explorar
-	 */
-	private JPanel crearPanelExplorar() {
-		JPanel pane = new JPanel(new BorderLayout());
-		
-		// Parte superior (
-		JPanel panelSuperior = new JPanel();
-		panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.X_AXIS));
-		
-		return pane;
-	}
-	
 	
 	/**
-	 * Crea la pestaña de Recientes
+	 * Fija el tamaño de un componente
 	 */
-	private JPanel crearPanelRecientes() {
-		JPanel pane = new JPanel();
-		return pane;
+	public static void fixedSize(JComponent o, int x, int y) {
+		Dimension d = new Dimension(x, y);
+		o.setMinimumSize(d);
+		o.setMaximumSize(d);
+		o.setPreferredSize(d);
 	}
+	
 }

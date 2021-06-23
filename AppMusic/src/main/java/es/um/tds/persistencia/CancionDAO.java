@@ -46,6 +46,12 @@ public interface CancionDAO {
 	public List<Cancion> getAllArtist(String artista);
 	
 	/**
+	 * Obtiene todos las canciones de un determinado intérprete y estilo.
+	 * @return lista con las canciones.
+	 */
+	public List<Cancion> getAllArtistStyle(String artista, String estilo);
+	
+	/**
 	 * Obtiene todos las canciones registradas.
 	 * @return lista con las canciones.
 	 */

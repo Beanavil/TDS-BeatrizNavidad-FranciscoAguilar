@@ -49,6 +49,10 @@ public class ListaCanciones {
 	public int getNumCanciones() {
 		return numCanciones;
 	}
+	
+	public Cancion getCancion(int indice) {
+		return this.canciones.get(indice);
+	}
 
 
 	// Setters
