@@ -1,6 +1,7 @@
 package es.um.tds.vista;
 
 import java.awt.EventQueue;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.Box;
@@ -32,13 +33,21 @@ public class PanelNuevaLista extends JPanel{
 		super();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel panel1 = crearPanel1();
+		
+		JPanel panelInv = new JPanel();
+		panelInv.setLayout(new BorderLayout());
+		//panelInv.setVisible(false);
+		
 		JPanel panel2 = crearPanel2();
 		JPanel panel3 = crearPanel3();
 		JPanel panel4 = crearPanel4();
+		
+		panelInv.add(panel2, BorderLayout.NORTH);
+		panelInv.add(panel3, BorderLayout.CENTER);
+		panelInv.add(panel4, BorderLayout.SOUTH);
+		
 		this.add(panel1);
-		this.add(panel2);
-		this.add(panel3);
-		this.add(panel4);
+		this.add(panelInv);
 	}
 	
 	/**
@@ -69,8 +78,9 @@ public class PanelNuevaLista extends JPanel{
 
 	private JPanel crearPanel3() {
 		JPanel panel = new JPanel();
+		VentanaPrincipal.fixedSize(panel, 450, 250);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		JTable tablaIzq = new JTable(new ModeloDefinido());
+		JTable tablaIzq = new JTable(new ModeloTabla());
 		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
 		tablaIzq.setFillsViewportHeight(true);
 		
@@ -84,12 +94,13 @@ public class PanelNuevaLista extends JPanel{
 		
 		JPanel panelTablaDer = new JPanel();
 		panelTablaDer.setBorder(new TitledBorder(null, "PlayList", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		JTable tablaDer = new JTable(new ModeloDefinido());
-		tablaDer.setPreferredScrollableViewportSize(new Dimension(350,70));
+		JTable tablaDer = new JTable(new ModeloTabla());
+		tablaDer.setPreferredScrollableViewportSize(new Dimension(350,200));
 		tablaDer.setFillsViewportHeight(true);
 		
 		JScrollPane scrollPaneDer = new JScrollPane(tablaDer);
-		panel.add(scrollPaneDer);
+		panelTablaDer.add(scrollPaneDer);
+		panel.add(panelTablaDer);
 		return panel;
 	}
 	

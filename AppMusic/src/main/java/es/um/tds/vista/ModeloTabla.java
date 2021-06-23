@@ -5,7 +5,7 @@ import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
 
-public class ModeloDefinido extends AbstractTableModel{
+public class ModeloTabla extends AbstractTableModel{
 	private static final long serialVersionUID = 1L;
 	
 	private static final int N_COLUMNAS = 2;
@@ -17,12 +17,12 @@ public class ModeloDefinido extends AbstractTableModel{
 	
 	private ListaCanciones playlist;
 	
-	public ModeloDefinido(ListaCanciones playlist) {
+	public ModeloTabla(ListaCanciones playlist) {
 		this.playlist = playlist;
 	}
 	
 	
-	 public ModeloDefinido() {
+	 public ModeloTabla() {
 		 this.playlist = new ListaCanciones(NOMBRE_LC_DEFECTO);
 		 Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
 		 playlist.addCancion(cancion);

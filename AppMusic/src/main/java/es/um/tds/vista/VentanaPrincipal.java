@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 import es.um.tds.controlador.AppMusic;
+
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -65,14 +66,12 @@ public class VentanaPrincipal {
 		panelSuperior.setLayout(new BorderLayout());		
 		panelSuperior.add(crearPanelBotones(), BorderLayout.EAST);
 		
-		
 		// Parte izquierda
 		
 		JPanel panelIzquierdo = new JPanel(new BorderLayout());
 		JPanel panelIzquierdo_2 = new JPanel();
 		panelIzquierdo_2.setLayout(new BoxLayout(panelIzquierdo_2, BoxLayout.Y_AXIS));
 		panelIzquierdo.add(panelIzquierdo_2, BorderLayout.NORTH);
-		
 		
 		// Parte central
 		
@@ -81,21 +80,6 @@ public class VentanaPrincipal {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane.setUI(new CustomTabbedPaneUI());
 		panelCentral.add(tabbedPane);
-		
-//		// Pestañas
-//		
-//		panelExplorar = new JPanel();
-//		tabbedPane.addTab("Explorar", null, panelExplorar, null);
-//		
-//		//Falta traerse aquí la declaración
-//		panelNuevaLista = new PanelNuevaLista();
-//		tabbedPane.addTab("Nueva lista", null, panelNuevaLista, null);
-//		
-//		panelRecientes = new JPanel();
-//		tabbedPane.addTab("Reciente", null, panelRecientes, null);
-//		
-//		panelMisListas = new JPanel();
-//		tabbedPane.addTab("Mis listas", null, panelMisListas, null);
 		
 		BufferedImage iconE = null;
 		BufferedImage iconNL = null;
@@ -141,7 +125,7 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Nueva lista", tabIcon, panelNuevaLista);
 		
-		panelMisListas = new JPanel();
+		panelMisListas = new PanelMisListas();
 		tabIcon = new ImageIcon(iconML);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);

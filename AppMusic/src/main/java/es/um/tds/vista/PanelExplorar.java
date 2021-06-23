@@ -164,7 +164,7 @@ public class PanelExplorar extends JPanel {
 				}
 				
 				// Añadimos la tabla con las canciones encontradas al panel central y lo hacemos visible
-				JTable tablaCanciones = new JTable(new ModeloDefinido());
+				JTable tablaCanciones = new JTable(new ModeloTabla());
 			    tablaCanciones.setPreferredScrollableViewportSize(new Dimension(500,70));
 			    tablaCanciones.setFillsViewportHeight(true);
 			    
@@ -174,7 +174,6 @@ public class PanelExplorar extends JPanel {
 			}
 		});
 	}
-	
 	
 	/**
 	 * Crea manejador para el botón de cancelar

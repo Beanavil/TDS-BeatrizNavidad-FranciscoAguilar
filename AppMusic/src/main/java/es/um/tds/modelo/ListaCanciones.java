@@ -54,7 +54,6 @@ public class ListaCanciones {
 		return numCanciones;
 	}
 
-
 	// Setters
 	// TODO ver si algunos tienen que ser privados
 	public void setNombre(String nombre) {
