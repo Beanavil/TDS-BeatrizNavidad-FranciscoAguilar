@@ -37,12 +37,12 @@ public class ModeloTabla extends AbstractTableModel{
 //		this.playlist = playList;
 //	}
 	 
-	public ListaCanciones getListaCanciones() {
-	  return playlist;
+	public List<Cancion> getListaCanciones() {
+	  return listaCanciones;
 	}
 
-	public void setPlaylist(ListaCanciones playlist) {
-	  this.playlist = playlist;
+	public void setlistaCanciones(List<Cancion> listaCanciones) {
+	  this.listaCanciones = listaCanciones;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ModeloTabla extends AbstractTableModel{
 	  
 	@Override
 	public int getRowCount() {
-		return playlist.getNumCanciones();
+		return listaCanciones.size();
 	}
 	  
 	@Override
@@ -71,9 +71,9 @@ public class ModeloTabla extends AbstractTableModel{
 	public Object getValueAt(int fila, int col) {
 		switch (col) {
 	    case COLUMNA_TITULO:
-	      return playlist.getCancion(fila).getTitulo();
+	      return listaCanciones.get(fila).getTitulo();
 	    case COLUMNA_AUTOR:
-	      return playlist.getCancion(fila).getInterprete();
+	      return listaCanciones.get(fila).getInterprete();
 	    default:
 	      throw new IndexOutOfBoundsException("Columna fuera de rango " + this.getClass().getName());
 	  }

@@ -49,7 +49,7 @@ public final class AppMusic implements ICargadoListener{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//AppMusic.getUnicaInstancia().cargarCanciones("./XML/canciones.xml");
+		//AppMusic.getUnicaInstancia().cargarCanciones("./xml/canciones.xml");
 		//AppMusic.getUnicaInstancia().getCanciones().stream().forEach(c -> System.out.println(c.toString()));
 	}
 
