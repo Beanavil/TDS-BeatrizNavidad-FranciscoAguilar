@@ -125,7 +125,7 @@ public class PanelExplorar extends JPanel {
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		//ComponentUtils.fixedSize(panelRepr, 250, 50);
+		//VentanaPrincipal.fixedSize(panelRepr, 250, 50);
 		panelInferior.add(panelRepr);
 	}
 	

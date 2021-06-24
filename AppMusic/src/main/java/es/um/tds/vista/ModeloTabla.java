@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 import es.um.tds.modelo.Cancion;
-import es.um.tds.modelo.Estilo;
-import es.um.tds.modelo.ListaCanciones;
 
 public class ModeloTabla extends AbstractTableModel{
 	private static final long serialVersionUID = 1L;
@@ -23,17 +21,15 @@ public class ModeloTabla extends AbstractTableModel{
 		this.listaCanciones = listaCanciones;
 	}
 	
-	
 	 public ModeloTabla() {
-		 this(new ArrayList<>());
+		 this(new ArrayList<Cancion>()); 
 	 }
-		
 	 
 	public List<Cancion> getListaCanciones() {
 	  return listaCanciones;
 	}
 
-	public void setPlaylist(List<Cancion> listaCanciones) {
+	public void setlistaCanciones(List<Cancion> listaCanciones) {
 	  this.listaCanciones = listaCanciones;
 	}
 
@@ -71,5 +67,3 @@ public class ModeloTabla extends AbstractTableModel{
 	  }
 	}	
 }
-
-
