@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -23,10 +25,11 @@ import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.persistencia.DAOException;
+import es.um.tds.utils.ComponentUtils;
+import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
-//import es.um.tds.vista.Reproductor;
-import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelExplorar extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -51,7 +54,10 @@ public class PanelExplorar extends JPanel {
 	private JButton btnCancelar;
 	
 	
-	public PanelExplorar() {
+	public PanelExplorar() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();
@@ -111,9 +117,15 @@ public class PanelExplorar extends JPanel {
 		panelInferior.setVisible(false);
 		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
 		
-		Reproductor repr = new Reproductor();
+		Reproductor repr = null;
+		try{
+			repr = new Reproductor();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		VentanaPrincipal.fixedSize(panelRepr, 250, 50);
+		//ComponentUtils.fixedSize(panelRepr, 250, 50);
 		panelInferior.add(panelRepr);
 	}
 	
@@ -129,9 +141,9 @@ public class PanelExplorar extends JPanel {
 		JPanel panelInterprete = new JPanel(new FlowLayout());
 		JPanel panelEstilo = new JPanel(new FlowLayout());
 		
-		VentanaPrincipal.fixedSize(panelTitulo, 300, 30);
-		VentanaPrincipal.fixedSize(panelInterprete, 300, 30);
-		VentanaPrincipal.fixedSize(panelEstilo, 250, 30);
+		ComponentUtils.fixedSize(panelTitulo, 300, 30);
+		ComponentUtils.fixedSize(panelInterprete, 300, 30);
+		ComponentUtils.fixedSize(panelEstilo, 250, 30);
 		
 		panelCampos.add(panelTitulo);
 		panelCampos.add(panelInterprete);
@@ -139,14 +151,14 @@ public class PanelExplorar extends JPanel {
 		
 		// Campo título
 		campoTitulo = new JTextField();
-		VentanaPrincipal.fixedSize(campoTitulo, 200, 20);
+		ComponentUtils.fixedSize(campoTitulo, 200, 20);
 		panelTitulo.add(lblTitulo);
 		lblTitulo.setLabelFor(campoTitulo);
 		panelTitulo.add(campoTitulo);
 			
 		// Campo intérprete
 		campoInterprete = new JTextField();
-		VentanaPrincipal.fixedSize(campoInterprete, 200, 20);
+		ComponentUtils.fixedSize(campoInterprete, 200, 20);
 		panelInterprete.add(lblInterprete);
 		lblInterprete.setLabelFor(campoInterprete);
 		panelInterprete.add(campoInterprete);
@@ -155,7 +167,7 @@ public class PanelExplorar extends JPanel {
 		boxEstilo = new JComboBox<Estilo>();
 		boxEstilo.setBackground(new Color(255,255,255));
 		lblEstilo.setLabelFor(boxEstilo);
-		VentanaPrincipal.fixedSize(boxEstilo, 150, 20);
+		ComponentUtils.fixedSize(boxEstilo, 150, 20);
 		
 		for (Estilo e : Estilo.values()) {
 			boxEstilo.addItem(e);
@@ -178,8 +190,8 @@ public class PanelExplorar extends JPanel {
 		JPanel panelBuscar = new JPanel(new FlowLayout());
 		JPanel panelCancelar = new JPanel(new FlowLayout());
 		
-		VentanaPrincipal.fixedSize(panelBuscar, 100, 60);
-		VentanaPrincipal.fixedSize(panelCancelar, 100, 60);
+		ComponentUtils.fixedSize(panelBuscar, 100, 60);
+		ComponentUtils.fixedSize(panelCancelar, 100, 60);
 		
 		panelBotones.add(panelBuscar);
 		panelBotones.add(panelCancelar);
@@ -205,7 +217,7 @@ public class PanelExplorar extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				String titulo = campoTitulo.getText();
 				String interprete = campoInterprete.getText();
-				ArrayList<Cancion> canciones;
+				List<Cancion> canciones;
 				if (interprete.trim().isEmpty()) {
 					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
 					canciones = (boxEstilo.getSelectedItem() == null) ? new ArrayList<>(controlador.getCanciones()) : 
@@ -215,14 +227,14 @@ public class PanelExplorar extends JPanel {
 					canciones = (boxEstilo.getSelectedItem() == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
 						new ArrayList<>(controlador.buscarPorInterpreteEstilo(interprete, estilo.getNombre()));
 				}
-				// Si hay título, filtramos las canciones anteriores por título TODO ¿implementar métodos en TDSCancionDAO?
+				// Si hay título, filtramos las canciones anteriores por título
 				if (!titulo.trim().isEmpty()) {
-					canciones.stream().filter(c -> AppMusic.containsIgnoreCase(c.getTitulo(), titulo));
+					canciones.stream().filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo));
 				}
 				
 				// Añadimos un nuevo panel con la tabla de las canciones encontradas al panel central y lo hacemos visible
 				JPanel panelTabla = new JPanel(new BorderLayout());
-				VentanaPrincipal.fixedSize(panelTabla, 600, 200);
+				//ComponentUtils.fixedSize(panelTabla, 600, 200);
 			    
 				JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones encontradas", canciones)));
 				tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -234,7 +246,7 @@ public class PanelExplorar extends JPanel {
 			    panelCentral.add(panelTabla);
 				panelCentral.setVisible(true);
 				
-				// Hacemos visible el panel inferior(reproductor) TODO
+				// Hacemos visible el panel inferior(reproductor)
 				panelInferior.setVisible(true);
 			}
 		});

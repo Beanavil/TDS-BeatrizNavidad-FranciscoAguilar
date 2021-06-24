@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import java.nio.file.StandardCopyOption;
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.persistencia.DAOException;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -50,11 +52,21 @@ public class Reproductor {
 
 	/**
 	 * Constructor
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public Reproductor() {
-		controlador = AppMusic.getUnicaInstancia();
+	public Reproductor() throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
 		
 		panelReproductor = new JPanel(new BorderLayout());
+		
+		controlador = AppMusic.getUnicaInstancia();
 
 	    JPanel panelBotones = crearPanelBotones();
 	    panelReproductor.add(panelBotones, BorderLayout.CENTER);

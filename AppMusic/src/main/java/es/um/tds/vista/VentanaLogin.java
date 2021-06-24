@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -25,6 +26,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.persistencia.DAOException;
 import es.um.tds.vista.VentanaRegistro;
 import es.um.tds.vista.VentanaLogin;
 
@@ -37,14 +39,27 @@ import javax.swing.border.EmptyBorder;
  * @author Beatriz y Francisco
  */
 public class VentanaLogin {
+	private AppMusic controlador;
 	private JFrame frmLogin;
 	private JTextField textUsuario;
 	private JPasswordField textPassword;
 
 	/**
 	 * Constructor
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public VentanaLogin() {
+	public VentanaLogin() throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, 
+	DAOException {
+		
+		controlador = AppMusic.getUnicaInstancia();
 		initialize();
 	}
 
@@ -198,17 +213,21 @@ public class VentanaLogin {
 	 */
 	private void crearManejadorBotonLogin(JButton btnLogin) {
 		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				boolean login = AppMusic.getUnicaInstancia().loginUsuario(textUsuario.getText(),
-						new String(textPassword.getPassword()));
-				
-				if (login) {
-					VentanaPrincipal window = new VentanaPrincipal();
-					window.mostrarVentana();
-					frmLogin.dispose();
-				} else
-					JOptionPane.showMessageDialog(frmLogin, "Nombre de usuario o contraseña no válido",
-							"Error", JOptionPane.ERROR_MESSAGE);
+			public void actionPerformed(ActionEvent aEvent) {
+				try {
+					boolean login = controlador.loginUsuario(textUsuario.getText(),
+							new String(textPassword.getPassword()));
+					
+					if (login) {
+							VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
+							ventanaPrincipal.mostrarVentana();
+							frmLogin.dispose();
+					} else
+						JOptionPane.showMessageDialog(frmLogin, "Nombre de usuario o contraseña no válido",
+								"Error", JOptionPane.ERROR_MESSAGE);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frmLogin, "Error interno.\n", "Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
@@ -219,10 +238,14 @@ public class VentanaLogin {
 	 */
 	private void crearManejadorBotonRegistro(JButton btnRegistro) {
 		btnRegistro.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				VentanaRegistro ventanaRegistro = new VentanaRegistro();
-				ventanaRegistro.mostrarVentana();
-				frmLogin.dispose();
+			public void actionPerformed(ActionEvent aEvent) {
+				try {
+					VentanaRegistro ventanaRegistro = new VentanaRegistro();
+					ventanaRegistro.mostrarVentana();
+					frmLogin.dispose();
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frmLogin, "Error interno.\n","Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
@@ -234,11 +257,16 @@ public class VentanaLogin {
 	private void crearManejadorBotonSalir(JButton btnSalir) {
 		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				frmLogin.dispose();
-				System.exit(0);
+				int result = JOptionPane.showOptionDialog(frmLogin, 
+						"¿Está seguro de que desea salir de la aplicación?", "Confirmar salida",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
+				if (result == JOptionPane.YES_OPTION) {
+					frmLogin.dispose();
+					System.exit(0);
+				}
 			}
 		});
 	}
-
-
+	
 }

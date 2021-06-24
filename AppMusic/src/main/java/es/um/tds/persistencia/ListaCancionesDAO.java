@@ -22,8 +22,6 @@ public interface ListaCancionesDAO {
 	 * Modifica los datos de una lista de canciones (lista de canciones y nombre) de la BD.
 	 * @param lista lista de canciones que se quiere modificar.
 	 */
-	// TODO ¿permitir modificar nombre?
-	// TODO posible mejora: añadir solo una cancion, o eliminar solo una cancion de la lista para no tener que copiarla entera cada vez
 	public void update(ListaCanciones lista);
 	
 	/**

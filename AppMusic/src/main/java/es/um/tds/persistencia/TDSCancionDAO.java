@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import beans.Entidad;
 import beans.Propiedad;
-import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
+import es.um.tds.utils.StringUtils;
 import tds.driver.FactoriaServicioPersistencia;
 import tds.driver.ServicioPersistencia;
 
@@ -40,28 +40,16 @@ public class TDSCancionDAO implements CancionDAO {
 	 */
 	public static TDSCancionDAO getUnicaInstancia() {
 		if (unicaInstancia == null) 
-			return new TDSCancionDAO(); 
+			unicaInstancia = new TDSCancionDAO(); 
 		return unicaInstancia;       
 	} 
 	
-	// TODO ver si hace falta tanto manejo de excepciones
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void store(Cancion cancion) {
-		Entidad eCancion;
-		boolean registrada = true;
-		try {
-			eCancion = servPersistencia.recuperarEntidad(cancion.getId());
-		} 
-		catch (NullPointerException e) {
-			registrada = false;
-		}
-		if(registrada) {
-			System.err.println("Entity already registered. ");
-			return;
-		}
+	public void store(Cancion cancion) throws NullPointerException {
+		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId()); // puede ser null
 		eCancion = cancionToEntidad(cancion);
 		eCancion = servPersistencia.registrarEntidad(eCancion);
 		cancion.setId(eCancion.getId());
@@ -70,17 +58,9 @@ public class TDSCancionDAO implements CancionDAO {
 	/**
 	 * {@inheritDoc}
 	 */
-	// TODO ¿mostrar en el mensaje de error la lista o el mensaje de excepción?
 	@Override
-	public boolean delete(Cancion cancion) {
-		Entidad eCancion = new Entidad();
-		try {
-			eCancion = servPersistencia.recuperarEntidad(cancion.getId());
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return false;
-		}
+	public boolean delete(Cancion cancion) throws NullPointerException {
+		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId()); // puede ser null
 		return servPersistencia.borrarEntidad(eCancion);
 	}
 
@@ -88,15 +68,8 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(Cancion cancion) {
-		Entidad eCancion = new Entidad();
-		try {
-			eCancion = servPersistencia.recuperarEntidad(cancion.getId());
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return;
-		}
+	public void update(Cancion cancion) throws NullPointerException {
+		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId()); // puede ser null
 		servPersistencia.eliminarPropiedadEntidad(eCancion, TITULO);
 		servPersistencia.anadirPropiedadEntidad(eCancion, TITULO, cancion.getTitulo());
 		
@@ -117,15 +90,8 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Cancion get(int id) {
-		Entidad eCancion = new Entidad();
-		try {
-			eCancion = servPersistencia.recuperarEntidad(id);
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return null;
-		}
+	public Cancion get(int id) throws NullPointerException {
+		Entidad eCancion = servPersistencia.recuperarEntidad(id); // puede ser null
 		return entidadToCancion(eCancion);
 	}
 
@@ -137,7 +103,21 @@ public class TDSCancionDAO implements CancionDAO {
 	public List<Cancion> getAll() {
 		List<Cancion> canciones = new ArrayList<Cancion>();
 		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
+		if (entidades != null)
+			entidades.stream().forEach(e -> canciones.add(entidadToCancion(e)));
+		return canciones;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Cancion> getAllStyle(String estilo) throws NullPointerException {
+		List<Cancion> canciones = new ArrayList<Cancion>();
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); // puede ser null
 		entidades.stream()
+		// estilo puede ser una subcadena de algún otro estilo en la bd
+		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
 		.forEach(e -> canciones.add(entidadToCancion(e)));
 		return canciones;
 	}
@@ -146,25 +126,11 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Cancion> getAllStyle(String estilo) {
+	public List<Cancion> getAllArtist(String artista) throws NullPointerException {
 		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); // puede ser null
 		entidades.stream()
-		// estilo can be a substring of a song' style or the whole string
-		.filter(e -> AppMusic.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
-		.forEach(e -> canciones.add(entidadToCancion(e)));
-		return canciones;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<Cancion> getAllArtist(String artista) {
-		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
-		entidades.stream()
-		.filter(e -> AppMusic.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
+		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
 		.forEach(e -> canciones.add(entidadToCancion(e)));
 		return canciones;
 	}
@@ -174,12 +140,12 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Cancion> getAllArtistStyle(String artista, String estilo) {
+	public List<Cancion> getAllArtistStyle(String artista, String estilo) throws NullPointerException {
 		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); // puede ser null
 		entidades.stream()
-		.filter(e -> AppMusic.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
-		.filter(e -> AppMusic.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
+		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
+		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
 		.forEach(e -> canciones.add(entidadToCancion(e)));
 		return canciones;
 	}
@@ -191,18 +157,13 @@ public class TDSCancionDAO implements CancionDAO {
 	 * @param eCancion entidad con los datos de una instancia de Cancion.
 	 * @return objeto Cancion correspondiente.
 	 */
-	private Cancion entidadToCancion(Entidad eCancion) {
+	private Cancion entidadToCancion(Entidad eCancion) throws NumberFormatException {
 		String titulo = servPersistencia.recuperarPropiedadEntidad(eCancion, TITULO);
 		String interprete = servPersistencia.recuperarPropiedadEntidad(eCancion, INTERPRETE);
 		String estilo = servPersistencia.recuperarPropiedadEntidad(eCancion, ESTILO);
 		String rutaFichero = servPersistencia.recuperarPropiedadEntidad(eCancion, RUTAFICHERO);
-		int numReproducciones = 0;
-		try {
-			numReproducciones = Integer.valueOf(servPersistencia.recuperarPropiedadEntidad(eCancion, REPRODUCCIONES));
-		} 
-		catch (NumberFormatException e) {
-			System.out.println("Unable to get value of 'numReproducciones'. " + e);
-		} 
+		// valueOf puede lanzar una NumberFormatException 
+		int numReproducciones = Integer.valueOf(servPersistencia.recuperarPropiedadEntidad(eCancion, REPRODUCCIONES));
 		Cancion cancion = new Cancion(titulo, interprete, Estilo.valor(estilo), rutaFichero, numReproducciones);
 		cancion.setId(eCancion.getId());
 		return cancion;

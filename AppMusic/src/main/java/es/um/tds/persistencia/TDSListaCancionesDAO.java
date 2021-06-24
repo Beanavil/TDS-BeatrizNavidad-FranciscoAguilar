@@ -3,7 +3,8 @@ package es.um.tds.persistencia;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+
 import beans.Entidad;
 import beans.Propiedad;
 import es.um.tds.modelo.Cancion;
@@ -36,31 +37,17 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 */
 	public static TDSListaCancionesDAO getUnicaInstancia() {
 		if (unicaInstancia == null) 
-			return new TDSListaCancionesDAO(); 
+			unicaInstancia = new TDSListaCancionesDAO(); 
 		return unicaInstancia;       
 	} 
 	
 
-	// TODO esto está bien así o mejor con las ultimas sentencias en el catch?
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void store(ListaCanciones lista) {
-		Entidad eLista;
-		boolean registrada = true;
-		try {
-			eLista = servPersistencia.recuperarEntidad(lista.getId());
-		} 
-		catch (NullPointerException e) {
-			registrada = false;
-		}
-		if (registrada) {
-			System.err.println("Entity already registered. ");
-			return;
-		}
-		TDSCancionDAO adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
-		lista.getCanciones().stream().forEach(c -> adaptadorCancion.store(c));
+	public void store(ListaCanciones lista) throws NullPointerException {
+		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); // puede ser null
 		eLista = ListaCancionesToEntidad(lista);
 		servPersistencia.registrarEntidad(eLista);
 		lista.setId(eLista.getId());
@@ -69,19 +56,9 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	/**
 	 * {@inheritDoc}
 	 */
-	// TODO ¿mostrar en el mensaje de error la lista o el mensaje de excepción?
 	@Override
-	public boolean delete(ListaCanciones lista) {
-		Entidad eLista = new Entidad();
-		try {
-			eLista = servPersistencia.recuperarEntidad(lista.getId());
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return false;
-		}
-		TDSCancionDAO adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
-		lista.getCanciones().stream().forEach(c -> adaptadorCancion.delete(c));
+	public boolean delete(ListaCanciones lista) throws NullPointerException {
+		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); // puede ser null
 		return servPersistencia.borrarEntidad(eLista);
 	}
 
@@ -89,15 +66,8 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(ListaCanciones lista) {
-		Entidad eLista = new Entidad();
-		try {
-			eLista = servPersistencia.recuperarEntidad(lista.getId());
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return;
-		}
+	public void update(ListaCanciones lista) throws NullPointerException {
+		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); // puede ser null
 		servPersistencia.eliminarPropiedadEntidad(eLista, NOMBRE);
 		servPersistencia.anadirPropiedadEntidad(eLista, NOMBRE, lista.getNombre());
 		servPersistencia.eliminarPropiedadEntidad(eLista, CANCIONES);
@@ -108,15 +78,8 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ListaCanciones get(int id) {
-		Entidad eLista = new Entidad();
-		try {
-			eLista = servPersistencia.recuperarEntidad(id);
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return null;
-		}
+	public ListaCanciones get(int id) throws NullPointerException {
+		Entidad eLista = servPersistencia.recuperarEntidad(id); // puede ser null
 		return entidadToListaCanciones(eLista);
 	}
 
@@ -124,9 +87,9 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ListaCanciones> getAll() {
+	public List<ListaCanciones> getAll() throws NullPointerException {
 		List<ListaCanciones> listas = new ArrayList<>();
-		List<Entidad> eListas = servPersistencia.recuperarEntidades(LISTACANCIONES);
+		List<Entidad> eListas = servPersistencia.recuperarEntidades(LISTACANCIONES); // puede ser null
 		eListas.stream().forEach(e -> listas.add(get(e.getId())));
 		return listas;
 	}
@@ -179,17 +142,12 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * @return lista de canciones.
 	 */
 	public List<Cancion> getCancionesFromIds(String ids) {
-		ArrayList<Cancion> canciones = new ArrayList<>();
+		if (ids.trim().isEmpty())
+			return new ArrayList<Cancion>();
 		TDSCancionDAO adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
-		StringTokenizer tok = new StringTokenizer(ids, " ");
-		while(tok.hasMoreTokens()) {
-			try {
-				canciones.add(adaptadorCancion.get(Integer.valueOf((String)tok.nextElement())));
-			} 
-			catch (NumberFormatException e) { 
-				System.err.println("Unable to get id. " + e);
-			}
-		}
+		List<Cancion> canciones = Arrays.stream(ids.split(" "))
+                .map(id -> adaptadorCancion.get(Integer.valueOf(id)))
+                .collect(Collectors.toList());
 		return canciones;
 	}
 }

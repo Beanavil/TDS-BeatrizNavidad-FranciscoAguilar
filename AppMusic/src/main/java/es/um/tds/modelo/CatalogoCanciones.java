@@ -1,14 +1,15 @@
 package es.um.tds.modelo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import es.um.tds.controlador.AppMusic;
 import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
+import es.um.tds.utils.StringUtils;
 
 /**
  * Catálogo (repositorio) de canciones de la app
@@ -21,23 +22,32 @@ public class CatalogoCanciones {
 	private FactoriaDAO factoria;
 	private CancionDAO adaptadorCancion;
 	
-	private CatalogoCanciones() {
-		canciones = new HashMap<>();
+	private CatalogoCanciones() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
 		
-		try {
-			factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
-			adaptadorCancion = factoria.getCancionDAO();
-			this.cargarCatalogo();
-		} catch (DAOException eDAO) {
-			eDAO.printStackTrace();
-		}
+		canciones = new HashMap<>();
+		factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
+		adaptadorCancion = factoria.getCancionDAO();
+		this.cargarCatalogo();
 	}
 	
 	/**
 	 * Método para obtener la única instancia del catálogo
 	 * @return instancia
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static CatalogoCanciones getUnicaInstancia() {
+	public static CatalogoCanciones getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		if(unicaInstancia == null)
 			unicaInstancia = new CatalogoCanciones();
 		return unicaInstancia;
@@ -77,7 +87,7 @@ public class CatalogoCanciones {
 	 * @return Lista con las canciones del catálogo
 	 */
 	public List<Cancion> getAll() {
-		ArrayList<Cancion> lista = new ArrayList<>();
+		List<Cancion> lista = new ArrayList<>();
 		canciones.values().stream().forEach(c -> lista.add(c));
 		return lista;
 	}
@@ -90,9 +100,9 @@ public class CatalogoCanciones {
 	 * @return Lista con las canciones del catálogo del artista
 	 */
 	public List<Cancion> getAllArtist(String artista) {
-		ArrayList<Cancion> lista = new ArrayList<>();
+		List<Cancion> lista = new ArrayList<>();
 		canciones.values().stream()
-		.filter(c -> AppMusic.containsIgnoreCase(c.getInterprete(), artista)) 
+		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), artista)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}
@@ -105,9 +115,9 @@ public class CatalogoCanciones {
 	 * @return Lista con las canciones del catálogo de ese estilo
 	 */
 	public List<Cancion> getAllStyle(String estilo) {
-		ArrayList<Cancion> lista = new ArrayList<>();
+		List<Cancion> lista = new ArrayList<>();
 		canciones.values().stream()
-		.filter(c -> AppMusic.containsIgnoreCase(c.getInterprete(), estilo)) 
+		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), estilo)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}

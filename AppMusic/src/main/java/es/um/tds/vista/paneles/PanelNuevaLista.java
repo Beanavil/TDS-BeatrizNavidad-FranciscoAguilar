@@ -20,8 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import es.um.tds.modelo.Estilo;
+import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;
-import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -127,7 +127,7 @@ public class PanelNuevaLista extends JPanel{
 	
 	private JPanel crearPanel3() {
 		JPanel panel = new JPanel();
-		VentanaPrincipal.fixedSize(panel, 450, 250);
+		ComponentUtils.fixedSize(panel, 450, 250);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		JTable tablaIzq = new JTable(new ModeloTabla());
 		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));

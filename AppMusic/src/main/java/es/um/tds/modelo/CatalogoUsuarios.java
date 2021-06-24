@@ -1,5 +1,6 @@
 package es.um.tds.modelo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,29 +17,38 @@ import es.um.tds.persistencia.FactoriaDAO;
  */
 public class CatalogoUsuarios {
 	private Map<Integer, Usuario> usuariosID;
-	private Map<String, Usuario> usuariosNombreUsuario; // TODO ¿Hace falta?
+	private Map<String, Usuario> usuariosNombreUsuario;
 	private static CatalogoUsuarios unicaInstancia;
 	private FactoriaDAO factoria;
 	private UsuarioDAO adaptadorUsuario;
 	
-	private CatalogoUsuarios() {
-		usuariosID = new HashMap<>();
-		usuariosNombreUsuario = new HashMap<>();
+	private CatalogoUsuarios() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
 		
-		try {
-			factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
-			adaptadorUsuario = factoria.getUsuarioDAO();
-			this.cargarCatalogo();
-		} catch (DAOException eDAO) {
-			eDAO.printStackTrace();
-		}
+		usuariosID = new HashMap<Integer, Usuario>();
+		usuariosNombreUsuario = new HashMap<String, Usuario>();
+		factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
+		adaptadorUsuario = factoria.getUsuarioDAO();
+		this.cargarCatalogo();
 	}
 	
 	/**
 	 * Método para obtener la única instancia del catálogo
 	 * @return instancia
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static CatalogoUsuarios getUnicaInstancia() {
+	public static CatalogoUsuarios getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		if (unicaInstancia == null) 
 			unicaInstancia = new CatalogoUsuarios();
 		return unicaInstancia;
@@ -89,7 +99,7 @@ public class CatalogoUsuarios {
 	 * @return Lista con los usuarios del catálogo
 	 */
 	public List<Usuario> getAll() {
-		ArrayList<Usuario> lista = new ArrayList<>();
+		List<Usuario> lista = new ArrayList<>();
 		usuariosID.values().stream().forEach(u -> lista.add(u));
 		return lista;
 	}
