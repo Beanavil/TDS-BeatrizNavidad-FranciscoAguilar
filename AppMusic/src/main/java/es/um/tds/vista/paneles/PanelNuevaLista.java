@@ -6,13 +6,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,19 +19,14 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import es.um.tds.controlador.AppMusic;
-import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
-import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private static final int TAM_CUADRO_TEXTO = 10;
-	
-	private AppMusic controlador = AppMusic.getUnicaInstancia();
-	
+		
 	private JTextField txtCrear;
 	private JButton btnCrear;
 	
