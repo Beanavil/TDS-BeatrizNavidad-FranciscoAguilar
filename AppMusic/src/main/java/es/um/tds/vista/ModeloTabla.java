@@ -16,7 +16,6 @@ public class ModeloTabla extends AbstractTableModel{
 	private static final int COLUMNA_AUTOR = 1;
 	private static final String NOMBRE_CT = "Titulo";
 	private static final String NOMBRE_CA = "Intérprete";
-	private static final String NOMBRE_LC_DEFECTO = "Lista";
 	
 	private List<Cancion> listaCanciones;
 	
@@ -25,21 +24,14 @@ public class ModeloTabla extends AbstractTableModel{
 	}
 	
 	 public ModeloTabla() {
-		 this.listaCanciones = new ArrayList<Cancion>(); 
+		 this(new ArrayList<>());
 	 }
-		  
-	//TODO prueba de funcionamiento
-//	public ModeloDefinido() {
-//		Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
-//		ArrayList<Cancion> canciones = new ArrayList<Cancion>();
-//		canciones.add(cancion);
-//		ListaCanciones playList = new ListaCanciones("Prueba", canciones); 
-//		this.playlist = playList;
-//	}
+		
 	 
 	public List<Cancion> getListaCanciones() {
 	  return listaCanciones;
 	}
+
 
 	public void setlistaCanciones(List<Cancion> listaCanciones) {
 	  this.listaCanciones = listaCanciones;
