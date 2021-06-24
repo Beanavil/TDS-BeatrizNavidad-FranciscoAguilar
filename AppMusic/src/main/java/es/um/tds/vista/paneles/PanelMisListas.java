@@ -11,6 +11,8 @@ import javax.swing.JTable;
 
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
+import es.um.tds.vista.Reproductor;
+import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelMisListas extends JPanel{
 
@@ -21,12 +23,16 @@ public class PanelMisListas extends JPanel{
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		JPanel panelSuperior = crearPanelSuperior();
-		//TODO Puede ser que esto haya que hacerlo con el reproductor
-		//JPanel panelInferior = crearPanelInferior();
+		JPanel panelInferior = crearPanelInferior();
 		
 		this.add(panelSuperior);
+		this.add(panelInferior);
 	}
 	
+	/**
+	 * Crea el panel que contendrá la lista de las PlayLists del usuario y la tabla con las
+	 * canciones que componen cada una de estas listas
+	 */
 	private JPanel crearPanelSuperior() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(1,2));
@@ -40,6 +46,17 @@ public class PanelMisListas extends JPanel{
 		
 		panel.add(lista);
 		panel.add(scrollPane);
+		return panel;
+	}
+	
+	/**
+	 * Crea el panel que contendrá el reproductor
+	 */
+	private JPanel crearPanelInferior() {
+		Reproductor repr = new Reproductor();
+		JPanel panel = (JPanel) repr.getPanelReproductor();
+		VentanaPrincipal.fixedSize(panel, 250, 50);
+		
 		return panel;
 	}
 }

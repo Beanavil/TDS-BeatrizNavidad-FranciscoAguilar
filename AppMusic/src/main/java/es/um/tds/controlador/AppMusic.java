@@ -435,6 +435,20 @@ public final class AppMusic implements ICargadoListener{
     	}
     }
     
+    /**
+     * @param nombreLista Nombre de la lista a comprobar existencia
+     * @return True si la lista ya pertenecía a las listas del usuario
+     * false en otro caso
+     */
+    public boolean existeLista(String nombreLista) {
+    	if (usuarioActual != null) {
+    		boolean existe = usuarioActual.getListasCanciones().stream()
+    				.anyMatch(lc -> lc.getNombre().equals(nombreLista));
+    		return existe;
+    	}
+    	return false;
+    }
+    
     
     public void addCancion(ListaCanciones lista, List<Cancion> cancion) {
     	

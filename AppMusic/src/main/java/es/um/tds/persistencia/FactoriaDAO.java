@@ -24,12 +24,13 @@ public abstract class FactoriaDAO {
 	 * @throws DAOException.
 	 */
 	public static FactoriaDAO getInstancia(String tipo) throws DAOException {
-		if (unicaInstancia == null)
+		if (unicaInstancia == null) {
 			try { 
 				unicaInstancia = (FactoriaDAO)Class.forName(tipo).getDeclaredConstructor().newInstance();
 			} catch (Exception e) {	
 				throw new DAOException(e.getMessage());
-		} 
+			} 
+		}	
 		return unicaInstancia;
 	}
 	

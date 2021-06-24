@@ -13,7 +13,7 @@ import java.util.TreeMap;
  * 
  * @author Beatriz y Francisco
  */
-public class Usuario implements RolUsuario, Descuento {
+public class Usuario implements Descuento {
 	public static final String LISTA_RECIENTES = "Canciones recientes";
 	public static final int NUM_RECIENTES = 10;
 	

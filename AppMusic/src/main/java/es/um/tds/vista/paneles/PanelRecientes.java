@@ -49,8 +49,7 @@ public class PanelRecientes extends JPanel {
 		VentanaPrincipal.fixedSize(panelTabla, 600, 200);
 		panelCentral.add(panelTabla, BorderLayout.CENTER);
 		
-		JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones recientes", 
-				controlador.getCancionesRecientes())));
+		JTable tablaCanciones = new JTable(new ModeloTabla(controlador.getCancionesRecientes()));
 		tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tablaCanciones.setFillsViewportHeight(true);
 		

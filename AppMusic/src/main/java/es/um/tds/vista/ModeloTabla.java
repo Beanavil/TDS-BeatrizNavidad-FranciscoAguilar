@@ -1,5 +1,8 @@
 package es.um.tds.vista;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.table.AbstractTableModel;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
@@ -15,18 +18,14 @@ public class ModeloTabla extends AbstractTableModel{
 	private static final String NOMBRE_CA = "Intérprete";
 	private static final String NOMBRE_LC_DEFECTO = "Lista";
 	
-	private ListaCanciones playlist;
+	private List<Cancion> listaCanciones;
 	
-	public ModeloTabla(ListaCanciones playlist) {
-		this.playlist = playlist;
+	public ModeloTabla(List<Cancion> listaCanciones) {
+		this.listaCanciones = listaCanciones;
 	}
 	
-	
 	 public ModeloTabla() {
-		 this.playlist = new ListaCanciones(NOMBRE_LC_DEFECTO);
-		 Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
-		 playlist.addCancion(cancion);
-		 
+		 this.listaCanciones = new ArrayList<Cancion>(); 
 	 }
 		  
 	//TODO prueba de funcionamiento

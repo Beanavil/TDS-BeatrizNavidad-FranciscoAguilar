@@ -224,7 +224,7 @@ public class PanelExplorar extends JPanel {
 				JPanel panelTabla = new JPanel(new BorderLayout());
 				VentanaPrincipal.fixedSize(panelTabla, 600, 200);
 			    
-				JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones encontradas", canciones)));
+				JTable tablaCanciones = new JTable(new ModeloTabla(canciones));
 				tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 				tablaCanciones.setFillsViewportHeight(true);
 				
