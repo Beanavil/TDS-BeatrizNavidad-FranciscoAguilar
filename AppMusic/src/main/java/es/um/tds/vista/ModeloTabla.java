@@ -1,5 +1,8 @@
 package es.um.tds.vista;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.table.AbstractTableModel;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
@@ -13,37 +16,25 @@ public class ModeloTabla extends AbstractTableModel{
 	private static final int COLUMNA_AUTOR = 1;
 	private static final String NOMBRE_CT = "Titulo";
 	private static final String NOMBRE_CA = "Intérprete";
-	private static final String NOMBRE_LC_DEFECTO = "Lista";
 	
-	private ListaCanciones playlist;
+	private List<Cancion> listaCanciones;
 	
-	public ModeloTabla(ListaCanciones playlist) {
-		this.playlist = playlist;
+	public ModeloTabla(List<Cancion> listaCanciones) {
+		this.listaCanciones = listaCanciones;
 	}
 	
 	
 	 public ModeloTabla() {
-		 this.playlist = new ListaCanciones(NOMBRE_LC_DEFECTO);
-		 Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
-		 playlist.addCancion(cancion);
-		 
+		 this(new ArrayList<>());
 	 }
-		  
-	//TODO prueba de funcionamiento
-//	public ModeloDefinido() {
-//		Cancion cancion = new Cancion( "IWannaKillPaco", "Bea", Estilo.valor("SatanicRitual"), "SoFucked", 10);
-//		ArrayList<Cancion> canciones = new ArrayList<Cancion>();
-//		canciones.add(cancion);
-//		ListaCanciones playList = new ListaCanciones("Prueba", canciones); 
-//		this.playlist = playList;
-//	}
+		
 	 
-	public ListaCanciones getListaCanciones() {
-	  return playlist;
+	public List<Cancion> getListaCanciones() {
+	  return listaCanciones;
 	}
 
-	public void setPlaylist(ListaCanciones playlist) {
-	  this.playlist = playlist;
+	public void setPlaylist(List<Cancion> listaCanciones) {
+	  this.listaCanciones = listaCanciones;
 	}
 
 	@Override
@@ -53,7 +44,7 @@ public class ModeloTabla extends AbstractTableModel{
 	  
 	@Override
 	public int getRowCount() {
-		return playlist.getNumCanciones();
+		return listaCanciones.size();
 	}
 	  
 	@Override
@@ -72,9 +63,9 @@ public class ModeloTabla extends AbstractTableModel{
 	public Object getValueAt(int fila, int col) {
 		switch (col) {
 	    case COLUMNA_TITULO:
-	      return playlist.getCancion(fila).getTitulo();
+	      return listaCanciones.get(fila).getTitulo();
 	    case COLUMNA_AUTOR:
-	      return playlist.getCancion(fila).getInterprete();
+	      return listaCanciones.get(fila).getInterprete();
 	    default:
 	      throw new IndexOutOfBoundsException("Columna fuera de rango " + this.getClass().getName());
 	  }
