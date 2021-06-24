@@ -19,21 +19,28 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Estilo;
-import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;
+import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private static final int TAM_CUADRO_TEXTO = 10;
+	
+	private AppMusic controlador;
 		
 	private JTextField txtCrear;
 	private JButton btnCrear;
+	private JButton btnEliminar;
 	
 	private JTextField txtInterprete;
 	private JTextField txtTitulo;
 	private JComboBox<Estilo> boxEstilo;
 	private JButton btnBuscar;
+	
+	private JTable tablaIzq;
+	private JTable tablaDer;
 	
 	private JButton btnAceptar;
 	private JButton btnCancelar;
@@ -42,11 +49,11 @@ public class PanelNuevaLista extends JPanel{
 	private JPanel panelInv;
 	
 	/**
-	 * Constructor de la clase
+	 * Constructor de la clase //TODO pasar todo a método initialize();
 	 */
 	public PanelNuevaLista() {
 		super();
-		//¿Por qué se suele meter en un initialize()?
+		controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		JPanel panel1 = crearPanel1();
 		
@@ -74,11 +81,14 @@ public class PanelNuevaLista extends JPanel{
 		JLabel lblCrear = new JLabel("Nombre");
 		txtCrear = new JTextField(TAM_CUADRO_TEXTO);
 		btnCrear = new JButton("Crear");
+		btnEliminar = new JButton("Eliminar");
 		
 		panel.add(lblCrear);
 		lblCrear.setLabelFor(txtCrear);
 		panel.add(txtCrear);
 		panel.add(btnCrear);
+		panel.add(btnEliminar);
+		btnEliminar.setVisible(false);
 		
 		crearManejadorBotonCrear();
 		return panel;
@@ -124,12 +134,14 @@ public class PanelNuevaLista extends JPanel{
 		return panel;
 	}
 
-	
+	/**
+	 * Crea el panel que contiene ambas tablas
+	 */
 	private JPanel crearPanel3() {
 		JPanel panel = new JPanel();
-		ComponentUtils.fixedSize(panel, 450, 250);
+		VentanaPrincipal.fixedSize(panel, 350, 250);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		JTable tablaIzq = new JTable(new ModeloTabla());
+		tablaIzq = new JTable(new ModeloTabla());
 		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
 		tablaIzq.setFillsViewportHeight(true);
 		
@@ -143,7 +155,7 @@ public class PanelNuevaLista extends JPanel{
 		
 		JPanel panelTablaDer = new JPanel();
 		panelTablaDer.setBorder(new TitledBorder(null, "PlayList", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		JTable tablaDer = new JTable(new ModeloTabla());
+		tablaDer = new JTable(new ModeloTabla());
 		tablaDer.setPreferredScrollableViewportSize(new Dimension(350,200));
 		tablaDer.setFillsViewportHeight(true);
 		
@@ -185,9 +197,40 @@ public class PanelNuevaLista extends JPanel{
 	private void crearManejadorBotonCrear() {
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String nombreLista = txtCrear.getText();
+				//En caso de que la lista no existiese
+				if (! controlador.existeLista(nombreLista)) {
+					int result = JOptionPane.showConfirmDialog(panelInv, 
+						"¿Desea crear una nueva lista?", "Crear nueva Lista",
+						JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						controlador.crearLista(nombreLista);
+						panelInv.setVisible(true);
+					}
+				}
 				//TODO Distinguir si existe la lista o no y proceder
 				
-				panelInv.setVisible(true);
+				
+			}
+		});
+	}
+	
+	/**
+	 * Crear manejador para el botón "Eliminar" //TODO
+	 */
+	private void crearManejadorBotonEliminar() {
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int result = JOptionPane.showConfirmDialog(panelInv, 
+						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+						JOptionPane.YES_NO_OPTION);
+				if (result == JOptionPane.YES_OPTION) {
+					txtCrear.setText("");
+					txtTitulo.setText("");
+					txtInterprete.setText("");
+					boxEstilo.setSelectedItem(null);
+					panelInv.setVisible(false);
+				}
 			}
 		});
 	}

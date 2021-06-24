@@ -32,6 +32,7 @@ public abstract class FactoriaDAO {
 	 * @throws InstantiationException 
 	 * @throws DAOException.
 	 */
+
 	public static FactoriaDAO getInstancia(String tipo) throws DAOException, 
 	InstantiationException, IllegalAccessException, IllegalArgumentException, 
 	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {

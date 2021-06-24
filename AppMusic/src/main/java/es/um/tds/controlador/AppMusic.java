@@ -49,7 +49,7 @@ public final class AppMusic implements ICargadoListener{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//AppMusic.getUnicaInstancia().cargarCanciones("./XML/canciones.xml");
+		//AppMusic.getUnicaInstancia().cargarCanciones("./xml/canciones.xml");
 		//AppMusic.getUnicaInstancia().getCanciones().stream().forEach(c -> System.out.println(c.toString()));
 	}
 
@@ -322,6 +322,20 @@ public final class AppMusic implements ICargadoListener{
     		usuarioActual.addListaCanciones(lista);
     		adaptadorUsuario.update(usuarioActual);
     	}
+    }
+    
+    /**
+     * @param nombreLista Nombre de la lista a comprobar existencia
+     * @return True si la lista ya pertenecía a las listas del usuario
+     * false en otro caso
+     */
+    public boolean existeLista(String nombreLista) {
+    	if (usuarioActual != null) {
+    		boolean existe = usuarioActual.getListasCanciones().stream()
+    				.anyMatch(lc -> lc.getNombre().equals(nombreLista));
+    		return existe;
+    	}
+    	return false;
     }
     
     
