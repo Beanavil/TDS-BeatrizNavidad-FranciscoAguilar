@@ -3,6 +3,7 @@ package es.um.tds.vista.paneles;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,23 +24,24 @@ import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.vista.ModeloTabla;
+import es.um.tds.vista.Reproductor;
 //import es.um.tds.vista.Reproductor;
 import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelExplorar extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
-	private AppMusic controlador = AppMusic.getUnicaInstancia();
+	private AppMusic controlador;
 	
-	private JPanel panelCampos;
 	private JPanel panelCentral;
+	private JPanel panelCampos;
 	private JPanel panelInferior;
 	
 	private JTextField campoTitulo;
 	private JTextField campoInterprete;
 	
 	private final JLabel lblTitulo = new JLabel("Título");
-	private final JLabel lblInterprete = new JLabel("Interprete");
+	private final JLabel lblInterprete = new JLabel("Intérprete");
 	private final JLabel lblEstilo = new JLabel("Estilo");
 	
 	private JComboBox<Estilo> boxEstilo;
@@ -49,13 +50,11 @@ public class PanelExplorar extends JPanel {
 	private JButton btnBuscar;
 	private JButton btnCancelar;
 	
-	private JFrame frmVentanaPrincipal;
 	
-	
-	public PanelExplorar(JFrame frmVentanaPrincipal) {
+	public PanelExplorar() {
 		super();
+		controlador = AppMusic.getUnicaInstancia();
 		inicialize();
-		this.frmVentanaPrincipal = frmVentanaPrincipal;
 	}
 	
 	private void inicialize() {
@@ -63,88 +62,133 @@ public class PanelExplorar extends JPanel {
 		this.setLayout(new BorderLayout());
 		
 		// Parte superior
-		JPanel panelSuperior = new JPanel();
-		JPanel panelCampos = crearPanelCampos();
-		JPanel panelBotones = crearPanelBotones();
-		
-		panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
-		panelSuperior.add(Box.createRigidArea(new Dimension(60, 20)));
-		panelSuperior.add(panelCampos);
-		panelSuperior.add(Box.createRigidArea(new Dimension(60, 20)));
-		panelSuperior.add(panelBotones);
+		JPanel panelSuperior = crearPanelSuperior();
 		this.add(panelSuperior, BorderLayout.NORTH);
 		
 		// Parte central
-		panelCentral = new JPanel();
-		panelCentral.setVisible(false);
-		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-		panelCentral.add(Box.createRigidArea(new Dimension(40, 40)));
+		crearPanelCentral();
 		this.add(panelCentral, BorderLayout.CENTER);
 		
 		// Parte inferior
-//		Reproductor repr = new Reproductor();
-//		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-//		panelInferior = new JPanel();
-//		panelInferior.setVisible(false);
-//		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.X_AXIS));
-//		VentanaPrincipal.fixedSize(panelRepr, 1000, 100);
-//		panelInferior.add(panelRepr);
-//		this.add(panelInferior, BorderLayout.SOUTH);
+		crearPanelInferior();
+		this.add(panelInferior, BorderLayout.SOUTH);
 	}
 	
 	
 	/**
-	 * Crea panel de campos de texto
+	 * Crea el panel superior
 	 */
-	public JPanel crearPanelCampos() {
+	public JPanel crearPanelSuperior() {
+		JPanel panelSuperior = new JPanel();
+		crearPanelCampos();
+		JPanel panelBotones = crearPanelBotones();
+		
+		panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+		panelSuperior.add(Box.createRigidArea(new Dimension(20, 20)));
+		panelSuperior.add(panelCampos);
+		panelSuperior.add(Box.createRigidArea(new Dimension(20, 20)));
+		panelSuperior.add(panelBotones);
+		
+		return panelSuperior;
+	}
+	
+	
+	/**
+	 * Crea el panel central
+	 */
+	public void crearPanelCentral() {
+		panelCentral = new JPanel();
+		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		panelCentral.setVisible(false);
+	}
+	
+	
+	/**
+	 * Crea el panel inferior (reproductor)
+	 */
+	public void crearPanelInferior() {
+		panelInferior = new JPanel();
+		panelInferior.setVisible(false);
+		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
+		
+		Reproductor repr = new Reproductor();
+		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
+		VentanaPrincipal.fixedSize(panelRepr, 250, 50);
+		panelInferior.add(panelRepr);
+	}
+	
+	
+	/**
+	 * Crea panel de campos de texto del panel superior
+	 */
+	public void crearPanelCampos() {
 		panelCampos = new JPanel();
 		panelCampos.setLayout(new BoxLayout(panelCampos, BoxLayout.X_AXIS));
 		
+		JPanel panelTitulo = new JPanel(new FlowLayout());
+		JPanel panelInterprete = new JPanel(new FlowLayout());
+		JPanel panelEstilo = new JPanel(new FlowLayout());
+		
+		VentanaPrincipal.fixedSize(panelTitulo, 300, 30);
+		VentanaPrincipal.fixedSize(panelInterprete, 300, 30);
+		VentanaPrincipal.fixedSize(panelEstilo, 250, 30);
+		
+		panelCampos.add(panelTitulo);
+		panelCampos.add(panelInterprete);
+		panelCampos.add(panelEstilo);
+		
+		// Campo título
 		campoTitulo = new JTextField();
 		VentanaPrincipal.fixedSize(campoTitulo, 200, 20);
-		panelCampos.add(lblTitulo);
+		panelTitulo.add(lblTitulo);
 		lblTitulo.setLabelFor(campoTitulo);
-		panelCampos.add(campoTitulo);
-		panelCampos.add(Box.createRigidArea(new Dimension(60, 20)));
-		
-		
+		panelTitulo.add(campoTitulo);
+			
+		// Campo intérprete
 		campoInterprete = new JTextField();
 		VentanaPrincipal.fixedSize(campoInterprete, 200, 20);
-		panelCampos.add(lblInterprete);
+		panelInterprete.add(lblInterprete);
 		lblInterprete.setLabelFor(campoInterprete);
-		panelCampos.add(campoInterprete);
-		panelCampos.add(Box.createRigidArea(new Dimension(60, 20)));
+		panelInterprete.add(campoInterprete);
 		
-		
+		// ComboBox estilo
 		boxEstilo = new JComboBox<Estilo>();
-		VentanaPrincipal.fixedSize(boxEstilo, 200, 20);
 		boxEstilo.setBackground(new Color(255,255,255));
-		panelCampos.add(lblEstilo);
 		lblEstilo.setLabelFor(boxEstilo);
+		VentanaPrincipal.fixedSize(boxEstilo, 150, 20);
 		
 		for (Estilo e : Estilo.values()) {
 			boxEstilo.addItem(e);
 		}
 		boxEstilo.addItem(null);
 		boxEstilo.setSelectedItem(null);
-		panelCampos.add(boxEstilo);
 		
-		return panelCampos;
+		panelEstilo.add(lblEstilo);
+		panelEstilo.add(boxEstilo);
 	}
 	
 	
 	/**
-	 * Crea panel de botones
+	 * Crea panel de botones del panel superior
 	 */
 	private JPanel crearPanelBotones() {
 		JPanel panelBotones = new JPanel();
 		panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
 		
+		JPanel panelBuscar = new JPanel(new FlowLayout());
+		JPanel panelCancelar = new JPanel(new FlowLayout());
+		
+		VentanaPrincipal.fixedSize(panelBuscar, 100, 60);
+		VentanaPrincipal.fixedSize(panelCancelar, 100, 60);
+		
+		panelBotones.add(panelBuscar);
+		panelBotones.add(panelCancelar);
+		
 		btnBuscar = new JButton("Buscar");
-		panelBotones.add(btnBuscar);
+		panelBuscar.add(btnBuscar);
 		
 		btnCancelar = new JButton("Cancelar");
-		panelBotones.add(btnCancelar);
+		panelCancelar.add(btnCancelar);
 		
 		crearManejadorBotonBuscar();
 		crearManejadorBotonCancelar();
@@ -176,16 +220,21 @@ public class PanelExplorar extends JPanel {
 					canciones.stream().filter(c -> AppMusic.containsIgnoreCase(c.getTitulo(), titulo));
 				}
 				
-				// Añadimos la tabla con las canciones encontradas al panel central y lo hacemos visible
-
-				JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones encontradas", canciones)));
-				tablaCanciones.setFillsViewportHeight(true);
+				// Añadimos un nuevo panel con la tabla de las canciones encontradas al panel central y lo hacemos visible
+				JPanel panelTabla = new JPanel(new BorderLayout());
+				VentanaPrincipal.fixedSize(panelTabla, 600, 200);
 			    
+				JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones encontradas", canciones)));
+				tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+				tablaCanciones.setFillsViewportHeight(true);
+				
 			    JScrollPane scrollPane = new JScrollPane(tablaCanciones);
-			    panelCentral.add(scrollPane);
+			    panelTabla.add(scrollPane, BorderLayout.CENTER);
+			    
+			    panelCentral.add(panelTabla);
 				panelCentral.setVisible(true);
 				
-				// Añadimos panel inferior(reproductor)
+				// Hacemos visible el panel inferior(reproductor) TODO
 				panelInferior.setVisible(true);
 			}
 		});
@@ -197,7 +246,7 @@ public class PanelExplorar extends JPanel {
 	private void crearManejadorBotonCancelar() {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
+				int result = JOptionPane.showConfirmDialog(panelCampos, 
 						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {

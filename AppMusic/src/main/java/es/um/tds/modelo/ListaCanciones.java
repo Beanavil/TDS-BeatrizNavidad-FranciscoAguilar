@@ -76,7 +76,18 @@ public class ListaCanciones {
 	
 	
 	public void addCancion(Cancion cancion) {
-		// TODO 
+		this.canciones.add(cancion);
+	}
+	
+	
+	public void removeCancion(Cancion cancion) {
+		this.canciones.remove(cancion);
+	}
+	
+	
+	public void removeFirst() {
+		if(this.canciones.size() > 0)
+			this.canciones.remove(0);
 	}
 	
 	
@@ -89,5 +100,4 @@ public class ListaCanciones {
 		this.canciones.stream().forEach(c -> s.concat("\n  "+c.toString()));
 		return s.concat("]");
 	}
-	
 }

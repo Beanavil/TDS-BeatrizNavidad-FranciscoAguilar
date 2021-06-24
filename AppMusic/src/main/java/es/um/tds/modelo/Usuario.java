@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Representa un usuario de la aplicación.
@@ -12,6 +14,9 @@ import java.util.Locale;
  * @author Beatriz y Francisco
  */
 public class Usuario implements RolUsuario, Descuento {
+	public static final String LISTA_RECIENTES = "Canciones recientes";
+	public static final int NUM_RECIENTES = 10;
+	
 	private String nombre;
 	private String apellidos;
 	private LocalDate fechaNacimiento;
@@ -20,11 +25,49 @@ public class Usuario implements RolUsuario, Descuento {
 	private String password;
 	private boolean premium;
 	private List<ListaCanciones> listasCanciones;
+	private ListaCanciones cancionesRecientes;
+	private Map<Cancion, Integer> cancionesMasReproducidas;
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES"));
 	private int id;
 	
+	
 	/**
 	 * Constructor.
+	 * @param nombre nombre real.
+	 * @param apellidos apellidos.
+	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
+	 * @param email dirección de correo electrónico.
+	 * @param login nombre de usuario en la app.
+	 * @param password contraseña de la cuenta.
+	 * @param premium si es premium o no.
+	 * @param listasCanciones listas de canciones del usuario.
+	 * @param cancionesRecientes Lista de canciones reproducidas recientemente
+	 * @param cancionesMasReproducidas Lista de canciones más reproducidas
+	 */
+	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
+			String email, String nombreUsuario, String contrasena, boolean premium, 
+			List<ListaCanciones> listasCanciones, ListaCanciones cancionesRecientes, 
+			Map<Cancion, Integer> cancionesMasReproducidas) {
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
+		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
+		this.email = email;
+		this.login = nombreUsuario;
+		this.password = contrasena;
+		this.premium = premium;
+		this.listasCanciones = new ArrayList<>(listasCanciones);
+		if (cancionesRecientes.getNumCanciones() > 10)
+			this.cancionesRecientes = new ListaCanciones(LISTA_RECIENTES, cancionesRecientes.getCanciones().subList(0, 10));
+		else {
+			cancionesRecientes.setNombre(LISTA_RECIENTES);
+			this.cancionesRecientes = cancionesRecientes;
+		}
+		this.cancionesMasReproducidas =  new TreeMap<>(cancionesMasReproducidas); // TODO tener en cuenta orden ascendente para la vista
+	}
+	
+	/**
+	 * Constructor sin recientes ni más reproducidas.
 	 * @param nombre nombre real.
 	 * @param apellidos apellidos.
 	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
@@ -37,19 +80,12 @@ public class Usuario implements RolUsuario, Descuento {
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
 			String email, String nombreUsuario, String contrasena, boolean premium, 
 			List<ListaCanciones> listasCanciones) {
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
-		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
-		this.email = email;
-		this.login = nombreUsuario;
-		this.password = contrasena;
-		this.premium = premium;
-		this.listasCanciones = new ArrayList<>(listasCanciones);
+		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listasCanciones, 
+				new ListaCanciones(LISTA_RECIENTES), new TreeMap<Cancion, Integer>()); 
 	}
 	
 	/**
-	 * Constructor sin premium ni listas.
+	 * Constructor sin premium ni listas ni recientes ni más reproducidas.
 	 * @param nombre nombre real.
 	 * @param apellidos apellidos.
 	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
@@ -59,15 +95,8 @@ public class Usuario implements RolUsuario, Descuento {
 	 */
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
 			String email, String nombreUsuario, String contrasena) {
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
-		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
-		this.email = email;
-		this.login = nombreUsuario;
-		this.password = contrasena;
-		this.premium = false;
-		this.listasCanciones = new ArrayList<>();
+		
+		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, false, new ArrayList<ListaCanciones>());
 	}
 
 	// Getters
@@ -105,7 +134,34 @@ public class Usuario implements RolUsuario, Descuento {
 	}
 	
 	public void addListaCanciones(ListaCanciones lista) {
-		listasCanciones.add(lista); // TODO ver si hay que pasar una copia
+		listasCanciones.add(lista); 
+	}
+	
+	public ListaCanciones getListaRecientes() {
+		return cancionesRecientes;
+	}
+	
+	public void addCancionReciente(Cancion cancion) {
+		if (!this.cancionesRecientes.getCanciones().contains(cancion)) {
+			if (this.cancionesRecientes.getNumCanciones() < NUM_RECIENTES)
+				cancionesRecientes.addCancion(cancion);
+			else {
+				cancionesRecientes.removeFirst();
+				cancionesRecientes.addCancion(cancion);
+			}
+		}
+	}
+	
+	public void removeCancionReciente(Cancion cancion) {
+		cancionesRecientes.removeCancion(cancion);
+	}
+	
+	public Map<Cancion, Integer> getMasReproducidas() {
+		return cancionesMasReproducidas;
+	}
+	
+	public void addMasReproducida(Cancion cancion) {
+		cancionesMasReproducidas.replace(cancion, cancion.getNumReproducciones());
 	}
 	
 	public int getId() {
@@ -132,7 +188,6 @@ public class Usuario implements RolUsuario, Descuento {
 	}
 
 	public void setEmail(String email) {
-		// TODO: comprobar el formato del mail en la vista o aquí?
 		this.email = email;
 	}
 
@@ -141,7 +196,7 @@ public class Usuario implements RolUsuario, Descuento {
 	}
 
 	public void setPassword(String password) {
-		// TODO: comprobar el formato de la password en la vista o aquí?
+		// TODO: comprobar el formato de la password en la vista
 		this.password = password;
 	}
 	
@@ -156,7 +211,6 @@ public class Usuario implements RolUsuario, Descuento {
 	/**
 	 * {@inheritDoc}
 	 */
-	// TODO ¿incluir listas de canciones en el toString?
 	@Override
 	public String toString() {
 		return "Usuario [nombre= " + nombre + ", apellidos= " + apellidos + ", mail=" + email +
@@ -177,7 +231,8 @@ public class Usuario implements RolUsuario, Descuento {
 	 * @param precio cantidad de la que calculamos el descuento
 	 * @return descuento a aplicar
 	 */
-	public double calcDescuento(double precio) {
+	public double calcDescuento(double precio) { // TODO descuentos
 		return 0;
 	}
+
 }

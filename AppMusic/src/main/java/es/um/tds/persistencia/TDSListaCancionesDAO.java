@@ -40,7 +40,6 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 		return unicaInstancia;       
 	} 
 	
-	// TODO ver si hace falta tanto manejo de excepciones
 
 	// TODO esto está bien así o mejor con las ultimas sentencias en el catch?
 	/**
@@ -55,9 +54,11 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 		} 
 		catch (NullPointerException e) {
 			registrada = false;
-			System.err.println("Entity already registered. ");
 		}
-		if (registrada) return;
+		if (registrada) {
+			System.err.println("Entity already registered. ");
+			return;
+		}
 		TDSCancionDAO adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 		lista.getCanciones().stream().forEach(c -> adaptadorCancion.store(c));
 		eLista = ListaCancionesToEntidad(lista);
@@ -166,7 +167,7 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * @param canciones lista de canciones.
 	 * @return string con los ids.
 	 */
-	private String getIdsFromCanciones(List<Cancion> canciones) {
+	public String getIdsFromCanciones(List<Cancion> canciones) {
 		String ids = "";
 		canciones.stream().forEach(c -> ids.concat(String.valueOf(c.getId()).concat(" ")));
 		return ids;
@@ -177,7 +178,7 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * @param ids String con los ids.
 	 * @return lista de canciones.
 	 */
-	private List<Cancion> getCancionesFromIds(String ids) {
+	public List<Cancion> getCancionesFromIds(String ids) {
 		ArrayList<Cancion> canciones = new ArrayList<>();
 		TDSCancionDAO adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 		StringTokenizer tok = new StringTokenizer(ids, " ");

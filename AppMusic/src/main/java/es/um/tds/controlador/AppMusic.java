@@ -1,13 +1,6 @@
 package es.um.tds.controlador;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -21,14 +14,8 @@ import es.um.tds.modelo.Usuario;
 import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
-import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
 import es.um.tds.vista.VentanaLogin;
-import es.um.tds.vista.VentanaPrincipal;
-import es.um.tds.vista.VentanaRegistro;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import umu.tds.componente.Canciones;
 import umu.tds.componente.CancionesEvent;
 import umu.tds.componente.CargadorCanciones;
 import umu.tds.componente.ICargadoListener;
@@ -43,16 +30,12 @@ public final class AppMusic implements ICargadoListener{
 
 	private UsuarioDAO adaptadorUsuario;
 	private CancionDAO adaptadorCancion;
-	private ListaCancionesDAO adaptadorListaCanciones;
+	//private ListaCancionesDAO adaptadorListaCanciones;
 	
 	private CatalogoUsuarios catalogoUsuarios;
 	private CatalogoCanciones catalogoCanciones;
 	
 	private static Usuario usuarioActual;
-	
-	private static String binPath;
-	private static String tempPath;
-	private static MediaPlayer mediaPlayer;
 	
 	
 	/**
@@ -61,10 +44,9 @@ public final class AppMusic implements ICargadoListener{
 	 */
 	public static void main( String[] args ) throws IOException
 	{
-		//VentanaLogin vl = new VentanaLogin();
-		//VentanaRegistro vr = new VentanaRegistro();
-		AppMusic.getUnicaInstancia().setUsuarioActual(new Usuario("bea", "navidad", "25/11/1999", "beatriznavidad@yahoo.es", "bea", "123"));
-		VentanaPrincipal vp = new VentanaPrincipal();
+		new VentanaLogin();
+		//AppMusic.getUnicaInstancia().cargarCanciones("./XML/canciones.xml");
+		//AppMusic.getUnicaInstancia().getCanciones().stream().forEach(c -> System.out.println(c.toString()));
 	}
 
 	
@@ -74,8 +56,6 @@ public final class AppMusic implements ICargadoListener{
 	private AppMusic() {
 		inicializarAdaptadores();
 		inicializarCatalogos();
-		binPath = AppMusic.class.getClassLoader().getResource(".").getPath();
-		tempPath = binPath.replace("/bin", "/temp");
 	}
 	
 	
@@ -91,7 +71,7 @@ public final class AppMusic implements ICargadoListener{
 		}
 		adaptadorUsuario = factoria.getUsuarioDAO();
 		adaptadorCancion = factoria.getCancionDAO();
-		adaptadorListaCanciones = factoria.getListaCancionesDAO();
+		//adaptadorListaCanciones = factoria.getListaCancionesDAO();
 	}
 	
 	
@@ -265,6 +245,7 @@ public final class AppMusic implements ICargadoListener{
     	cancion.setNumReproducciones(cancion.getNumReproducciones() + 1);
     	adaptadorCancion.update(cancion);
     	catalogoCanciones.addCancion(cancion);
+    	usuarioActual.addMasReproducida(cancion);
     }
     
     
@@ -285,60 +266,163 @@ public final class AppMusic implements ICargadoListener{
      * y con este método lo maneja para añadir las canciones cargadas a la bd
      */
     @Override
-    public void enteradoCarga(EventObject arg0) {
-    	CancionesEvent cEvent = (CancionesEvent) arg0;
+    public void enteradoCarga(EventObject e) {
+    	CancionesEvent cEvent = (CancionesEvent) e;
     	cEvent.getCanciones().getCancion().stream()
-    	.forEach(c -> {this.registrarCancion(c.getTitulo(), c.getInterprete(), Estilo.valor(c.getEstilo()), c.getURL(), 0);});
+    	.forEach(
+    			c -> {
+    					AppMusic.getUnicaInstancia().registrarCancion(c.getTitulo(), c.getInterprete(), 
+    							Estilo.valor(c.getEstilo()), c.getURL(), 0);
+    				 });
     } 
     
     
+//    /**
+//     * Reproduce una canción 
+//     * @param url URL de la ubicación de la canción
+//     */
+//    public void playCancion(String url) {
+//		URL uri = null;
+//		try {
+//			com.sun.javafx.application.PlatformImpl.startup(() -> {
+//			});
+//
+//			uri = new URL(url);
+//
+//			System.setProperty("java.io.tmpdir", tempPath);
+//			Path mp3 = Files.createTempFile("now-playing", ".mp3");
+//
+//			System.out.println(mp3.getFileName());
+//			try (InputStream stream = uri.openStream()) {
+//				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
+//			}
+//			System.out.println("finished-copy: " + mp3.getFileName());
+//
+//			Media media = new Media(mp3.toFile().toURI().toString());
+//			mediaPlayer = new MediaPlayer(media);
+//			
+//			mediaPlayer.play();
+//		} catch (MalformedURLException e1) {
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//	}
+//    
+//    
+//    /**
+//     * Para una canción en reproducción
+//     */
+//    public void stopCancion() {
+//		if (mediaPlayer != null) mediaPlayer.stop();
+//		File directorio = new File(tempPath);
+//		String[] files = directorio.list();
+//		for (String archivo : files) {
+//			File fichero = new File(tempPath + File.separator + archivo);
+//			fichero.delete();
+//		}
+//	}
+    
+//   /**
+//     * Reproduce una canción 
+//     * @param url URL de la ubicación de la canción
+//     */
+//    public void playCancion(String url) {
+//		URL uri = null;
+//		try {
+//			com.sun.javafx.application.PlatformImpl.startup(() -> {
+//			});
+//
+//			uri = new URL(url);
+//
+//			System.setProperty("java.io.tmpdir", tempPath);
+//			Path mp3 = Files.createTempFile("now-playing", ".mp3");
+//
+//			System.out.println(mp3.getFileName());
+//			try (InputStream stream = uri.openStream()) {
+//				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
+//			}
+//			System.out.println("finished-copy: " + mp3.getFileName());
+//
+//			Media media = new Media(mp3.toFile().toURI().toString());
+//			mediaPlayer = new MediaPlayer(media);
+//			
+//			mediaPlayer.play();
+//		} catch (MalformedURLException e1) {
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//	}
+//    
+//    
+//    /**
+//     * Para una canción en reproducción
+//     */
+//    public void stopCancion() {
+//		if (mediaPlayer != null) mediaPlayer.stop();
+//		File directorio = new File(tempPath);
+//		String[] files = directorio.list();
+//		for (Strin/**
+//     * Reproduce una canción 
+//     * @param url URL de la ubicación de la canción
+//     */
+//    public void playCancion(String url) {
+//		URL uri = null;
+//		try {
+//			com.sun.javafx.application.PlatformImpl.startup(() -> {
+//			});
+//
+//			uri = new URL(url);
+//
+//			System.setProperty("java.io.tmpdir", tempPath);
+//			Path mp3 = Files.createTempFile("now-playing", ".mp3");
+//
+//			System.out.println(mp3.getFileName());
+//			try (InputStream stream = uri.openStream()) {
+//				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
+//			}
+//			System.out.println("finished-copy: " + mp3.getFileName());
+//
+//			Media media = new Media(mp3.toFile().toURI().toString());
+//			mediaPlayer = new MediaPlayer(media);
+//			
+//			mediaPlayer.play();
+//		} catch (MalformedURLException e1) {
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
+//	}
+//    
+//    
+//    /**
+//     * Para una canción en reproducción
+//     */
+//    public void stopCancion() {
+//		if (mediaPlayer != null) mediaPlayer.stop();
+//		File directorio = new File(tempPath);
+//		String[] files = directorio.list();
+//		for (String archivo : files) {
+//			File fichero = new File(tempPath + File.separator + archivo);
+//			fichero.delete();
+//		}
+//	}g archivo : files) {
+//			File fichero = new File(tempPath + File.separator + archivo);
+//			fichero.delete();
+//		}
+//	}suarioActual.isR)
+//  }
+    
     /**
-     * Reproduce una canción 
-     * @param url URL de la ubicación de la canción
+     * Añade una canción reciente a la lista de canciones recientes del usuario
+     * @param cancion
      */
-    public void playCancion(String url) {
-		URL uri = null;
-		try {
-			com.sun.javafx.application.PlatformImpl.startup(() -> {
-			});
-
-			uri = new URL(url);
-
-			System.setProperty("java.io.tmpdir", tempPath);
-			Path mp3 = Files.createTempFile("now-playing", ".mp3");
-
-			System.out.println(mp3.getFileName());
-			try (InputStream stream = uri.openStream()) {
-				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
-			}
-			System.out.println("finished-copy: " + mp3.getFileName());
-
-			Media media = new Media(mp3.toFile().toURI().toString());
-			mediaPlayer = new MediaPlayer(media);
-			
-			mediaPlayer.play();
-		} catch (MalformedURLException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-	}
+    public void addReciente(Cancion cancion) {
+    	usuarioActual.addCancionReciente(cancion);
+    }
     
-    
-    /**
-     * Para una canción en reproducción
-     */
-    public void stopCancion() {
-		if (mediaPlayer != null) mediaPlayer.stop();
-		File directorio = new File(tempPath);
-		String[] files = directorio.list();
-		for (String archivo : files) {
-			File fichero = new File(tempPath + File.separator + archivo);
-			fichero.delete();
-		}
-	}
-    
-    
+
     // Funcionalidad lista de canciones
     
     public void crearLista(String nombre) {
@@ -361,6 +445,24 @@ public final class AppMusic implements ICargadoListener{
     	
     }
     
+    
+    public List<Cancion> getCancionesRecientes() {
+		ArrayList<Cancion> recientes = new ArrayList<>();
+		if (usuarioActual != null) {
+			ListaCanciones listaRecientes = usuarioActual.getListaRecientes();
+			recientes = (ArrayList<Cancion>) listaRecientes.getCanciones();
+		}
+		return recientes;
+	}
+
+
+	public List<Cancion> getCancionesMasReproducidas() {
+		ArrayList<Cancion> masReproducidas = new ArrayList<>();
+		if (usuarioActual != null)
+			masReproducidas = new ArrayList<Cancion>(usuarioActual.getMasReproducidas().keySet());
+		return masReproducidas;
+	}
+	
     /**
 	 * Método auxiliar para ver si un string contiene a otro como subcadena sin tener en 
 	 * cuenta las mayúsculas.
@@ -400,6 +502,7 @@ public final class AppMusic implements ICargadoListener{
     }
     
     public void setUsuarioActual(Usuario usuario) {
-    	this.usuarioActual = usuario;
+    	usuarioActual = usuario;
     }
+
 }

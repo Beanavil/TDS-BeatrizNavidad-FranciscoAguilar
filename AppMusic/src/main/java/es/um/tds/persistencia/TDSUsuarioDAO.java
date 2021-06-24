@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+
 import beans.Entidad;
 import beans.Propiedad;
+import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.modelo.Usuario;
 import tds.driver.FactoriaServicioPersistencia;
@@ -26,14 +29,20 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	private static final String PASSWORD = "password";
 	private static final String PREMIUM = "premium";
 	private static final String LISTASCANCIONES = "listasCanciones";
+	private static final String CANCIONESRECIENTES = "cancionesRecientes";
+	private static final String CANCIONESMASREPRODUCIDAS = "cancionesMasReproducidas";
 	private ServicioPersistencia servPersistencia;
 	private static TDSUsuarioDAO unicaInstancia;
+	private TDSListaCancionesDAO adaptadorListaCanciones; 
+	private TDSCancionDAO adaptadorCancion; 
 
 	/**
 	 * Constructor.
 	 */
 	private TDSUsuarioDAO() {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+		adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
+		adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 	}
 	
 	/**
@@ -58,11 +67,20 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		} 
 		catch (NullPointerException e) {
 			registrada = false;
-			System.err.println("Entity already registered. ");
 		}
-		if(registrada) return;
-		TDSListaCancionesDAO adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
+		if(registrada) {
+			System.err.println("Entity already registered. ");
+			return;
+		}
+		// Guardamos las listas
 		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.store(lc));
+		
+		// Guardamos la lista de recientes
+		adaptadorListaCanciones.store(usuario.getListaRecientes());
+		
+		// Guardamos las canciones más reproducidas
+		usuario.getMasReproducidas().keySet().stream().forEach(c -> adaptadorCancion.store(c));
+		
 		eUsuario = UsuarioToEntidad(usuario);
 		servPersistencia.registrarEntidad(eUsuario);
 		usuario.setId(eUsuario.getId());
@@ -81,8 +99,15 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 			System.err.println("Entity not registered yet. " + e);
 			return false;
 		}
-		TDSListaCancionesDAO adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
+		// Eliminamos las listas
 		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.delete(lc));
+		
+		// Eliminamos la lista de recientes
+		adaptadorListaCanciones.delete(usuario.getListaRecientes());
+				
+		// Eliminamos las canciones más reproducidas
+		usuario.getMasReproducidas().keySet().stream().forEach(c -> adaptadorCancion.delete(c));
+		
 		return servPersistencia.borrarEntidad(eUsuario);
 	}
 
@@ -121,7 +146,16 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		servPersistencia.anadirPropiedadEntidad(eUsuario, PREMIUM, String.valueOf(usuario.isPremium()));
 		
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, LISTASCANCIONES);
-		servPersistencia.anadirPropiedadEntidad(eUsuario, LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListasCanciones()));	
+		servPersistencia.anadirPropiedadEntidad(eUsuario, LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListasCanciones()));
+		
+		servPersistencia.eliminarPropiedadEntidad(eUsuario, CANCIONESRECIENTES);
+		servPersistencia.anadirPropiedadEntidad(eUsuario, CANCIONESRECIENTES, 
+				adaptadorListaCanciones.getIdsFromCanciones(usuario.getListaRecientes().getCanciones()));
+		
+		servPersistencia.eliminarPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS);
+		servPersistencia.anadirPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS, 
+				adaptadorListaCanciones.getIdsFromCanciones(new ArrayList<Cancion>(usuario.getMasReproducidas().keySet())));
+		
 	}
 
 	/**
@@ -170,7 +204,17 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		boolean premium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, PREMIUM));
 		
 		List<ListaCanciones> listas = getListasCancionesFromIds(servPersistencia.recuperarPropiedadEntidad(eUsuario, LISTASCANCIONES));
-		Usuario usuario = new Usuario(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listas);
+		
+		ListaCanciones cancionesRecientes = new ListaCanciones(Usuario.LISTA_RECIENTES, 
+				adaptadorListaCanciones.getCancionesFromIds(servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESRECIENTES)));
+		
+		TreeMap<Cancion, Integer> cancionesMasReproducidas = new TreeMap<>();
+		List<Cancion> canciones = adaptadorListaCanciones.getCancionesFromIds(
+				servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS));
+		canciones.stream().forEach(c -> cancionesMasReproducidas.put(c, c.getNumReproducciones()));
+		
+		Usuario usuario = new Usuario(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listas,
+				cancionesRecientes, cancionesMasReproducidas);
 		usuario.setId(eUsuario.getId());
 		return usuario;
 	}
@@ -192,7 +236,11 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 				new Propiedad(LOGIN, usuario.getLogin()),
 				new Propiedad(PASSWORD, usuario.getPassword()),
 				new Propiedad(PREMIUM, String.valueOf(usuario.isPremium())),
-				new Propiedad(LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListasCanciones())))));
+				new Propiedad(LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListasCanciones())),
+				new Propiedad(CANCIONESRECIENTES, 
+						adaptadorListaCanciones.getIdsFromCanciones(usuario.getListaRecientes().getCanciones())),
+				new Propiedad(CANCIONESMASREPRODUCIDAS, 
+						adaptadorListaCanciones.getIdsFromCanciones(new ArrayList<Cancion>(usuario.getMasReproducidas().keySet()))))));
 		return eUsuario;
 	}
 	

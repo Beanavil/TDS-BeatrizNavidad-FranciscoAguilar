@@ -22,6 +22,7 @@ import javax.swing.border.LineBorder;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.vista.paneles.PanelExplorar;
+import es.um.tds.vista.paneles.PanelMasReproducidas;
 import es.um.tds.vista.paneles.PanelMisListas;
 import es.um.tds.vista.paneles.PanelNuevaLista;
 import es.um.tds.vista.paneles.PanelPulsador;
@@ -117,7 +118,7 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
 		
-		panelExplorar = new PanelExplorar(frmVentanaPrincipal);
+		panelExplorar = new PanelExplorar();
 		tabIcon = new ImageIcon(iconE);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);

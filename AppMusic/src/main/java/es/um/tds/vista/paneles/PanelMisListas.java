@@ -1,21 +1,14 @@
 package es.um.tds.vista.paneles;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.List;
-import java.util.ArrayList;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
 

@@ -57,9 +57,11 @@ public class TDSCancionDAO implements CancionDAO {
 		} 
 		catch (NullPointerException e) {
 			registrada = false;
-			System.err.println("Entity already registered. ");
 		}
-		if(registrada) return;
+		if(registrada) {
+			System.err.println("Entity already registered. ");
+			return;
+		}
 		eCancion = cancionToEntidad(cancion);
 		eCancion = servPersistencia.registrarEntidad(eCancion);
 		cancion.setId(eCancion.getId());
