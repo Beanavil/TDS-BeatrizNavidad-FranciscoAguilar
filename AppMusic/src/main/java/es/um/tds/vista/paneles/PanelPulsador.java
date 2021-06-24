@@ -15,15 +15,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.filechooser.FileSystemView;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.Reproductor;
 import pulsador.Luz;
-import umu.tds.componente.Canciones;
-import umu.tds.componente.MapperCancionesXMLtoJava;
 import pulsador.IEncendidoListener;
 
 public class PanelPulsador extends JPanel {
@@ -92,7 +89,7 @@ public class PanelPulsador extends JPanel {
 			        int returnValue = jfc.showOpenDialog(panelCentral);
 	
 			        if (returnValue == JFileChooser.APPROVE_OPTION) {
-			        	System.out.println(jfc.getSelectedFile().getAbsolutePath());
+			        	//System.out.println(jfc.getSelectedFile().getAbsolutePath());
 			        	controlador.cargarCanciones(jfc.getSelectedFile().getAbsolutePath());
 			        	
 			            panelCentral.revalidate();

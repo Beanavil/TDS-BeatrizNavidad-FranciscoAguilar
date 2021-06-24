@@ -5,14 +5,15 @@ import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
-import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelMisListas extends JPanel{
 
@@ -53,9 +54,15 @@ public class PanelMisListas extends JPanel{
 	 * Crea el panel que contendrá el reproductor
 	 */
 	private JPanel crearPanelInferior() {
-		Reproductor repr = new Reproductor();
+		Reproductor repr = null;
+		try{
+			repr = new Reproductor();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Error interno.\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		JPanel panel = (JPanel) repr.getPanelReproductor();
-		VentanaPrincipal.fixedSize(panel, 250, 50);
+		ComponentUtils.fixedSize(panel, 250, 50);
 		
 		return panel;
 	}

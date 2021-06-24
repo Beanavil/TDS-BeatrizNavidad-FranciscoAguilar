@@ -24,7 +24,6 @@ import javax.swing.JTextField;
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
-import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;

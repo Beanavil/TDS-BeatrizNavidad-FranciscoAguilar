@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,8 +22,9 @@ import javax.swing.border.TitledBorder;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Estilo;
+import es.um.tds.persistencia.DAOException;
+import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;
-import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -50,8 +52,16 @@ public class PanelNuevaLista extends JPanel{
 	
 	/**
 	 * Constructor de la clase //TODO pasar todo a método initialize();
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public PanelNuevaLista() {
+	public PanelNuevaLista() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -139,7 +149,7 @@ public class PanelNuevaLista extends JPanel{
 	 */
 	private JPanel crearPanel3() {
 		JPanel panel = new JPanel();
-		VentanaPrincipal.fixedSize(panel, 350, 250);
+		ComponentUtils.fixedSize(panel, 350, 250);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		tablaIzq = new JTable(new ModeloTabla());
 		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
