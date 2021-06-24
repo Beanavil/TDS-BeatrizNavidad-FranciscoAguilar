@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.regex.Pattern;
@@ -23,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Usuario;
+import es.um.tds.persistencia.DAOException;
 import es.um.tds.vista.VentanaLogin;
 
 import javax.swing.border.Border;
@@ -37,6 +39,7 @@ import com.toedter.calendar.JDateChooser;
  * @author Beatriz y Francisco
  */
 public class VentanaRegistro {
+	private AppMusic controlador;
 	// Ventanas
 	private JFrame frmRegistro;
 	
@@ -82,8 +85,20 @@ public class VentanaRegistro {
 
 	/**
 	 * Constructor
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public VentanaRegistro() {
+	public VentanaRegistro() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
+		controlador = AppMusic.getUnicaInstancia();
 		initialize();
 	}
 	
@@ -104,9 +119,7 @@ public class VentanaRegistro {
 		frmRegistro = new JFrame();
 		frmRegistro.setTitle("Registro AppMusic");
 		frmRegistro.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmRegistro.setResizable(false);
-		frmRegistro.setSize(700, 500);
-		frmRegistro.setMinimumSize(new Dimension(700, 500));
+		
 
 		Container contentPane = frmRegistro.getContentPane();
 		contentPane.setLayout(new BorderLayout());
@@ -328,27 +341,32 @@ public class VentanaRegistro {
 	 */
 	private void crearManejadorBotonRegistar() {
 		btnRegistrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent aEvent) {
 				boolean OK = false;
 				OK = checkFields();
 				if (OK) {
-					boolean registrado = false;
 					LocalDate date = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 					String fecha = date.format(Usuario.formatter);
-					registrado = AppMusic.getUnicaInstancia().registrarUsuario(txtNombre.getText(),
-							txtApellidos.getText(), fecha, txtEmail.getText(), txtUsuario.getText(),
-							new String(txtPassword.getPassword())); 
-					if (registrado) {
-						JOptionPane.showMessageDialog(frmRegistro, "Usuario registrado correctamente.", "Registro",
-								JOptionPane.INFORMATION_MESSAGE);
-						
-						VentanaLogin ventanaLogin = new VentanaLogin();
-						ventanaLogin.mostrarVentana();
-						frmRegistro.dispose();
-					} else {
+					try {
+						controlador.registrarUsuario(txtNombre.getText(),
+								txtApellidos.getText(), fecha, txtEmail.getText(), txtUsuario.getText(),
+								new String(txtPassword.getPassword()));
+					} catch (Exception e) {
 						JOptionPane.showMessageDialog(frmRegistro, "No se ha podido llevar a cabo el registro.\n",
 								"Registro", JOptionPane.ERROR_MESSAGE);
 						frmRegistro.setTitle("Login Gestor Eventos");
+					} 
+					
+					JOptionPane.showMessageDialog(frmRegistro, "Usuario registrado correctamente.", "Registro",
+							JOptionPane.INFORMATION_MESSAGE);
+					
+					try {
+						VentanaLogin ventanaLogin = new VentanaLogin();
+						ventanaLogin.mostrarVentana();
+						frmRegistro.dispose();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(frmRegistro, "Error interno.\n",
+										"Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -361,10 +379,21 @@ public class VentanaRegistro {
 	 */
 	private void crearManejadorBotonCancelar() {
 		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				VentanaLogin ventanaLogin = new VentanaLogin();
-				ventanaLogin.mostrarVentana();
-				frmRegistro.dispose();
+			public void actionPerformed(ActionEvent aEvent) {
+				int result = JOptionPane.showOptionDialog(frmRegistro, 
+						"¿Está seguro de que desea salir del registro?", "Confirmar salida de registro",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
+				if (result == JOptionPane.YES_OPTION) {
+					try {
+						VentanaLogin ventanaLogin = new VentanaLogin();
+						ventanaLogin.mostrarVentana();
+						frmRegistro.dispose();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(frmRegistro, "Error interno.\n",
+										"Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 			}
 		});
 	}
@@ -415,12 +444,18 @@ public class VentanaRegistro {
 			salida = false;
 		}
 		// Comprobar que no exista otro usuario con igual login 
-		if (!lblUsuarioError.getText().isEmpty() && AppMusic.getUnicaInstancia().esUsuarioRegistrado(txtUsuario.getText())) {
-			lblUsuarioError.setText("Usuario ya registrado");
-			lblUsuarioError.setVisible(true);
-			lblUsuario.setForeground(Color.RED);
-			txtUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
-			salida = false;
+		try {
+			if (!lblUsuarioError.getText().isEmpty() && controlador.esUsuarioRegistrado(txtUsuario.getText())) {
+				lblUsuarioError.setText("Usuario ya registrado");
+				lblUsuarioError.setVisible(true);
+				lblUsuario.setForeground(Color.RED);
+				txtUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
+				salida = false;
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(frmRegistro, "No se ha podido llevar a cabo el registro.\n",
+					"Registro", JOptionPane.ERROR_MESSAGE);
+			frmRegistro.setTitle("Login Gestor Eventos");
 		}
 		String password = new String(txtPassword.getPassword());
 		String password2 = new String(txtPasswordChk.getPassword());

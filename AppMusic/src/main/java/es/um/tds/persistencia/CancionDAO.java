@@ -22,7 +22,6 @@ public interface CancionDAO {
 	 * Modifica los datos de una canción (ruta del fichero que la contiene).
 	 * @param cancion canción que se quiere modificar.
 	 */
-	// TODO ¿permitir más modificaciones?
 	public void update(Cancion cancion);
 	
 	/**

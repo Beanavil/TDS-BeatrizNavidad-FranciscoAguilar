@@ -1,5 +1,7 @@
 package es.um.tds.persistencia;
 
+import java.lang.reflect.InvocationTargetException;
+
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 
@@ -21,25 +23,41 @@ public abstract class FactoriaDAO {
 	 * Crea una instancia de un tipo de factoría (solo existe TDSFactoriaDAO) o devuelve la que ya hay.
 	 * @param tipo nombre de la clase del tipo de factoría a crear.
 	 * @return única instancia de la clase FactoriaDAO.
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 * @throws DAOException.
 	 */
-	public static FactoriaDAO getInstancia(String tipo) throws DAOException {
+
+	public static FactoriaDAO getInstancia(String tipo) throws DAOException, 
+	InstantiationException, IllegalAccessException, IllegalArgumentException, 
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
 		if (unicaInstancia == null) {
-			try { 
-				unicaInstancia = (FactoriaDAO)Class.forName(tipo).getDeclaredConstructor().newInstance();
-			} catch (Exception e) {	
-				throw new DAOException(e.getMessage());
-			} 
-		}	
+			unicaInstancia = (FactoriaDAO)Class.forName(tipo).getDeclaredConstructor().newInstance();
+		} 
 		return unicaInstancia;
 	}
 	
 	/**
 	 * Crea un tipo de factoria DAO (TDSFactoriaDAO) o devuelve el que ya hay creado.
 	 * @return Única instancia de la factoría.
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 * @throws DAOException.
 	 */
-	public static FactoriaDAO getInstancia() throws DAOException {
+	public static FactoriaDAO getInstancia() throws DAOException, 
+	InstantiationException, IllegalAccessException, IllegalArgumentException, 
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
+		
 		return getInstancia(FactoriaDAO.DAO_TDS);
 	}
 

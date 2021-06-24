@@ -20,7 +20,7 @@ public interface UsuarioDAO {
 	
 	/**
 	 * Modifica los datos de un usuario (email, nombreUsuario, contraseña y lista de listas de canciones). 
-	 * @param usuario usuario cuyos datos queremos modificar. //TODO ¿modificar más cosas?
+	 * @param usuario usuario cuyos datos queremos modificar. 
 	 */
 	void update(Usuario usuario);
 	

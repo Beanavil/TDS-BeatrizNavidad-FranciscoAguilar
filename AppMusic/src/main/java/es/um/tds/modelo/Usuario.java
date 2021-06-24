@@ -200,7 +200,7 @@ public class Usuario implements Descuento {
 		this.password = password;
 	}
 	
-	public void setListasCanciones(ArrayList<ListaCanciones> listasCanciones) {
+	public void setListasCanciones(List<ListaCanciones> listasCanciones) {
 		this.listasCanciones = new ArrayList<>(listasCanciones);
 	}
 	

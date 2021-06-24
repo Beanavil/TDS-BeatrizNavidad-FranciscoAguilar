@@ -1,13 +1,9 @@
 umu/tds/componente/package-info.class
-umu/tds/componente/MapperCancionesXMLtoJava.class
-umu/tds/componente/Cancion.class
-umu/tds/componente/ICargadoListener.class
-umu/tds/test/TestPlay.class
-umu/tds/componente/CancionesEvent.class
 umu/tds/componente/CargadorCanciones.class
 umu/tds/componente/Canciones.class
-umu/tds/test/TestPlay$3.class
+umu/tds/componente/MapperCancionesXMLtoJava.class
+umu/tds/componente/Cancion.class
 umu/tds/componente/ObjectFactory.class
+umu/tds/componente/ICargadoListener.class
+umu/tds/componente/CancionesEvent.class
 umu/tds/componente/Programa.class
-umu/tds/test/TestPlay$2.class
-umu/tds/test/TestPlay$1.class

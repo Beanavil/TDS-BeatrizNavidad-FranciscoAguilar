@@ -1,7 +1,6 @@
 package umu.tds.componente;
 
 import java.io.Serializable;
-import java.util.EventObject;
 import java.util.Vector;
 
 /**
@@ -57,8 +56,8 @@ public class CargadorCanciones implements Serializable {
 		this.archivoCanciones = canciones;
 		
 		// Notificar oyentes de que hay nueva carga
-		EventObject o = new CancionesEvent(this, canciones);
-		notificarOyentes(o);
+		CancionesEvent cEvent = new CancionesEvent(this, canciones);
+		notificarOyentes(cEvent);
 	}
 	
 	
@@ -67,12 +66,12 @@ public class CargadorCanciones implements Serializable {
  	 * @param e Evento a notificar
  	 */
  	@SuppressWarnings("unchecked")
- 	public void notificarOyentes(EventObject e) {
+ 	public void notificarOyentes(CancionesEvent cEvent) {
  		Vector<ICargadoListener> copia;
  		synchronized (this) {
  			copia = (Vector<ICargadoListener>) oyentes.clone();
  		}
- 		copia.forEach(o -> o.enteradoCarga(e)); 
+ 		copia.forEach(o -> o.enteradoCarga(cEvent)); 
  	}
 
 }

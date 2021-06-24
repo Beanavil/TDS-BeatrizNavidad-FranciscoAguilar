@@ -3,8 +3,9 @@ package es.um.tds.persistencia;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
@@ -33,8 +34,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	private static final String CANCIONESMASREPRODUCIDAS = "cancionesMasReproducidas";
 	private ServicioPersistencia servPersistencia;
 	private static TDSUsuarioDAO unicaInstancia;
-	private TDSListaCancionesDAO adaptadorListaCanciones; 
-	private TDSCancionDAO adaptadorCancion; 
+	private TDSListaCancionesDAO adaptadorListaCanciones;  
 
 	/**
 	 * Constructor.
@@ -42,7 +42,6 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	private TDSUsuarioDAO() {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
-		adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 	}
 	
 	/**
@@ -51,7 +50,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 */
 	public static TDSUsuarioDAO getUnicaInstancia() {
 		if (unicaInstancia == null) 
-			return new TDSUsuarioDAO(); 
+			unicaInstancia = new TDSUsuarioDAO(); 
 		return unicaInstancia;       
 	} 
 	
@@ -59,27 +58,14 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void store(Usuario usuario) {
-		Entidad eUsuario;
-		boolean registrada = true;
-		try {
-			eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
-		} 
-		catch (NullPointerException e) {
-			registrada = false;
-		}
-		if(registrada) {
-			System.err.println("Entity already registered. ");
-			return;
-		}
+	public void store(Usuario usuario) throws NullPointerException {
+		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId()); // puede ser null
+		
 		// Guardamos las listas
 		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.store(lc));
 		
 		// Guardamos la lista de recientes
 		adaptadorListaCanciones.store(usuario.getListaRecientes());
-		
-		// Guardamos las canciones más reproducidas
-		usuario.getMasReproducidas().keySet().stream().forEach(c -> adaptadorCancion.store(c));
 		
 		eUsuario = UsuarioToEntidad(usuario);
 		servPersistencia.registrarEntidad(eUsuario);
@@ -90,23 +76,14 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean delete(Usuario usuario) {
-		Entidad eUsuario = new Entidad();
-		try {
-			eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return false;
-		}
+	public boolean delete(Usuario usuario) throws NullPointerException {
+		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId()); // puede ser null
+
 		// Eliminamos las listas
 		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.delete(lc));
 		
 		// Eliminamos la lista de recientes
 		adaptadorListaCanciones.delete(usuario.getListaRecientes());
-				
-		// Eliminamos las canciones más reproducidas
-		usuario.getMasReproducidas().keySet().stream().forEach(c -> adaptadorCancion.delete(c));
 		
 		return servPersistencia.borrarEntidad(eUsuario);
 	}
@@ -115,15 +92,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(Usuario usuario) {
-		Entidad eUsuario = new Entidad();
-		try {
-			eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return;
-		}
+	public void update(Usuario usuario) throws NullPointerException {
+		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId()); // puede ser null
+
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, NOMBRE);
 		servPersistencia.anadirPropiedadEntidad(eUsuario, NOMBRE, usuario.getNombre());
 		
@@ -162,15 +133,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Usuario get(int id) {
-		Entidad eUsuario = new Entidad();
-		try {
-			eUsuario = servPersistencia.recuperarEntidad(id);
-		} 
-		catch (NullPointerException e) {
-			System.err.println("Entity not registered yet. " + e);
-			return null;
-		}
+	public Usuario get(int id) throws NullPointerException {
+		Entidad eUsuario = servPersistencia.recuperarEntidad(id); // puede ser null
+
 		return entidadToUsuario(eUsuario);
 	}
 
@@ -180,7 +145,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	@Override
 	public List<Usuario> getAll() {
 		List<Usuario> usuarios = new ArrayList<>();
-		List<Entidad> eUsuarios = servPersistencia.recuperarEntidades(USUARIO);
+		List<Entidad> eUsuarios = servPersistencia.recuperarEntidades(USUARIO); 
 		if (eUsuarios != null)
 			eUsuarios.stream().forEach(e -> usuarios.add(get(e.getId())));
 		return usuarios;
@@ -208,7 +173,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		ListaCanciones cancionesRecientes = new ListaCanciones(Usuario.LISTA_RECIENTES, 
 				adaptadorListaCanciones.getCancionesFromIds(servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESRECIENTES)));
 		
-		TreeMap<Cancion, Integer> cancionesMasReproducidas = new TreeMap<>();
+		Map<Cancion, Integer> cancionesMasReproducidas = new TreeMap<>();
 		List<Cancion> canciones = adaptadorListaCanciones.getCancionesFromIds(
 				servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS));
 		canciones.stream().forEach(c -> cancionesMasReproducidas.put(c, c.getNumReproducciones()));
@@ -262,17 +227,12 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * @return lista de listas de canciones.
 	 */
 	private List<ListaCanciones> getListasCancionesFromIds(String ids) {
-		ArrayList<ListaCanciones> listasCanciones = new ArrayList<>();
-		TDSListaCancionesDAO adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
-		StringTokenizer tok = new StringTokenizer(ids, " ");
-		while(tok.hasMoreTokens()) {
-			try {
-				listasCanciones.add(adaptadorListaCanciones.get(Integer.valueOf((String)tok.nextElement())));
-			} 
-			catch (NumberFormatException e) { 
-				System.err.println("Unable to get id. " + e);
-			}
-		}
+		if (ids.trim().isEmpty())
+			return new ArrayList<ListaCanciones>();
+		
+		List<ListaCanciones> listasCanciones = Arrays.stream(ids.split(" "))
+                .map(id -> adaptadorListaCanciones.get(Integer.valueOf(id)))
+                .collect(Collectors.toList());
 		return listasCanciones;
 	}
 }

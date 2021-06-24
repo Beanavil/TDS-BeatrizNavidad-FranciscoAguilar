@@ -1,8 +1,8 @@
 package es.um.tds.controlador;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
 
 import es.um.tds.modelo.Cancion;
@@ -44,7 +44,11 @@ public final class AppMusic implements ICargadoListener{
 	 */
 	public static void main( String[] args ) throws IOException
 	{
-		new VentanaLogin();
+		try {
+			new VentanaLogin();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		//AppMusic.getUnicaInstancia().cargarCanciones("./XML/canciones.xml");
 		//AppMusic.getUnicaInstancia().getCanciones().stream().forEach(c -> System.out.println(c.toString()));
 	}
@@ -52,8 +56,18 @@ public final class AppMusic implements ICargadoListener{
 	
 	/**
 	 * Constructor 
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	private AppMusic() {
+	private AppMusic() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
+		
 		inicializarAdaptadores();
 		inicializarCatalogos();
 	}
@@ -61,14 +75,20 @@ public final class AppMusic implements ICargadoListener{
 	
 	/**
 	 * Método para inicializar los adaptadores de las clases persistentes
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws DAOException 
 	 */
-	private void inicializarAdaptadores() {
-		FactoriaDAO factoria = null;
-		try {
-			factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
-		} catch (DAOException e) {
-			e.printStackTrace();
-		}
+	private void inicializarAdaptadores() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
+		FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
 		adaptadorUsuario = factoria.getUsuarioDAO();
 		adaptadorCancion = factoria.getCancionDAO();
 		//adaptadorListaCanciones = factoria.getListaCancionesDAO();
@@ -77,8 +97,19 @@ public final class AppMusic implements ICargadoListener{
 	
 	/**
 	 * Método para inicializar los catálogos
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	private void inicializarCatalogos() {
+	private void inicializarCatalogos() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		catalogoUsuarios = CatalogoUsuarios.getUnicaInstancia();
 		catalogoCanciones = CatalogoCanciones.getUnicaInstancia();
 	}
@@ -241,10 +272,8 @@ public final class AppMusic implements ICargadoListener{
      * @param cancion
      */
     public void actualizarNumReproducciones(Cancion cancion) {
-    	catalogoCanciones.removeCancion(cancion); 
     	cancion.setNumReproducciones(cancion.getNumReproducciones() + 1);
     	adaptadorCancion.update(cancion);
-    	catalogoCanciones.addCancion(cancion);
     	usuarioActual.addMasReproducida(cancion);
     }
     
@@ -266,153 +295,15 @@ public final class AppMusic implements ICargadoListener{
      * y con este método lo maneja para añadir las canciones cargadas a la bd
      */
     @Override
-    public void enteradoCarga(EventObject e) {
-    	CancionesEvent cEvent = (CancionesEvent) e;
+    public void enteradoCarga(CancionesEvent cEvent) {
     	cEvent.getCanciones().getCancion().stream()
     	.forEach(
     			c -> {
-    					AppMusic.getUnicaInstancia().registrarCancion(c.getTitulo(), c.getInterprete(), 
+    					this.registrarCancion(c.getTitulo(), c.getInterprete(), 
     							Estilo.valor(c.getEstilo()), c.getURL(), 0);
     				 });
     } 
     
-    
-//    /**
-//     * Reproduce una canción 
-//     * @param url URL de la ubicación de la canción
-//     */
-//    public void playCancion(String url) {
-//		URL uri = null;
-//		try {
-//			com.sun.javafx.application.PlatformImpl.startup(() -> {
-//			});
-//
-//			uri = new URL(url);
-//
-//			System.setProperty("java.io.tmpdir", tempPath);
-//			Path mp3 = Files.createTempFile("now-playing", ".mp3");
-//
-//			System.out.println(mp3.getFileName());
-//			try (InputStream stream = uri.openStream()) {
-//				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
-//			}
-//			System.out.println("finished-copy: " + mp3.getFileName());
-//
-//			Media media = new Media(mp3.toFile().toURI().toString());
-//			mediaPlayer = new MediaPlayer(media);
-//			
-//			mediaPlayer.play();
-//		} catch (MalformedURLException e1) {
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
-//	}
-//    
-//    
-//    /**
-//     * Para una canción en reproducción
-//     */
-//    public void stopCancion() {
-//		if (mediaPlayer != null) mediaPlayer.stop();
-//		File directorio = new File(tempPath);
-//		String[] files = directorio.list();
-//		for (String archivo : files) {
-//			File fichero = new File(tempPath + File.separator + archivo);
-//			fichero.delete();
-//		}
-//	}
-    
-//   /**
-//     * Reproduce una canción 
-//     * @param url URL de la ubicación de la canción
-//     */
-//    public void playCancion(String url) {
-//		URL uri = null;
-//		try {
-//			com.sun.javafx.application.PlatformImpl.startup(() -> {
-//			});
-//
-//			uri = new URL(url);
-//
-//			System.setProperty("java.io.tmpdir", tempPath);
-//			Path mp3 = Files.createTempFile("now-playing", ".mp3");
-//
-//			System.out.println(mp3.getFileName());
-//			try (InputStream stream = uri.openStream()) {
-//				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
-//			}
-//			System.out.println("finished-copy: " + mp3.getFileName());
-//
-//			Media media = new Media(mp3.toFile().toURI().toString());
-//			mediaPlayer = new MediaPlayer(media);
-//			
-//			mediaPlayer.play();
-//		} catch (MalformedURLException e1) {
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
-//	}
-//    
-//    
-//    /**
-//     * Para una canción en reproducción
-//     */
-//    public void stopCancion() {
-//		if (mediaPlayer != null) mediaPlayer.stop();
-//		File directorio = new File(tempPath);
-//		String[] files = directorio.list();
-//		for (Strin/**
-//     * Reproduce una canción 
-//     * @param url URL de la ubicación de la canción
-//     */
-//    public void playCancion(String url) {
-//		URL uri = null;
-//		try {
-//			com.sun.javafx.application.PlatformImpl.startup(() -> {
-//			});
-//
-//			uri = new URL(url);
-//
-//			System.setProperty("java.io.tmpdir", tempPath);
-//			Path mp3 = Files.createTempFile("now-playing", ".mp3");
-//
-//			System.out.println(mp3.getFileName());
-//			try (InputStream stream = uri.openStream()) {
-//				Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
-//			}
-//			System.out.println("finished-copy: " + mp3.getFileName());
-//
-//			Media media = new Media(mp3.toFile().toURI().toString());
-//			mediaPlayer = new MediaPlayer(media);
-//			
-//			mediaPlayer.play();
-//		} catch (MalformedURLException e1) {
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			e1.printStackTrace();
-//		}
-//	}
-//    
-//    
-//    /**
-//     * Para una canción en reproducción
-//     */
-//    public void stopCancion() {
-//		if (mediaPlayer != null) mediaPlayer.stop();
-//		File directorio = new File(tempPath);
-//		String[] files = directorio.list();
-//		for (String archivo : files) {
-//			File fichero = new File(tempPath + File.separator + archivo);
-//			fichero.delete();
-//		}
-//	}g archivo : files) {
-//			File fichero = new File(tempPath + File.separator + archivo);
-//			fichero.delete();
-//		}
-//	}suarioActual.isR)
-//  }
     
     /**
      * Añade una canción reciente a la lista de canciones recientes del usuario
@@ -428,10 +319,8 @@ public final class AppMusic implements ICargadoListener{
     public void crearLista(String nombre) {
     	if (usuarioActual != null) {
     		ListaCanciones lista = new ListaCanciones(nombre);
-    		catalogoUsuarios.removeUsuario(usuarioActual);
     		usuarioActual.addListaCanciones(lista);
     		adaptadorUsuario.update(usuarioActual);
-    		catalogoUsuarios.addUsuario(usuarioActual); // TODO ver lo del update en el catálogo
     	}
     }
     
@@ -461,40 +350,40 @@ public final class AppMusic implements ICargadoListener{
     
     
     public List<Cancion> getCancionesRecientes() {
-		ArrayList<Cancion> recientes = new ArrayList<>();
+		List<Cancion> recientes = new ArrayList<>();
 		if (usuarioActual != null) {
 			ListaCanciones listaRecientes = usuarioActual.getListaRecientes();
-			recientes = (ArrayList<Cancion>) listaRecientes.getCanciones();
+			recientes = (List<Cancion>) listaRecientes.getCanciones();
 		}
 		return recientes;
 	}
 
 
 	public List<Cancion> getCancionesMasReproducidas() {
-		ArrayList<Cancion> masReproducidas = new ArrayList<>();
+		List<Cancion> masReproducidas = new ArrayList<>();
 		if (usuarioActual != null)
 			masReproducidas = new ArrayList<Cancion>(usuarioActual.getMasReproducidas().keySet());
 		return masReproducidas;
 	}
-	
-    /**
-	 * Método auxiliar para ver si un string contiene a otro como subcadena sin tener en 
-	 * cuenta las mayúsculas.
-	 * @param str String en el que buscamos la subcadena
-	 * @param subStr Posible subcadena de str
-	 * @return Si subStr está contenido en str, case insensitive
-	 */
-	public static boolean containsIgnoreCase(String str, String subStr) {
-        return str.toLowerCase().contains(subStr.toLowerCase());
-    }
     
     // Getters
     
     /**
      * Método para obtener la única instancia del controlador
      * @return Única instancia controlador
+     * @throws DAOException 
+     * @throws ClassNotFoundException 
+     * @throws SecurityException 
+     * @throws NoSuchMethodException 
+     * @throws InvocationTargetException 
+     * @throws IllegalArgumentException 
+     * @throws IllegalAccessException 
+     * @throws InstantiationException 
      */
-    public static AppMusic getUnicaInstancia() {
+    public static AppMusic getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
+    IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+    ClassNotFoundException, DAOException {
+    	
     	if (unicaInstancia == null)
     		unicaInstancia = new AppMusic();
     	return unicaInstancia;

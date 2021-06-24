@@ -198,12 +198,19 @@ public class PanelNuevaLista extends JPanel{
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String nombreLista = txtCrear.getText();
+				//En caso de que la lista no existiese
 				if (! controlador.existeLista(nombreLista)) {
-					controlador.crearLista(nombreLista);
+					int result = JOptionPane.showConfirmDialog(panelInv, 
+						"¿Desea crear una nueva lista?", "Crear nueva Lista",
+						JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						controlador.crearLista(nombreLista);
+						panelInv.setVisible(true);
+					}
 				}
 				//TODO Distinguir si existe la lista o no y proceder
 				
-				panelInv.setVisible(true);
+				
 			}
 		});
 	}

@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.persistencia.DAOException;
 import es.um.tds.vista.paneles.PanelExplorar;
 import es.um.tds.vista.paneles.PanelMasReproducidas;
 import es.um.tds.vista.paneles.PanelMisListas;
@@ -33,11 +36,10 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 
 public class VentanaPrincipal {
 
-	private AppMusic controlador = AppMusic.getUnicaInstancia();
+	private AppMusic controlador;
 	private JFrame frmVentanaPrincipal;
 	private JPanel panelExplorar;
 	private JPanel panelNuevaLista;
@@ -48,8 +50,20 @@ public class VentanaPrincipal {
 	
 	/**
 	 * Constructor
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public VentanaPrincipal() { // TODO saber el usuario actual
+	public VentanaPrincipal() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException { 
+		// TODO saber el usuario actual
+		controlador = AppMusic.getUnicaInstancia();
 		initialize();
 	}
 
@@ -70,8 +84,6 @@ public class VentanaPrincipal {
 		frmVentanaPrincipal = new JFrame();
 		frmVentanaPrincipal.setTitle("AppMusic");
 		frmVentanaPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmVentanaPrincipal.setSize(700, 500);
-		frmVentanaPrincipal.setMinimumSize(new Dimension(700, 500));
 		
 		//Parte superior
 		JPanel panelSuperior = new JPanel();
@@ -90,7 +102,7 @@ public class VentanaPrincipal {
 		JPanel panelCentral = new JPanel();
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-		tabbedPane.setUI(new CustomTabbedPaneUI());
+		tabbedPane.setUI(new TabsColoresUI());
 		panelCentral.add(tabbedPane);
 		
 		BufferedImage iconE = null;
@@ -111,14 +123,24 @@ public class VentanaPrincipal {
 		}
 		
 		// Pestañas con los iconos correspondientes
-		panelRecientes = new PanelRecientes();
+		try {
+			panelRecientes = new PanelRecientes();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(frmVentanaPrincipal, "Error interno. \n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		ImageIcon tabIcon = new ImageIcon(iconR);
 		Image image = tabIcon.getImage();
 		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Recientes", tabIcon, panelRecientes);
 		
-		panelExplorar = new PanelExplorar();
+		try {
+			panelExplorar = new PanelExplorar();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(frmVentanaPrincipal, "Error interno. \n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		tabIcon = new ImageIcon(iconE);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
@@ -145,8 +167,12 @@ public class VentanaPrincipal {
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Mis listas", tabIcon, panelMisListas);
-		
-		panelMasReproducidas = new PanelMasReproducidas();
+
+		try {
+			panelMasReproducidas = new PanelMasReproducidas();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(panelCentral, "Error interno.\n", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 		tabIcon = new ImageIcon(iconMR);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 35, java.awt.Image.SCALE_SMOOTH);
@@ -172,7 +198,6 @@ public class VentanaPrincipal {
 		panelPrincipal.add(panelCentral, BorderLayout.CENTER);
 		
 		frmVentanaPrincipal.pack();
-		
 		mostrarVentana();
 	}
 
@@ -277,15 +302,22 @@ public class VentanaPrincipal {
 	 */
 	private void crearManejadorBotonLogout(JButton btnLogout) {
 		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
-						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
-						JOptionPane.YES_NO_OPTION);
+			public void actionPerformed(ActionEvent aEvent) {
+				int result = JOptionPane.showOptionDialog(frmVentanaPrincipal, 
+						"¿Está seguro de que desea cerrar sesión?", "Confirmar logout",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
 					controlador.setUsuarioActual(null);
-					VentanaLogin window = new VentanaLogin();
-					window.mostrarVentana();
-					frmVentanaPrincipal.dispose();
+					VentanaLogin ventanaLogin;
+					try {
+						ventanaLogin = new VentanaLogin();
+						ventanaLogin.mostrarVentana();
+						frmVentanaPrincipal.dispose();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(frmVentanaPrincipal, "Error interno.\n",
+										"Error", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
@@ -307,17 +339,6 @@ public class VentanaPrincipal {
 //				}
 			}
 		});
-	}
-
-	
-	/**
-	 * Fija el tamaño de un componente
-	 */
-	public static void fixedSize(JComponent o, int x, int y) {
-		Dimension d = new Dimension(x, y);
-		o.setMinimumSize(d);
-		o.setMaximumSize(d);
-		o.setPreferredSize(d);
 	}
 	
 }

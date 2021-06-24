@@ -1,24 +1,30 @@
 package es.um.tds.vista.paneles;
 
 import java.awt.BorderLayout;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.persistencia.DAOException;
+import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
-import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelMasReproducidas extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private AppMusic controlador;
 	
-	public PanelMasReproducidas() {
+	public PanelMasReproducidas() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();
@@ -42,11 +48,11 @@ public class PanelMasReproducidas extends JPanel {
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 	    
 		JPanel panelVacio = new JPanel(new BorderLayout());
-		VentanaPrincipal.fixedSize(panelVacio, 20, 20);
+		ComponentUtils.fixedSize(panelVacio, 20, 20);
 		panelCentral.add(panelVacio, BorderLayout.NORTH);
 		
 		JPanel panelTabla = new JPanel(new BorderLayout());
-		VentanaPrincipal.fixedSize(panelTabla, 600, 200);
+		//ComponentUtils.fixedSize(panelTabla, 600, 200);
 		panelCentral.add(panelTabla, BorderLayout.CENTER);
 	    
 		JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones más reproducidas", 
@@ -64,9 +70,15 @@ public class PanelMasReproducidas extends JPanel {
 		JPanel panelInferior = new JPanel();
 		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
 		
-		Reproductor repr = new Reproductor();
+		Reproductor repr = null;
+		try{
+			repr = new Reproductor();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		VentanaPrincipal.fixedSize(panelRepr, 250, 50);
+		//ComponentUtils.fixedSize(panelRepr, 250, 50);
 		panelInferior.add(panelRepr);
 		
 		return panelInferior;
