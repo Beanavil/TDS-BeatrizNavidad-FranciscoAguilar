@@ -94,7 +94,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		adaptadorListaCanciones.store(usuario.getListaRecientes());
 		
 		Entidad eUsuario = UsuarioToEntidad(usuario);
-		servPersistencia.registrarEntidad(eUsuario);
+		eUsuario = servPersistencia.registrarEntidad(eUsuario);
 		usuario.setId(eUsuario.getId());
 	}
 

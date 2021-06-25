@@ -75,7 +75,7 @@ public class TDSCancionDAO implements CancionDAO {
 		if (cancion.getId() >= 0)
 			return;
 		Entidad eCancion = CancionToEntidad(cancion);
-		servPersistencia.registrarEntidad(eCancion);
+		eCancion = servPersistencia.registrarEntidad(eCancion);
 		cancion.setId(eCancion.getId());
 	}
 

@@ -76,7 +76,7 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 		if (lista.getId() >= 0)
 			return;
 		Entidad eLista = ListaCancionesToEntidad(lista);
-		servPersistencia.registrarEntidad(eLista);
+		eLista = servPersistencia.registrarEntidad(eLista);
 		lista.setId(eLista.getId());
 	}
 
