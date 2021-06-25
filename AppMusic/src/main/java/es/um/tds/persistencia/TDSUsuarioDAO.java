@@ -252,8 +252,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * @return string con los ids.
 	 */
 	private String getIdsFromListasCanciones(List<ListaCanciones> listasCanciones) {
-		String ids = "";
-		listasCanciones.stream().forEach(lc -> ids.concat(String.valueOf(lc.getId()).concat(" ")));
+		String ids = listasCanciones.stream()
+				.map(lc -> String.valueOf(lc.getId()))
+				.collect(Collectors.joining(" "));
 		return ids;
 	}
 	
