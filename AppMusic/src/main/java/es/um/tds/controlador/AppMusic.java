@@ -13,6 +13,7 @@ import es.um.tds.modelo.Usuario;
 import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
+import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
 import umu.tds.componente.CancionesEvent;
 import umu.tds.componente.CargadorCanciones;
@@ -28,7 +29,7 @@ public final class AppMusic implements ICargadoListener{
 
 	private UsuarioDAO adaptadorUsuario;
 	private CancionDAO adaptadorCancion;
-	//private ListaCancionesDAO adaptadorListaCanciones;
+	private ListaCancionesDAO adaptadorListaCanciones;
 	
 	private CatalogoUsuarios catalogoUsuarios;
 	private CatalogoCanciones catalogoCanciones;
@@ -166,6 +167,16 @@ public final class AppMusic implements ICargadoListener{
     	return false;
     }
     
+    /**
+     * Retorna las listas de canciones del usuario actual //TODO No sé si hay que comprobar
+     * que el usuario actual sea distinto de null
+     * @return
+     */
+    public List<ListaCanciones> usuarioGetListas() {
+    		List<ListaCanciones> lista = usuarioActual.getListasCanciones();
+    		return lista;
+    }
+    
     // Funcionalidad canción
     
     /**
@@ -285,16 +296,8 @@ public final class AppMusic implements ICargadoListener{
     	usuarioActual.addCancionReciente(cancion);
     }
     
-
-    // Funcionalidad lista de canciones
     
-    public void crearLista(String nombre) {
-    	if (usuarioActual != null) {
-    		ListaCanciones lista = new ListaCanciones(nombre);
-    		usuarioActual.addListaCanciones(lista);
-    		adaptadorUsuario.update(usuarioActual);
-    	}
-    }
+    // Funcionalidad lista de canciones
     
     /**
      * @param nombreLista Nombre de la lista a comprobar existencia
@@ -309,6 +312,38 @@ public final class AppMusic implements ICargadoListener{
     	}
     	return false;
     }
+    
+    public void crearLista(String nombre) {
+    	if (usuarioActual != null) {
+    		ListaCanciones lista = new ListaCanciones(nombre);
+    		usuarioActual.addListaCanciones(lista);
+    		adaptadorUsuario.update(usuarioActual);
+    	}
+    }
+    
+    /**
+     * Elimina una lista de canciones dada de la BD //TODO
+     * @param lista
+     */
+    public void eliminarLista(ListaCanciones lista) {
+    }
+    
+    /**
+     * Recupera una lista de canciones por su nombre //TODO No creo que sea la mejor forma de hacerlo
+     * @param nombreLista
+     * @return
+     */
+    public ListaCanciones getListaCanciones(String nombreLista) {
+    	if (usuarioActual != null) {
+    		ListaCanciones lista = usuarioActual.getListasCanciones().stream()
+    				.filter(lc -> lc.getNombre().equals(nombreLista))
+    				.findAny()
+    				.orElse(null);
+    	return lista;
+    	}
+    	return null;
+    }
+    
     
     
     public void addCancion(ListaCanciones lista, List<Cancion> cancion) {

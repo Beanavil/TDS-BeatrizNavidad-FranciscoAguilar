@@ -1,8 +1,7 @@
 package es.um.tds.vista.paneles;
 
-import java.awt.Color;
 import java.awt.GridLayout;
-import java.util.Vector;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JList;
@@ -10,9 +9,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import es.um.tds.controlador.AppMusic;
+import es.um.tds.persistencia.DAOException;
 
-import es.um.tds.utils.ComponentUtils;
+import javax.swing.border.TitledBorder;
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
@@ -21,66 +23,83 @@ public class PanelMisListas extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Vector<String> misListas; // TODO cambiar
+	private AppMusic controlador;
+	
+	private JPanel panelSuperior;
+	private JPanel panelInferior;
+	
+	private JList<String> lista;
+	private JTable tabla;
 
-	public PanelMisListas() {
+	public PanelMisListas() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
 		super();
+		this.controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		misListas = new Vector<String>();
-		
-		JPanel panelSuperior = crearPanelSuperior();
-		JPanel panelInferior = crearPanelInferior();
+		panelSuperior = crearPanelSuperior();
+		panelInferior = crearPanelInferior();
 		
 		this.add(panelSuperior);
 		this.add(panelInferior);
 	}
-	
+
 	/**
 	 * Crea el panel que contendrá la lista de las PlayLists del usuario y la tabla con las
 	 * canciones que componen cada una de estas listas
 	 */
 	private JPanel crearPanelSuperior() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(1,2));
-		
 		JPanel panelLista = new JPanel();
-		//panelLista.setMinimumSize(new Dimension(200, 100));
+		
+		panel.setLayout(new GridLayout(1,2));
 		panelLista.setBorder(new TitledBorder(null, "Mis listas.", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
-		JList<String> lista = new JList<String>(new ModeloLista());
-		lista.setListData(misListas);
-		lista.setBackground(Color.WHITE);
-
-		panel.add(panelLista);
-		panelLista.add(lista);
-		
-		JPanel panelTabla = new JPanel();
-		panel.add(panelTabla);
-		
-		JTable tabla = new JTable(new ModeloTabla());
-		//tabla.setPreferredScrollableViewportSize(new Dimension(350,70));
+		tabla = new JTable(new ModeloTabla());
 		tabla.setFillsViewportHeight(true);
-		JScrollPane scrollPane = new JScrollPane(tabla);
 		
-		panelTabla.add(scrollPane);
+		lista = new JList<String>(new ModeloLista(controlador.usuarioGetListas()));
+		lista.addListSelectionListener(
+				new ListSelectionListener() {
+					@Override
+					public void valueChanged(ListSelectionEvent evento) {
+						if (!evento.getValueIsAdjusting()) {
+							@SuppressWarnings("unchecked")
+							JList<String> fuente = (JList<String>)evento.getSource();
+							String nombreLista = fuente.getSelectedValue().toString();
+							((ModeloTabla)tabla.getModel()).setListaCanciones(controlador.getListaCanciones(nombreLista).getCanciones());
+						}
+						
+					}
+				});
+		
+		panelLista.add(lista);
+		panel.add(panelLista);
+		JScrollPane scrollPane = new JScrollPane(tabla);
+		panel.add(scrollPane);
+		
 		return panel;
 	}
 	
 	/**
-	 * Crea el panel que contendrá el reproductor
+	 * Crea el panel inferior que contendrá el reproductor
+	 * @return
 	 */
 	private JPanel crearPanelInferior() {
-		Reproductor repr = null;
-		try{
-			repr = new Reproductor();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(this, "Error interno.\n",
-					"Error", JOptionPane.ERROR_MESSAGE);
-		}
-		JPanel panel = (JPanel) repr.getPanelReproductor();
-		ComponentUtils.fixedSize(panel, 250, 50);
-		
-		return panel;
-	}
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        Reproductor repr = null;
+        try{
+            repr = new Reproductor();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(panel, "Error interno.\n",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        JPanel panelRepr = (JPanel) repr.getPanelReproductor();
+        panel.add(panelRepr);
+
+        return panel;
+    }
 }
+
+

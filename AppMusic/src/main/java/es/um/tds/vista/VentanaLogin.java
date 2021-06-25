@@ -227,6 +227,7 @@ public class VentanaLogin {
 								"Error", JOptionPane.ERROR_MESSAGE);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(frmLogin, "Error interno.\n", "Error", JOptionPane.ERROR_MESSAGE);
+					e.printStackTrace();
 				}
 			}
 		});
