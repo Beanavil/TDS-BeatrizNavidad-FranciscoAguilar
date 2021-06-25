@@ -154,7 +154,11 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Cargar canciones", tabIcon, panelPulsador);
 		
-		panelNuevaLista = new PanelNuevaLista();
+		try {
+			panelNuevaLista = new PanelNuevaLista();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(panelCentral, "Error interno.\n", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 		tabIcon = new ImageIcon(iconNL);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);

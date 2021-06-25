@@ -5,10 +5,15 @@ import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import es.um.tds.controlador.AppMusic;
+import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
@@ -17,13 +22,23 @@ import es.um.tds.vista.VentanaPrincipal;
 public class PanelMisListas extends JPanel{
 
 	private static final long serialVersionUID = 1L;
+	
+	private AppMusic controlador;
+	
+	private JPanel panelSuperior;
+	private JPanel panelInferior;
+	
+	private JList<String> lista;
+	private JTable tabla;
 
+	private Reproductor repr;
+	
 	public PanelMisListas() {
 		super();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		JPanel panelSuperior = crearPanelSuperior();
-		JPanel panelInferior = crearPanelInferior();
+		panelSuperior = crearPanelSuperior();
+		panelInferior = crearPanelInferior();
 		
 		this.add(panelSuperior);
 		this.add(panelInferior);
@@ -37,10 +52,23 @@ public class PanelMisListas extends JPanel{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(1,2));
 		
-		JList<String> lista = new JList<String>(new ModeloLista());
+		//TODO revisar esto, no sé si es correcto
+		lista = new JList<String>(new ModeloLista(controlador.usuarioGetListas()));
+		lista.addListSelectionListener(
+				new ListSelectionListener() {
+					@Override
+					public void valueChanged(ListSelectionEvent evento) {
+						if (!evento.getValueIsAdjusting()) {
+							JList<String> fuente = (JList<String>)evento.getSource();
+							String nombreLista = fuente.getSelectedValue().toString();
+							((ModeloTabla)tabla.getModel()).setListaCanciones(controlador.getListaCanciones(nombreLista).getCanciones());
+						}
+						
+					}
+				});
 		
-		JTable tabla = new JTable(new ModeloTabla());
-		tabla.setPreferredScrollableViewportSize(new Dimension(350,70));
+		tabla = new JTable(new ModeloTabla());
+		tabla.setPreferredScrollableViewportSize(new Dimension(250,70));
 		tabla.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(tabla);
 		
@@ -53,10 +81,18 @@ public class PanelMisListas extends JPanel{
 	 * Crea el panel que contendrá el reproductor
 	 */
 	private JPanel crearPanelInferior() {
-		Reproductor repr = new Reproductor();
+		repr = null;
+		try{
+			repr = new Reproductor();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		JPanel panel = (JPanel) repr.getPanelReproductor();
-		VentanaPrincipal.fixedSize(panel, 250, 50);
+		ComponentUtils.fixedSize(panel, 250, 50);
 		
 		return panel;
 	}
 }
+
+

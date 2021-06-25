@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,7 +23,12 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
+import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.persistencia.DAOException;
+import es.um.tds.utils.ComponentUtils;
+import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.VentanaPrincipal;
 
@@ -42,6 +50,9 @@ public class PanelNuevaLista extends JPanel{
 	private JTable tablaIzq;
 	private JTable tablaDer;
 	
+	private JButton btnAdd;
+	private JButton btnRetirar;
+	
 	private JButton btnAceptar;
 	private JButton btnCancelar;
 	
@@ -51,7 +62,9 @@ public class PanelNuevaLista extends JPanel{
 	/**
 	 * Constructor de la clase //TODO pasar todo a método initialize();
 	 */
-	public PanelNuevaLista() {
+	public PanelNuevaLista() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException{
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -131,6 +144,7 @@ public class PanelNuevaLista extends JPanel{
 	
 		
 		panel.add(btnBuscar);
+		crearManejadorBotonBuscar();
 		return panel;
 	}
 
@@ -139,7 +153,7 @@ public class PanelNuevaLista extends JPanel{
 	 */
 	private JPanel crearPanel3() {
 		JPanel panel = new JPanel();
-		VentanaPrincipal.fixedSize(panel, 350, 250);
+		ComponentUtils.fixedSize(panel, 350, 250);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		tablaIzq = new JTable(new ModeloTabla());
 		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
@@ -184,10 +198,10 @@ public class PanelNuevaLista extends JPanel{
 	private JPanel crearPanelBtn() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		JButton btnañadir = new JButton(">>");
-		JButton btnretirar = new JButton("<<");
-		panel.add(btnañadir);
-		panel.add(btnretirar);
+		btnAdd = new JButton(">>");
+		btnRetirar = new JButton("<<");
+		panel.add(btnAdd);
+		panel.add(btnRetirar);
 		return panel;
 	}
 	
@@ -197,7 +211,9 @@ public class PanelNuevaLista extends JPanel{
 	private void crearManejadorBotonCrear() {
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				((ModeloTabla)tablaDer.getModel()).setListaCanciones(controlador.getCanciones());
 				String nombreLista = txtCrear.getText();
+				
 				//En caso de que la lista no existiese
 				if (! controlador.existeLista(nombreLista)) {
 					int result = JOptionPane.showConfirmDialog(panelInv, 
@@ -206,11 +222,21 @@ public class PanelNuevaLista extends JPanel{
 					if (result == JOptionPane.YES_OPTION) {
 						controlador.crearLista(nombreLista);
 						panelInv.setVisible(true);
-					}
+					} else return;
 				}
-				//TODO Distinguir si existe la lista o no y proceder
 				
-				
+				//Si la lista existe
+				else {
+					int result = JOptionPane.showConfirmDialog(panelInv, 
+							"¿Desea modificarla?", "Ya existe una lista con ese nombre",
+							JOptionPane.YES_NO_OPTION);
+						if (result == JOptionPane.YES_OPTION) {
+							ListaCanciones lista = controlador.getListaCanciones(nombreLista);
+							((ModeloTabla)tablaIzq.getModel()).setListaCanciones(lista.getCanciones());
+							panelInv.setVisible(true);
+							btnEliminar.setVisible(true);
+						} else return;
+				}
 			}
 		});
 	}
@@ -222,9 +248,12 @@ public class PanelNuevaLista extends JPanel{
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(panelInv, 
-						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+						"¿Está seguro de que desea eliminar la lista?", "Confirmar eliminar lista",
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.YES_OPTION) {
+					String nombreLista = txtCrear.getText();
+					ListaCanciones lista = controlador.getListaCanciones(nombreLista);
+					//controlador.eli //TODO vas por aquí, necesitas el adaptador de listas de canciones y eso
 					txtCrear.setText("");
 					txtTitulo.setText("");
 					txtInterprete.setText("");
@@ -236,12 +265,32 @@ public class PanelNuevaLista extends JPanel{
 	}
 	
 	/**
-	 * Crear manejador para el botón "Buscar"
+	 * Crea manejador para el botón de buscar //TODO revisar junto al de Panel explorar pues son distintos
 	 */
-	//TODO es básicamente como el de PanelExplorar, una vez desarrollado ese copiar
-//	private void crearManejadorBotonBuscar() {
-//		
-//	}
+	private void crearManejadorBotonBuscar() {
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<Cancion> canciones;
+				String titulo = txtTitulo.getText();
+				String interprete = txtInterprete.getText();
+				Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
+				if (interprete.trim().isEmpty()) {
+					canciones = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
+						new ArrayList<>(controlador.buscarPorEstilo(estilo.getNombre()));
+				} else {
+					canciones = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
+						new ArrayList<>(controlador.buscarPorInterpreteEstilo(interprete, estilo.getNombre()));
+				}
+				// Si hay título, filtramos las canciones anteriores por título
+				if (!titulo.trim().isEmpty()) {
+					canciones.stream().filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo));
+				}
+				
+				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(canciones);
+				panelInv.updateUI();
+			}
+		});
+	}
 	
 	/**
 	 * Crea manejador para el botón "Cancelar"
@@ -257,6 +306,7 @@ public class PanelNuevaLista extends JPanel{
 					txtTitulo.setText("");
 					txtInterprete.setText("");
 					boxEstilo.setSelectedItem(null);
+					btnEliminar.setVisible(false);
 					panelInv.setVisible(false);
 				}
 			}

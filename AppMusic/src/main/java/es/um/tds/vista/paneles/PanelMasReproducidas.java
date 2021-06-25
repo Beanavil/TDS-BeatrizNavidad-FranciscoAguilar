@@ -55,8 +55,7 @@ public class PanelMasReproducidas extends JPanel {
 		//ComponentUtils.fixedSize(panelTabla, 600, 200);
 		panelCentral.add(panelTabla, BorderLayout.CENTER);
 	    
-		JTable tablaCanciones = new JTable(new ModeloTabla(new ListaCanciones("Canciones más reproducidas", 
-				controlador.getCancionesMasReproducidas())));
+		JTable tablaCanciones = new JTable(new ModeloTabla(controlador.getCancionesMasReproducidas()));
 		tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tablaCanciones.setFillsViewportHeight(true);
 		

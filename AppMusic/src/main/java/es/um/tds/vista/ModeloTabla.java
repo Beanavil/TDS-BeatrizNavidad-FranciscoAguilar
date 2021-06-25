@@ -33,7 +33,7 @@ public class ModeloTabla extends AbstractTableModel{
 	}
 
 
-	public void setlistaCanciones(List<Cancion> listaCanciones) {
+	public void setListaCanciones(List<Cancion> listaCanciones) {
 	  this.listaCanciones = listaCanciones;
 	}
 
