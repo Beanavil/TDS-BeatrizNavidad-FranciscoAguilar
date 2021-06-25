@@ -75,7 +75,7 @@ public final class AppMusic implements ICargadoListener{
 		FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
 		adaptadorUsuario = factoria.getUsuarioDAO();
 		adaptadorCancion = factoria.getCancionDAO();
-		//adaptadorListaCanciones = factoria.getListaCancionesDAO();
+		adaptadorListaCanciones = factoria.getListaCancionesDAO();
 	}
 	
 	
@@ -317,6 +317,7 @@ public final class AppMusic implements ICargadoListener{
     	if (usuarioActual != null) {
     		ListaCanciones lista = new ListaCanciones(nombre);
     		usuarioActual.addListaCanciones(lista);
+    		adaptadorListaCanciones.store(lista);
     		adaptadorUsuario.update(usuarioActual);
     	}
     }
