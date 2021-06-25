@@ -140,7 +140,7 @@ public class CatalogoCanciones {
 	public List<Cancion> getAllStyle(String estilo) {
 		List<Cancion> lista = new ArrayList<>();
 		cancionesTitulo.values().stream()
-		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), estilo)) 
+		.filter(c -> StringUtils.containsIgnoreCase(c.getEstilo().getNombre(), estilo)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}
@@ -157,7 +157,7 @@ public class CatalogoCanciones {
 		List<Cancion> lista = new ArrayList<>();
 		cancionesTitulo.values().stream()
 		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), interprete)) 
-		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), estilo)) 
+		.filter(c -> StringUtils.containsIgnoreCase(c.getEstilo().getNombre(), estilo)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}
