@@ -224,7 +224,7 @@ public class PanelNuevaLista extends JPanel{
 				String nombreLista = txtCrear.getText();
 				
 				//En caso de que la lista no existiese
-				if (! controlador.existeLista(nombreLista)) {
+				if (!controlador.existeLista(nombreLista)) {
 					int result = JOptionPane.showOptionDialog(panelInv, 
 						"¿Desea crear una nueva lista?", "Crear nueva Lista",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
@@ -245,7 +245,7 @@ public class PanelNuevaLista extends JPanel{
 							((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
 							panelInv.setVisible(true);
 							btnEliminar.setVisible(true);
-						} else return;
+						}
 				}
 			}
 		});

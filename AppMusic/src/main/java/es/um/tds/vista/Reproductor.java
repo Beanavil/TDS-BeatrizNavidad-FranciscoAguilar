@@ -38,8 +38,6 @@ public class Reproductor {
 	  private AppMusic controlador;
 
 	  private JPanel panelReproductor;
-	  private JLabel nombreInterprete;
-	  private JLabel nombreTitulo;
 
 	  private JButton btnPrev;
 	  private JButton btnPlay;
@@ -64,14 +62,14 @@ public class Reproductor {
 	public Reproductor() throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
 	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
 		
+		JPanel panelBotones = crearPanelBotones();
 		panelReproductor = new JPanel(new BorderLayout());
+		panelReproductor.add(panelBotones, BorderLayout.CENTER);
+		panelReproductor.setVisible(true);
 		
 		controlador = AppMusic.getUnicaInstancia();
 
-	    JPanel panelBotones = crearPanelBotones();
-	    panelReproductor.add(panelBotones, BorderLayout.CENTER);
-
-	    panelReproductor.setVisible(true);
+		listaActual = new ListaCanciones(" ");
 
 	    try {
 	      com.sun.javafx.application.PlatformImpl.startup(() -> {});
@@ -111,14 +109,7 @@ public class Reproductor {
 		Image image = prev.getImage();
 		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		prev = new ImageIcon(scaledimage);
-	    btnPrev = new JButton(prev);
-	    btnPrev.addActionListener(
-	        event -> {
-	          indiceCancionActual =
-	        		  indiceCancionActual == 0 ? (listaActual.getNumCanciones() - 1) : (indiceCancionActual - 1);
-	          cambiarCancion(listaActual.getCancion(indiceCancionActual));
-	        });
-	    panelBotones.add(btnPrev);
+	    crearBotonPrev(panelBotones);
 	    
 	    // Botón play/stop
 	    play = new ImageIcon(iconPlay);
@@ -132,17 +123,56 @@ public class Reproductor {
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		stop = new ImageIcon(scaledimage);
 		
-	    btnPlay.addActionListener(
-	        event -> {
-	          if (mediaPlayer == null) {
-	            inicializeMediaPlayer();
+	    crearBotonPlay(panelBotones);
+	    
+	    // Botón "canción siguiente" reproduce la canción siguiente en la lista o la primera
+	    // si la que está en reproducción es la última
+	    next = new ImageIcon(iconNext);
+		image = next.getImage();
+		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
+		next = new ImageIcon(scaledimage);
+	    crearBotonNext(panelBotones);
+	    panelBotones.add(Box.createHorizontalGlue());
+	    return panelBotones;
+	  }
+	  
+	  
+	  /**
+	   * Crea el botón de "canción previa" y su manejador de eventos
+	   * @param panelBotones Panel en el que se añade el botón
+	   */
+	  private void crearBotonPrev(JPanel panelBotones) {
+		  btnPrev = new JButton(prev);
+		  btnPrev.addActionListener(
+				  event -> {
+					  if (listaActual.getNumCanciones() > 0) { 
+						  indiceCancionActual =
+								  indiceCancionActual == 0 ? (listaActual.getNumCanciones() - 1) : (indiceCancionActual - 1);
+								  cambiarCancion(listaActual.getCancion(indiceCancionActual));
+					  }
+				  });
+		  panelBotones.add(btnPrev);
+	  }
+
+
+	  /**
+	   * Crea el botón de "reproducir/parar canción" y su manejador de eventos
+	   * @param panelBotones Panel en el que se añade el botón
+	   */
+	 private void crearBotonPlay(JPanel panelBotones) {
+		btnPlay.addActionListener(
+	        aEvent -> {
+	          if (listaActual.getNumCanciones() == 0)
+	        	  return;
+	          else if (mediaPlayer == null) {
+	            crearMediaPlayer();
 	            mediaPlayer.play();
 	            btnPlay.setIcon(stop);
 	          } else {
 	            switch (mediaPlayer.getStatus()) {
 	              case DISPOSED:
 	              case READY:
-	                inicializeMediaPlayer();
+	                crearMediaPlayer();
 	              case STOPPED:
 	              case PAUSED:
 	                btnPlay.setIcon(stop);
@@ -158,24 +188,26 @@ public class Reproductor {
 	          }
 	        });
 	    panelBotones.add(btnPlay);
-	    
-	    // Botón "canción siguiente" reproduce la canción siguiente en la lista o la primera
-	    // si la que está en reproducción es la última
-	    next = new ImageIcon(iconNext);
-		image = next.getImage();
-		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
-		next = new ImageIcon(scaledimage);
-	    btnNext = new JButton(next);
-	    btnNext.addActionListener(
-	        event -> {
-	          indiceCancionActual = (indiceCancionActual + 1) % listaActual.getNumCanciones();
-	          cambiarCancion(listaActual.getCancion(indiceCancionActual));
-	        });
-	    panelBotones.add(btnNext);
-	    panelBotones.add(Box.createHorizontalGlue());
-	    return panelBotones;
-	  }
+	}
 
+	
+	 /**
+	   * Crea el botón de "canción siguiente" y su manejador de eventos
+	   * @param panelBotones Panel en el que se añade el botón
+	   */
+	private void crearBotonNext(JPanel panelBotones) {
+		btnNext = new JButton(next);
+		btnNext.addActionListener(
+				event -> {
+					if (listaActual.getNumCanciones() > 0) { 
+						indiceCancionActual = (indiceCancionActual + 1) % listaActual.getNumCanciones();
+						cambiarCancion(listaActual.getCancion(indiceCancionActual));
+					}
+				});
+		panelBotones.add(btnNext);
+	}
+	
+	
 	  
 	  /**
 	   * Cambia de canción
@@ -185,20 +217,20 @@ public class Reproductor {
 	      mediaPlayer.dispose();
 	    }
 	    btnPlay.setIcon(play);
-
-	    nombreInterprete.setText(cancion.getInterprete());
-	    nombreTitulo.setText(cancion.getTitulo());
 	  }
 
 	  
 	  /**
-	   * Inicialización del player
+	   * Inicialización del mediaPlayer
 	   */
-	  private void inicializeMediaPlayer() {
+	  private void crearMediaPlayer() {
+		if (listaActual.getNumCanciones() == 0)
+			return;
+		
 	    Cancion cancion = listaActual.getCancion(indiceCancionActual);
 	    File f;
 	    try {
-	      f = pathToFile(cancion.getRutaFichero());
+	      f = rutaToFichero(cancion.getRutaFichero());
 	    } catch (IOException e) {
 	      JOptionPane.showMessageDialog(
 	          panelReproductor,
@@ -212,7 +244,7 @@ public class Reproductor {
 
 	    mediaPlayer = new MediaPlayer(media);
 	    mediaPlayer.setOnMarker(
-	        mediaMarkerEvent -> {
+	        mEvent -> {
 	        // Añadir a reproducidas recientes y actualizar la lista de más reproducidas
 	          controlador.actualizarNumReproducciones(cancion);
 	          controlador.addReciente(cancion);
@@ -222,21 +254,21 @@ public class Reproductor {
 
 	  
 	  /**
-	   * Devuelfe fichero con ruta pathName
-	   * @param pathName
-	   * @return
+	   * Devuelfe el fichero con la ruta especificada o un fichero temporal si la ruta comienza con http
+	   * @param ruta
+	   * @return Fichero de la ruta
 	   * @throws IOException
 	   */
-	  private File pathToFile(String pathName) throws IOException {
-	    if (pathName.startsWith("http")) {
-	      URL url = new URL(pathName);
-	      Path mp3 = Files.createTempFile("now-playing", ".mp3");
+	  private File rutaToFichero(String ruta) throws IOException {
+	    if (ruta.startsWith("http")) {
+	      URL url = new URL(ruta);
+	      Path rutaFicheroMP3 = Files.createTempFile("now-playing", ".mp3");
 	      try (InputStream stream = url.openStream()) {
-	        Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
+	        Files.copy(stream, rutaFicheroMP3, StandardCopyOption.REPLACE_EXISTING);
 	      }
-	      return mp3.toFile();
+	      return rutaFicheroMP3.toFile();
 	    } else {
-	      return new File(pathName);
+	      return new File(ruta);
 	    }
 	  }
 

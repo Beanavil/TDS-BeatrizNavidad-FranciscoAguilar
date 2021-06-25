@@ -76,7 +76,7 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 		if (lista.getId() >= 0)
 			return;
 		Entidad eLista = ListaCancionesToEntidad(lista);
-		servPersistencia.registrarEntidad(eLista);
+		eLista = servPersistencia.registrarEntidad(eLista);
 		lista.setId(eLista.getId());
 	}
 
@@ -164,8 +164,9 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * @return string con los ids.
 	 */
 	public String getIdsFromCanciones(List<Cancion> canciones) {
-		String ids = "";
-		canciones.stream().forEach(c -> ids.concat(String.valueOf(c.getId()).concat(" ")));
+		String ids = canciones.stream()
+				.map(c -> String.valueOf(c.getId()))
+				.collect(Collectors.joining(" "));
 		return ids;
 	}
 	

@@ -21,10 +21,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
+import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;
@@ -40,6 +43,8 @@ public class PanelExplorar extends JPanel {
 	private JPanel panelCampos;
 	private JPanel panelInferior;
 	
+	private ListaCanciones resultadoBusqueda;
+	
 	private JTextField campoTitulo;
 	private JTextField campoInterprete;
 	
@@ -49,6 +54,7 @@ public class PanelExplorar extends JPanel {
 	
 	private JComboBox<Estilo> boxEstilo;
 
+	private Reproductor repr;
 	
 	private JButton btnBuscar;
 	private JButton btnCancelar;
@@ -117,7 +123,6 @@ public class PanelExplorar extends JPanel {
 		panelInferior.setVisible(false);
 		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
 		
-		Reproductor repr = null;
 		try{
 			repr = new Reproductor();
 		} catch (Exception e) {
@@ -222,7 +227,6 @@ public class PanelExplorar extends JPanel {
 					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
 					canciones = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
 						new ArrayList<>(controlador.buscarPorEstilo(estilo.getNombre()));
-					canciones.forEach(c -> System.out.println(c.getEstilo())); // quitar
 				} else {
 					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
 					canciones = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
@@ -238,6 +242,9 @@ public class PanelExplorar extends JPanel {
 				// Eliminamos el contenido anterior
 				panelCentral.removeAll();
 				
+				// Creamos una lista de canciones con las canciones encontradas
+				resultadoBusqueda = new ListaCanciones("Resultado búsqueda", canciones);
+				
 				// Añadimos un nuevo panel con la tabla de las canciones encontradas al panel central y lo hacemos visible
 				JPanel panelTabla = new JPanel(new BorderLayout());
 				//ComponentUtils.fixedSize(panelTabla, 600, 200);
@@ -245,6 +252,13 @@ public class PanelExplorar extends JPanel {
 				JTable tablaCanciones = new JTable(new ModeloTabla(canciones));
 				tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 				tablaCanciones.setFillsViewportHeight(true);
+				
+				// Definimos el comportamiento de la app cuando se selecciona un elemento (canción) de la tabla:
+				tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+					public void valueChanged(ListSelectionEvent event) {
+						repr.play(resultadoBusqueda, tablaCanciones.getSelectedRow());
+			        }
+				});
 				
 			    JScrollPane scrollPane = new JScrollPane(tablaCanciones);
 			    panelTabla.add(scrollPane, BorderLayout.CENTER);
