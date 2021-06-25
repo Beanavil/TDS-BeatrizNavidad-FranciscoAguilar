@@ -85,6 +85,15 @@ public class CatalogoUsuarios {
 	
 	
 	/**
+	 * Método para saber si un usuario está en el catálogo
+	 * @param usuario Usuario del que se quiere saber esta info
+	 * @return True si está o false si no está en el catálogo
+	 */
+	public boolean isUsuario(Usuario usuario) {
+		return usuariosNombreUsuario.containsValue(usuario);
+	}
+	
+	/**
 	 * Método para recuperar un usuario del catálogo por su nombre de usuario
 	 * @param login Nombre de usuario del usuario que se quiere recuperar
 	 * @return Usuario o null si no está en el catálogo

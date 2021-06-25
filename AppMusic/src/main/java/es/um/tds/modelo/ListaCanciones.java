@@ -23,6 +23,7 @@ public class ListaCanciones {
 		this.nombre = nombre;
 		this.canciones = new ArrayList<>(canciones);
 		this.numCanciones = canciones.size();
+		this.id = -1;
 	}
 	
 	/**

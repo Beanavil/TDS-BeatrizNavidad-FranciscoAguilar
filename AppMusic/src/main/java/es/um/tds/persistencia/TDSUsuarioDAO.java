@@ -1,5 +1,6 @@
 package es.um.tds.persistencia;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,10 +37,22 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	private static TDSUsuarioDAO unicaInstancia;
 	private TDSListaCancionesDAO adaptadorListaCanciones;  
 
+
 	/**
 	 * Constructor.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	private TDSUsuarioDAO() {
+	private TDSUsuarioDAO() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
 	}
@@ -47,8 +60,19 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	/**
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
 	 * @return única instancia del adaptador de Usuario.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static TDSUsuarioDAO getUnicaInstancia() {
+	public static TDSUsuarioDAO getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSUsuarioDAO(); 
 		return unicaInstancia;       
@@ -58,8 +82,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void store(Usuario usuario) throws NullPointerException {
-		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId()); // puede ser null
+	public void store(Usuario usuario)  {
+		// Comprobamos primero que no esté ya registrado
+		if (usuario.getId() >= 0)
+			return;
 		
 		// Guardamos las listas
 		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.store(lc));
@@ -67,7 +93,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		// Guardamos la lista de recientes
 		adaptadorListaCanciones.store(usuario.getListaRecientes());
 		
-		eUsuario = UsuarioToEntidad(usuario);
+		Entidad eUsuario = UsuarioToEntidad(usuario);
 		servPersistencia.registrarEntidad(eUsuario);
 		usuario.setId(eUsuario.getId());
 	}
@@ -76,8 +102,12 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean delete(Usuario usuario) throws NullPointerException {
-		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId()); // puede ser null
+	public boolean delete(Usuario usuario) {
+		// Si no está no podemos borrar al usuario
+		if (usuario.getId() < 0)
+			return false;
+		
+		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
 
 		// Eliminamos las listas
 		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.delete(lc));
@@ -92,9 +122,13 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(Usuario usuario) throws NullPointerException {
-		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId()); // puede ser null
-
+	public void update(Usuario usuario) {
+		// Si no está no podemos actualizar los datos del usuario
+		if (usuario.getId() < 0)
+			return;
+		
+		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
+		
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, NOMBRE);
 		servPersistencia.anadirPropiedadEntidad(eUsuario, NOMBRE, usuario.getNombre());
 		
@@ -134,8 +168,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 */
 	@Override
 	public Usuario get(int id) throws NullPointerException {
-		Entidad eUsuario = servPersistencia.recuperarEntidad(id); // puede ser null
-
+		// Si no está devolvemos null
+		Entidad eUsuario = servPersistencia.recuperarEntidad(id);
+		if(eUsuario == null)
+			return null;
 		return entidadToUsuario(eUsuario);
 	}
 

@@ -68,18 +68,42 @@ public abstract class FactoriaDAO {
 	/**
 	 * Método factoría para obtener el adaptador de Cancion.
 	 * @return adaptador TDSCancionDAO.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public abstract CancionDAO getCancionDAO();
+	public abstract CancionDAO getCancionDAO() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;
 	
 	/**
 	 * Método factoría para obtener el adaptador de ListaCanciones.
 	 * @return adaptador TDSListaCancionesDAO.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public abstract ListaCancionesDAO getListaCancionesDAO();
+	public abstract ListaCancionesDAO getListaCancionesDAO() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;
 	
 	/**
 	 * Método factoría para obtener el adaptador de Usuario.
 	 * @return adaptador TDSUsuarioDAO.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public abstract UsuarioDAO getUsuarioDAO();	
+	public abstract UsuarioDAO getUsuarioDAO() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;	
 }

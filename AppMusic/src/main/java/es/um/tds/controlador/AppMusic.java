@@ -1,6 +1,5 @@
 package es.um.tds.controlador;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.persistencia.UsuarioDAO;
-import es.um.tds.vista.VentanaLogin;
 import umu.tds.componente.CancionesEvent;
 import umu.tds.componente.CargadorCanciones;
 import umu.tds.componente.ICargadoListener;
@@ -37,21 +35,6 @@ public final class AppMusic implements ICargadoListener{
 	
 	private static Usuario usuarioActual;
 	
-	
-	/**
-	 * Método principal
-	 * @param args
-	 */
-	public static void main( String[] args ) throws IOException
-	{
-		try {
-			new VentanaLogin();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		//AppMusic.getUnicaInstancia().cargarCanciones("./xml/canciones.xml");
-		//AppMusic.getUnicaInstancia().getCanciones().stream().forEach(c -> System.out.println(c.toString()));
-	}
 
 	
 	/**
@@ -195,8 +178,9 @@ public final class AppMusic implements ICargadoListener{
      */
     public void registrarCancion(String titulo, String interprete, Estilo estilo, String url,
     		int numReproducciones) {
-    	
     	Cancion cancion = new Cancion(titulo, interprete, estilo, url, numReproducciones);
+    	if (catalogoCanciones.isCancion(cancion))
+    		return;
     	adaptadorCancion.store(cancion);
     	catalogoCanciones.addCancion(cancion);
     }
@@ -224,10 +208,7 @@ public final class AppMusic implements ICargadoListener{
      * @param estilo
      */
     public List<Cancion> buscarPorEstilo(String estilo) {
-    	List<Cancion> canciones = adaptadorCancion.getAllStyle(estilo);
-    	if (canciones == null)
-    		return new ArrayList<Cancion>();
-    	return canciones;
+    	return catalogoCanciones.getAllStyle(estilo);
     }
     
     
@@ -236,10 +217,7 @@ public final class AppMusic implements ICargadoListener{
      * @param interprete
      */
     public List<Cancion> buscarPorInterprete(String interprete) {
-    	List<Cancion> canciones = adaptadorCancion.getAllArtist(interprete);
-    	if (canciones == null)
-    		return new ArrayList<Cancion>();
-    	return canciones;
+    	return catalogoCanciones.getAllArtist(interprete);
     }
     
     
@@ -250,21 +228,15 @@ public final class AppMusic implements ICargadoListener{
      * @return
      */
     public List<Cancion> buscarPorInterpreteEstilo(String interprete, String estilo) {
-    	List<Cancion> canciones = adaptadorCancion.getAllArtistStyle(interprete, estilo);
-    	if (canciones == null)
-    		return new ArrayList<Cancion>();
-    	return canciones;
+    	return catalogoCanciones.getAllArtistStyle(interprete, estilo);
     }
     
     
     /**
-     * Retorna todas las canciones de la bd
+     * Retorna todas las canciones del catálogo
      */
     public List<Cancion> obtenerCanciones() {
-    	List<Cancion> canciones = adaptadorCancion.getAll();
-    	if (canciones == null)
-    		return new ArrayList<Cancion>();
-    	return canciones;
+    	return catalogoCanciones.getAll();
     }
     
     /**
