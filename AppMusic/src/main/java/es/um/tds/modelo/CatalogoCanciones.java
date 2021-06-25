@@ -19,6 +19,7 @@ import es.um.tds.utils.StringUtils;
 public class CatalogoCanciones {
 	private static CatalogoCanciones unicaInstancia;
 	private Map<Integer, Cancion> canciones;
+	private Map<String, Cancion> cancionesTitulo;
 	private FactoriaDAO factoria;
 	private CancionDAO adaptadorCancion;
 	
@@ -27,6 +28,7 @@ public class CatalogoCanciones {
 	ClassNotFoundException, DAOException {
 		
 		canciones = new HashMap<>();
+		cancionesTitulo = new HashMap<>();
 		factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
 		adaptadorCancion = factoria.getCancionDAO();
 		this.cargarCatalogo();
@@ -60,6 +62,7 @@ public class CatalogoCanciones {
 	 */
 	public void addCancion(Cancion cancion) {
 		canciones.put(cancion.getId(), cancion);
+		cancionesTitulo.put(cancion.getTitulo(), cancion);
 	}
 	
 	
@@ -69,6 +72,7 @@ public class CatalogoCanciones {
 	 */
 	public void removeCancion(Cancion cancion) {
 		canciones.remove(cancion.getId());
+		cancionesTitulo.remove(cancion.getTitulo());
 	}
 	
 	
@@ -83,12 +87,31 @@ public class CatalogoCanciones {
 	
 	
 	/**
+	 * Método para recuperar una canción del catálogo por su título
+	 * @param titulo Título de la canción que se quiere recuperar
+	 * @return Canción o null si no está en el catálogo
+	 */
+	public Cancion getCancion(String titulo) {
+		return cancionesTitulo.get(titulo);
+	}
+	
+	/**
+	 * Método para saber si una canción está en el catálogo
+	 * @param cancion Canción que se quiere saber si está
+	 * @return True si la canción está o false si no está en el catálogo
+	 */
+	public boolean isCancion(Cancion cancion) {
+		return (getCancion(cancion.getTitulo()) != null);
+	}
+	
+	
+	/**
 	 * Método para obtener todas las canciones del catálogo
 	 * @return Lista con las canciones del catálogo
 	 */
 	public List<Cancion> getAll() {
 		List<Cancion> lista = new ArrayList<>();
-		canciones.values().stream().forEach(c -> lista.add(c));
+		cancionesTitulo.values().stream().forEach(c -> lista.add(c));
 		return lista;
 	}
 	
@@ -96,13 +119,13 @@ public class CatalogoCanciones {
 	/**
 	 * Método para obtener todas las canciones del catálogo de un
 	 * artista determinado
-	 * @param artista Artista del que queremos obtener las canciones
+	 * @param interprete Intérprete del que queremos obtener las canciones
 	 * @return Lista con las canciones del catálogo del artista
 	 */
-	public List<Cancion> getAllArtist(String artista) {
+	public List<Cancion> getAllArtist(String interprete) {
 		List<Cancion> lista = new ArrayList<>();
-		canciones.values().stream()
-		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), artista)) 
+		cancionesTitulo.values().stream()
+		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), interprete)) 
 		.forEach(c -> lista.add(c));
 		return lista;
 	}
@@ -116,7 +139,7 @@ public class CatalogoCanciones {
 	 */
 	public List<Cancion> getAllStyle(String estilo) {
 		List<Cancion> lista = new ArrayList<>();
-		canciones.values().stream()
+		cancionesTitulo.values().stream()
 		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), estilo)) 
 		.forEach(c -> lista.add(c));
 		return lista;
@@ -124,11 +147,32 @@ public class CatalogoCanciones {
 	
 	
 	/**
+	 * Método para obtener todas las canciones del catálogo de un
+	 * estilo e intérpretes determinados
+	 * @param interprete Intérprete del que queremos obtener las canciones
+	 * @param estilo Estilo del que queremos obtener las canciones
+	 * @return Lista con las canciones del catálogo de ese estilo e intérprete
+	 */
+	public List<Cancion> getAllArtistStyle(String interprete, String estilo) {
+		List<Cancion> lista = new ArrayList<>();
+		cancionesTitulo.values().stream()
+		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), interprete)) 
+		.filter(c -> StringUtils.containsIgnoreCase(c.getInterprete(), estilo)) 
+		.forEach(c -> lista.add(c));
+		return lista;
+	}
+	
+	/**
 	 * Recupera todas las canciones de la bbdd para trabajar con ellas en memoria
 	 * @throws DAOException
 	 */
 	private void cargarCatalogo() throws DAOException {
 		List<Cancion> cancionesBD = adaptadorCancion.getAll();
-		cancionesBD.stream().forEach(c -> canciones.put(c.getId(), c));
+		cancionesBD.stream().forEach(
+				c -> {
+						canciones.put(c.getId(), c);
+						cancionesTitulo.put(c.getTitulo(), c);
+					 });
 	}
+
 }

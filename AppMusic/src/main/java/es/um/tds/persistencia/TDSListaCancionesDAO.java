@@ -1,5 +1,6 @@
 package es.um.tds.persistencia;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,19 +24,43 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	private static final String CANCIONES = "canciones";
 	private ServicioPersistencia servPersistencia;
 	private static TDSListaCancionesDAO unicaInstancia;
+	private TDSCancionDAO adaptadorCancion;
 
 	/**
 	 * Constructor.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	private TDSListaCancionesDAO () {
+	private TDSListaCancionesDAO () throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
+		adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 	}
 
 	/**
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
 	 * @return única instancia del adaptador de ListaCanciones.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static TDSListaCancionesDAO getUnicaInstancia() {
+	public static TDSListaCancionesDAO getUnicaInstancia() throws InstantiationException, 
+	IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, 
+	SecurityException, ClassNotFoundException, DAOException {
+		
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSListaCancionesDAO(); 
 		return unicaInstancia;       
@@ -47,8 +72,10 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 */
 	@Override
 	public void store(ListaCanciones lista) throws NullPointerException {
-		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); // puede ser null
-		eLista = ListaCancionesToEntidad(lista);
+		// Comprobamos primero que no esté ya registrada
+		if (lista.getId() >= 0)
+			return;
+		Entidad eLista = ListaCancionesToEntidad(lista);
 		servPersistencia.registrarEntidad(eLista);
 		lista.setId(eLista.getId());
 	}
@@ -57,8 +84,10 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean delete(ListaCanciones lista) throws NullPointerException {
-		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); // puede ser null
+	public boolean delete(ListaCanciones lista) {
+		if (lista.getId() < 0)
+			return false;
+		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); 
 		return servPersistencia.borrarEntidad(eLista);
 	}
 
@@ -66,8 +95,10 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(ListaCanciones lista) throws NullPointerException {
-		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId()); // puede ser null
+	public void update(ListaCanciones lista) {
+		if (lista.getId() < 0)
+			return;
+		Entidad eLista = servPersistencia.recuperarEntidad(lista.getId());
 		servPersistencia.eliminarPropiedadEntidad(eLista, NOMBRE);
 		servPersistencia.anadirPropiedadEntidad(eLista, NOMBRE, lista.getNombre());
 		servPersistencia.eliminarPropiedadEntidad(eLista, CANCIONES);
@@ -78,8 +109,10 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ListaCanciones get(int id) throws NullPointerException {
-		Entidad eLista = servPersistencia.recuperarEntidad(id); // puede ser null
+	public ListaCanciones get(int id) {
+		Entidad eLista = servPersistencia.recuperarEntidad(id);
+		if (eLista == null)
+			return null;
 		return entidadToListaCanciones(eLista);
 	}
 
@@ -144,7 +177,6 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	public List<Cancion> getCancionesFromIds(String ids) {
 		if (ids.trim().isEmpty())
 			return new ArrayList<Cancion>();
-		TDSCancionDAO adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 		List<Cancion> canciones = Arrays.stream(ids.split(" "))
                 .map(id -> adaptadorCancion.get(Integer.valueOf(id)))
                 .collect(Collectors.toList());

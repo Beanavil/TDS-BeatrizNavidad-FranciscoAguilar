@@ -1,5 +1,6 @@
 package es.um.tds.persistencia;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import es.um.tds.modelo.ListaCanciones;
@@ -28,8 +29,17 @@ public interface ListaCancionesDAO {
 	 * Obtiene la lista de canciones con el id 'id'.
 	 * @param id id de la lista que se quiere obtener.
 	 * @return lista de canciones buscada o null si no está en la BD.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws NullPointerException 
 	 */
-	public ListaCanciones get(int id);
+	public ListaCanciones get(int id) throws NullPointerException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;
 	
 	
 	/**

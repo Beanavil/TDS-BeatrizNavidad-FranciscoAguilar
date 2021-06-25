@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,7 +25,6 @@ import javax.swing.JTextField;
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
-import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;
@@ -125,7 +125,7 @@ public class PanelExplorar extends JPanel {
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		//ComponentUtils.fixedSize(panelRepr, 250, 50);
+		//VentanaPrincipal.fixedSize(panelRepr, 250, 50);
 		panelInferior.add(panelRepr);
 	}
 	
@@ -220,17 +220,23 @@ public class PanelExplorar extends JPanel {
 				List<Cancion> canciones;
 				if (interprete.trim().isEmpty()) {
 					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
-					canciones = (boxEstilo.getSelectedItem() == null) ? new ArrayList<>(controlador.getCanciones()) : 
+					canciones = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
 						new ArrayList<>(controlador.buscarPorEstilo(estilo.getNombre()));
+					canciones.forEach(c -> System.out.println(c.getEstilo())); // quitar
 				} else {
 					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
-					canciones = (boxEstilo.getSelectedItem() == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
+					canciones = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
 						new ArrayList<>(controlador.buscarPorInterpreteEstilo(interprete, estilo.getNombre()));
 				}
 				// Si hay título, filtramos las canciones anteriores por título
 				if (!titulo.trim().isEmpty()) {
-					canciones.stream().filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo));
+					canciones = canciones.stream()
+					.filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo))
+					.collect(Collectors.toList());
 				}
+				
+				// Eliminamos el contenido anterior
+				panelCentral.removeAll();
 				
 				// Añadimos un nuevo panel con la tabla de las canciones encontradas al panel central y lo hacemos visible
 				JPanel panelTabla = new JPanel(new BorderLayout());
@@ -243,6 +249,7 @@ public class PanelExplorar extends JPanel {
 			    JScrollPane scrollPane = new JScrollPane(tablaCanciones);
 			    panelTabla.add(scrollPane, BorderLayout.CENTER);
 			    
+			    panelCentral.revalidate();
 			    panelCentral.add(panelTabla);
 				panelCentral.setVisible(true);
 				
@@ -258,9 +265,10 @@ public class PanelExplorar extends JPanel {
 	private void crearManejadorBotonCancelar() {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(panelCampos, 
+				int result = JOptionPane.showOptionDialog(panelCampos, 
 						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
-						JOptionPane.YES_NO_OPTION);
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
 					campoTitulo.setText("");
 					campoInterprete.setText("");

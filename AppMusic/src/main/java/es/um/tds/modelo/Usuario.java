@@ -64,6 +64,7 @@ public class Usuario implements Descuento {
 			this.cancionesRecientes = cancionesRecientes;
 		}
 		this.cancionesMasReproducidas =  new TreeMap<>(cancionesMasReproducidas); // TODO tener en cuenta orden ascendente para la vista
+		this.id = -1;
 	}
 	
 	/**

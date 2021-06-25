@@ -351,14 +351,13 @@ public class VentanaRegistro {
 						controlador.registrarUsuario(txtNombre.getText(),
 								txtApellidos.getText(), fecha, txtEmail.getText(), txtUsuario.getText(),
 								new String(txtPassword.getPassword()));
+						
+						JOptionPane.showMessageDialog(frmRegistro, "Usuario registrado correctamente.", "Registro",
+								JOptionPane.INFORMATION_MESSAGE);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(frmRegistro, "No se ha podido llevar a cabo el registro.\n",
 								"Registro", JOptionPane.ERROR_MESSAGE);
-						frmRegistro.setTitle("Login Gestor Eventos");
 					} 
-					
-					JOptionPane.showMessageDialog(frmRegistro, "Usuario registrado correctamente.", "Registro",
-							JOptionPane.INFORMATION_MESSAGE);
 					
 					try {
 						VentanaLogin ventanaLogin = new VentanaLogin();

@@ -1,5 +1,7 @@
 package es.um.tds.persistencia;
 
+import java.lang.reflect.InvocationTargetException;
+
 import es.um.tds.persistencia.TDSUsuarioDAO;
 
 /**
@@ -13,25 +15,57 @@ public final class TDSFactoriaDAO extends FactoriaDAO{
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@Override
-	public TDSCancionDAO getCancionDAO() {	
+	public TDSCancionDAO getCancionDAO() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {	
 		return TDSCancionDAO.getUnicaInstancia(); 
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@Override
-	public TDSListaCancionesDAO getListaCancionesDAO() {	
+	public TDSListaCancionesDAO getListaCancionesDAO() throws InstantiationException, 
+	IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, 
+	SecurityException, ClassNotFoundException, DAOException {	
+		
 		return TDSListaCancionesDAO.getUnicaInstancia(); 
 	}
 	
 	/**
 	 * {@inheritDoc}
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
 	@Override
-	public TDSUsuarioDAO getUsuarioDAO() {	
+	public TDSUsuarioDAO getUsuarioDAO() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {	
+		
 		return TDSUsuarioDAO.getUnicaInstancia(); 
 	}
 }

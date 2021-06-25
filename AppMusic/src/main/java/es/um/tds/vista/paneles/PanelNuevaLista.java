@@ -30,7 +30,6 @@ import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
-import es.um.tds.vista.VentanaPrincipal;
 
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -61,10 +60,20 @@ public class PanelNuevaLista extends JPanel{
 	
 	/**
 	 * Constructor de la clase //TODO pasar todo a método initialize();
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
+
 	public PanelNuevaLista() throws InstantiationException, IllegalAccessException, 
 	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
 	ClassNotFoundException, DAOException{
+
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -216,9 +225,10 @@ public class PanelNuevaLista extends JPanel{
 				
 				//En caso de que la lista no existiese
 				if (! controlador.existeLista(nombreLista)) {
-					int result = JOptionPane.showConfirmDialog(panelInv, 
+					int result = JOptionPane.showOptionDialog(panelInv, 
 						"¿Desea crear una nueva lista?", "Crear nueva Lista",
-						JOptionPane.YES_NO_OPTION);
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
 					if (result == JOptionPane.YES_OPTION) {
 						controlador.crearLista(nombreLista);
 						panelInv.setVisible(true);
@@ -247,9 +257,10 @@ public class PanelNuevaLista extends JPanel{
 	private void crearManejadorBotonEliminar() {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(panelInv, 
-						"¿Está seguro de que desea eliminar la lista?", "Confirmar eliminar lista",
-						JOptionPane.YES_NO_OPTION);
+				int result = JOptionPane.showOptionDialog(panelInv, 
+						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
 					String nombreLista = txtCrear.getText();
 					ListaCanciones lista = controlador.getListaCanciones(nombreLista);
@@ -298,9 +309,10 @@ public class PanelNuevaLista extends JPanel{
 	private void crearManejadorBotonCancelar() {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(panelInv, 
+				int result = JOptionPane.showOptionDialog(panelInv, 
 						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
-						JOptionPane.YES_NO_OPTION);
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
 					txtCrear.setText("");
 					txtTitulo.setText("");

@@ -1,5 +1,6 @@
 package es.um.tds.persistencia;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,16 +30,37 @@ public class TDSCancionDAO implements CancionDAO {
 
 	/**
 	 * Constructor
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	private TDSCancionDAO () {
+	private TDSCancionDAO () throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
+		
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 	
 	/**
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
 	 * @return única instancia del adaptador de Cancion.
+	 * @throws DAOException 
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static TDSCancionDAO getUnicaInstancia() {
+	public static TDSCancionDAO getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
+	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
+	ClassNotFoundException, DAOException {
+		
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSCancionDAO(); 
 		return unicaInstancia;       
@@ -49,9 +71,11 @@ public class TDSCancionDAO implements CancionDAO {
 	 */
 	@Override
 	public void store(Cancion cancion) throws NullPointerException {
-		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId()); // puede ser null
-		eCancion = cancionToEntidad(cancion);
-		eCancion = servPersistencia.registrarEntidad(eCancion);
+		// Comprobamos primero que no esté ya registrada
+		if (cancion.getId() >= 0)
+			return;
+		Entidad eCancion = CancionToEntidad(cancion);
+		servPersistencia.registrarEntidad(eCancion);
 		cancion.setId(eCancion.getId());
 	}
 
@@ -59,8 +83,12 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean delete(Cancion cancion) throws NullPointerException {
-		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId()); // puede ser null
+	public boolean delete(Cancion cancion) {
+		// Si no está no podemos borrarla
+		if (cancion.getId() < 0)
+			return false;
+		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId());
+
 		return servPersistencia.borrarEntidad(eCancion);
 	}
 
@@ -68,8 +96,12 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(Cancion cancion) throws NullPointerException {
-		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId()); // puede ser null
+	public void update(Cancion cancion) {
+		// Si no está no podemos actualizar sus datos
+		if (cancion.getId() < 0)
+			return;
+		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId());
+		
 		servPersistencia.eliminarPropiedadEntidad(eCancion, TITULO);
 		servPersistencia.anadirPropiedadEntidad(eCancion, TITULO, cancion.getTitulo());
 		
@@ -91,7 +123,10 @@ public class TDSCancionDAO implements CancionDAO {
 	 */
 	@Override
 	public Cancion get(int id) throws NullPointerException {
-		Entidad eCancion = servPersistencia.recuperarEntidad(id); // puede ser null
+		// Si no está devolvemos null
+		Entidad eCancion = servPersistencia.recuperarEntidad(id);
+		if (eCancion == null)
+			return null;
 		return entidadToCancion(eCancion);
 	}
 
@@ -112,13 +147,15 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Cancion> getAllStyle(String estilo) throws NullPointerException {
+	public List<Cancion> getAllStyle(String estilo) {
 		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); // puede ser null
-		entidades.stream()
-		// estilo puede ser una subcadena de algún otro estilo en la bd
-		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
-		.forEach(e -> canciones.add(entidadToCancion(e)));
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); 
+		if (entidades != null) {
+			entidades.stream()
+			// estilo puede ser una subcadena de algún otro estilo en la bd
+			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
+			.forEach(e -> canciones.add(entidadToCancion(e)));
+		}
 		return canciones;
 	}
 	
@@ -126,12 +163,14 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Cancion> getAllArtist(String artista) throws NullPointerException {
+	public List<Cancion> getAllArtist(String artista) {
 		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); // puede ser null
-		entidades.stream()
-		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
-		.forEach(e -> canciones.add(entidadToCancion(e)));
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); 
+		if (entidades != null) {
+			entidades.stream()
+			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
+			.forEach(e -> canciones.add(entidadToCancion(e)));
+		}
 		return canciones;
 	}
 	
@@ -140,13 +179,15 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Cancion> getAllArtistStyle(String artista, String estilo) throws NullPointerException {
+	public List<Cancion> getAllArtistStyle(String artista, String estilo) {
 		List<Cancion> canciones = new ArrayList<Cancion>();
-		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); // puede ser null
-		entidades.stream()
-		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
-		.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
-		.forEach(e -> canciones.add(entidadToCancion(e)));
+		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); 
+		if (entidades != null) {
+			entidades.stream()
+			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
+			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
+			.forEach(e -> canciones.add(entidadToCancion(e)));
+		}
 		return canciones;
 	}
 	
@@ -175,7 +216,7 @@ public class TDSCancionDAO implements CancionDAO {
 	 * @param cancion objeto de tipo Cancion a transformar en Entidad.
 	 * @return entidad con los datos correspondientes a la canción.
 	 */
-	private Entidad cancionToEntidad(Cancion cancion) {
+	private Entidad CancionToEntidad(Cancion cancion) {
 		Entidad eCancion = new Entidad();
 		eCancion.setNombre(CANCION);
 		eCancion.setPropiedades(new ArrayList<Propiedad>(Arrays.asList(

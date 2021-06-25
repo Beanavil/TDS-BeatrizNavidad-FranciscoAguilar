@@ -10,7 +10,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import es.um.tds.controlador.AppMusic;
-import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;

@@ -147,7 +147,12 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Explorar", tabIcon, panelExplorar);
 		
-		panelPulsador = new PanelPulsador();
+		try {
+			panelPulsador = new PanelPulsador();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(frmVentanaPrincipal, "Error interno. \n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		tabIcon = new ImageIcon(iconAC);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
@@ -157,7 +162,8 @@ public class VentanaPrincipal {
 		try {
 			panelNuevaLista = new PanelNuevaLista();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(panelCentral, "Error interno.\n", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frmVentanaPrincipal, "Error interno. \n",
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 		tabIcon = new ImageIcon(iconNL);
 		image = tabIcon.getImage();
