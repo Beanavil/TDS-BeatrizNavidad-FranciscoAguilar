@@ -171,7 +171,12 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Nueva lista", tabIcon, panelNuevaLista);
 		
-		panelMisListas = new PanelMisListas();
+		try {
+			panelMisListas = new PanelMisListas();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(frmVentanaPrincipal, "Error interno. \n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 		tabIcon = new ImageIcon(iconML);
 		image = tabIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);

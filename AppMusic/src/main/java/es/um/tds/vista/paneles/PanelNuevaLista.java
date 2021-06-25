@@ -220,7 +220,7 @@ public class PanelNuevaLista extends JPanel{
 	private void crearManejadorBotonCrear() {
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((ModeloTabla)tablaDer.getModel()).setListaCanciones(controlador.getCanciones());
+				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(controlador.getCanciones());
 				String nombreLista = txtCrear.getText();
 				
 				//En caso de que la lista no existiese
@@ -242,7 +242,7 @@ public class PanelNuevaLista extends JPanel{
 							JOptionPane.YES_NO_OPTION);
 						if (result == JOptionPane.YES_OPTION) {
 							ListaCanciones lista = controlador.getListaCanciones(nombreLista);
-							((ModeloTabla)tablaIzq.getModel()).setListaCanciones(lista.getCanciones());
+							((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
 							panelInv.setVisible(true);
 							btnEliminar.setVisible(true);
 						} else return;

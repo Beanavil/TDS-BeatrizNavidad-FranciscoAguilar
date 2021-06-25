@@ -339,6 +339,7 @@ public final class AppMusic implements ICargadoListener{
     				.filter(lc -> lc.getNombre().equals(nombreLista))
     				.findAny()
     				.orElse(null);
+    	return lista;
     	}
     	return null;
     }

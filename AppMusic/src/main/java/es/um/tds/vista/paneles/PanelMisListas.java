@@ -1,8 +1,7 @@
 package es.um.tds.vista.paneles;
 
-import java.awt.Color;
 import java.awt.GridLayout;
-import java.util.Vector;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JList;
@@ -13,8 +12,9 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.persistencia.DAOException;
+
 import javax.swing.border.TitledBorder;
-import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
@@ -30,18 +30,15 @@ public class PanelMisListas extends JPanel{
 	
 	private JList<String> lista;
 	private JTable tabla;
-	private Vector<String> misListas; // TODO cambiar
 
-
-	
-	public PanelMisListas() {
+	public PanelMisListas() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
 		super();
+		this.controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		panelSuperior = crearPanelSuperior();
 		panelInferior = crearPanelInferior();
-
-		misListas = new Vector<String>();
 		
 		this.add(panelSuperior);
 		this.add(panelInferior);
@@ -53,30 +50,13 @@ public class PanelMisListas extends JPanel{
 	 */
 	private JPanel crearPanelSuperior() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(1,2));
-		
-//		//TODO revisar esto, no sé si es correcto
-//		lista = new JList<String>(new ModeloLista(controlador.usuarioGetListas()));
-//		lista.addListSelectionListener(
-//				new ListSelectionListener() {
-//					@Override
-//					public void valueChanged(ListSelectionEvent evento) {
-//						if (!evento.getValueIsAdjusting()) {
-//							JList<String> fuente = (JList<String>)evento.getSource();
-//							String nombreLista = fuente.getSelectedValue().toString();
-//							((ModeloTabla)tabla.getModel()).setListaCanciones(controlador.getListaCanciones(nombreLista).getCanciones());
-//						}
-//						
-//					}
-//				});
-//		
-//		tabla = new JTable(new ModeloTabla());
-//		tabla.setPreferredScrollableViewportSize(new Dimension(250,70));
-
-		
 		JPanel panelLista = new JPanel();
-		//panelLista.setMinimumSize(new Dimension(200, 100));
+		
+		panel.setLayout(new GridLayout(1,2));
 		panelLista.setBorder(new TitledBorder(null, "Mis listas.", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		
+		tabla = new JTable(new ModeloTabla());
+		tabla.setFillsViewportHeight(true);
 		
 		lista = new JList<String>(new ModeloLista(controlador.usuarioGetListas()));
 		lista.addListSelectionListener(
@@ -93,25 +73,16 @@ public class PanelMisListas extends JPanel{
 					}
 				});
 		
-		lista.setListData(misListas);
-		lista.setBackground(Color.WHITE);
-
-		panel.add(panelLista);
 		panelLista.add(lista);
-		
-		JPanel panelTabla = new JPanel();
-		panel.add(panelTabla);
-		
-		tabla = new JTable(new ModeloTabla());
-		tabla.setFillsViewportHeight(true);
+		panel.add(panelLista);
 		JScrollPane scrollPane = new JScrollPane(tabla);
+		panel.add(scrollPane);
 		
-		panelTabla.add(scrollPane);
 		return panel;
 	}
 	
 	/**
-	 * Crea el panel inferior
+	 * Crea el panel inferior que contendrá el reproductor
 	 * @return
 	 */
 	private JPanel crearPanelInferior() {
