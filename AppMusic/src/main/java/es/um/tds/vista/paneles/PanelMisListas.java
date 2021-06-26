@@ -68,8 +68,9 @@ public class PanelMisListas extends JPanel{
 							JList<String> fuente = (JList<String>)evento.getSource();
 							String nombreLista = fuente.getSelectedValue().toString();
 							((ModeloTabla)tabla.getModel()).setListaCanciones(controlador.getListaCanciones(nombreLista).getCanciones());
+							tabla.revalidate();
+							tabla.repaint();
 						}
-						
 					}
 				});
 		

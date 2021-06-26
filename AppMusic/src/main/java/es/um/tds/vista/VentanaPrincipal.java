@@ -186,6 +186,9 @@ public class VentanaPrincipal {
 		tabIcon = new ImageIcon(scaledimage);
 		tabbedPane.addTab("Más reproducidas", tabIcon, panelMasReproducidas);
 		
+		//TODO Añadir un changeListener al tabbedPane para refrescar when needed 
+		
+		
 		// Parte derecha
 		JPanel panelDerecho = new JPanel();
 		panelDerecho.setLayout(new BoxLayout(panelDerecho, BoxLayout.Y_AXIS));

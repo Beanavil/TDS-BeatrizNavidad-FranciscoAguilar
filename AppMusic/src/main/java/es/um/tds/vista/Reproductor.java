@@ -152,7 +152,6 @@ public class Reproductor {
 	            switch (mediaPlayer.getStatus()) {
 	              case DISPOSED:
 	              case READY:
-	            	  System.out.println("in ready");
 	                reproducirCancion();
 	                btnPlay.setIcon(stop);
 	              case STOPPED:
@@ -224,7 +223,6 @@ public class Reproductor {
 	        try (InputStream stream = uri.openStream()) {
 	          Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
 	        }
-	        //System.out.println("finished-copy: " + mp3.getFileName());
 	        
 		    Media media = new Media(mp3.toFile().toURI().toString());
 		    mediaPlayer = new MediaPlayer(media);

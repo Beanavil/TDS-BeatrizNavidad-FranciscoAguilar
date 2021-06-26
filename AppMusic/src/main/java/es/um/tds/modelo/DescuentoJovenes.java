@@ -1,4 +1,4 @@
-package es.um.tds.modelo;
+ package es.um.tds.modelo;
 
 /**
  * Clase que representa un descuento aplicado en la tarifa jóvenes (10%).

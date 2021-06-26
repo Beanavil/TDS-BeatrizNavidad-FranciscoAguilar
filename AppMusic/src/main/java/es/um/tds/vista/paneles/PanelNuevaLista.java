@@ -54,9 +54,8 @@ public class PanelNuevaLista extends JPanel{
 	
 	private JButton btnAdd;
 	private JButton btnRetirar;
-	
-	private JButton btnAceptar;
-	private JButton btnCancelar;
+
+	private JButton btnFinalizar;
 	
 	//TODO ¿Es necesario añadir los paneles como atributos de la clase?
 	private JPanel panelTablaDer;
@@ -187,18 +186,16 @@ public class PanelNuevaLista extends JPanel{
 	}
 	
 	/**
-	 * Crea el panel con los botones Aceptar y Cancelar 
+	 * Crea el con el botón finalizar
 	 */
 	private JPanel crearPanel4() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER,0,10));
-		btnAceptar = new JButton("Aceptar");
-		btnCancelar = new JButton("Cancelar");
+		btnFinalizar = new JButton("Finalizar");
 		
-		crearManejadorBotonCancelar();
-		
-		panel.add(btnAceptar);
-		panel.add(btnCancelar);
+		crearManejadorBotonFinalizar();
+
+		panel.add(btnFinalizar);
 		return panel;
 	}
 	
@@ -307,11 +304,11 @@ public class PanelNuevaLista extends JPanel{
 	/**
 	 * Crea manejador para el botón "Cancelar"
 	 */
-	private void crearManejadorBotonCancelar() {
-		btnCancelar.addActionListener(new ActionListener() {
+	private void crearManejadorBotonFinalizar() {
+		btnFinalizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showOptionDialog(panelInv, 
-						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+						"¿Está seguro de que desea finalizar la creación?", "Confirmar finalizar creación",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
@@ -334,13 +331,9 @@ public class PanelNuevaLista extends JPanel{
 				 Cancion cancion = ((ModeloTabla)tablaIzq.getModel()).getListaCanciones().get(fila);
 				 controlador.addCancionToLista(lista, cancion);
 				 
-//				 tablaDer.repaint();
-//				 tablaDer.revalidate();
-//				 panelTablaDer.repaint();
-//				 panelTablaDer.revalidate();
-//				 panelInv.repaint();
-//				 panelInv.revalidate();
-				 
+				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+				 tablaDer.revalidate();
+				 tablaDer.repaint();	 
 			}
 		});
 	}
@@ -352,7 +345,10 @@ public class PanelNuevaLista extends JPanel{
 				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 				 Cancion cancion = ((ModeloTabla)tablaDer.getModel()).getListaCanciones().get(fila);
 				 controlador.eliminarCancionFromLista(lista, cancion);
-				 panelInv.revalidate();
+				 
+				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+				 tablaDer.revalidate();
+				 tablaDer.repaint(); 
 			}
 		});
 	}
