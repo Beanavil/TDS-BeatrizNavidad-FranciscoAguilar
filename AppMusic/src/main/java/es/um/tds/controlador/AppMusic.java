@@ -1,9 +1,10 @@
 package es.um.tds.controlador;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.CatalogoCanciones;
 import es.um.tds.modelo.CatalogoUsuarios;
@@ -11,7 +12,6 @@ import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.modelo.Usuario;
 import es.um.tds.persistencia.CancionDAO;
-import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
@@ -41,59 +41,39 @@ public final class AppMusic implements ICargadoListener{
 	/**
 	 * Constructor 
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	private AppMusic() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
-		
-		inicializarAdaptadores();
-		inicializarCatalogos();
+	private AppMusic() throws BDException, DAOException {
+		try {
+			inicializarAdaptadores();
+			inicializarCatalogos();
+		} catch (DAOException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BDException(e.getMessage());
+		}
 	}
 	
 	
 	/**
 	 * Método para inicializar los adaptadores de las clases persistentes
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws DAOException 
+	 * @throws DAOException
+	 * @throws BDException 
 	 */
-	private void inicializarAdaptadores() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
-		FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
-		adaptadorUsuario = factoria.getUsuarioDAO();
-		adaptadorCancion = factoria.getCancionDAO();
-		adaptadorListaCanciones = factoria.getListaCancionesDAO();
+	private void inicializarAdaptadores() throws BDException, DAOException {
+			FactoriaDAO factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
+			adaptadorUsuario = factoria.getUsuarioDAO();
+			adaptadorCancion = factoria.getCancionDAO();
+			adaptadorListaCanciones = factoria.getListaCancionesDAO();
 	}
 	
 	
 	/**
 	 * Método para inicializar los catálogos
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	private void inicializarCatalogos() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	private void inicializarCatalogos() throws BDException, DAOException {
 		catalogoUsuarios = CatalogoUsuarios.getUnicaInstancia();
 		catalogoCanciones = CatalogoCanciones.getUnicaInstancia();
 	}
@@ -380,18 +360,9 @@ public final class AppMusic implements ICargadoListener{
      * Método para obtener la única instancia del controlador
      * @return Única instancia controlador
      * @throws DAOException 
-     * @throws ClassNotFoundException 
-     * @throws SecurityException 
-     * @throws NoSuchMethodException 
-     * @throws InvocationTargetException 
-     * @throws IllegalArgumentException 
-     * @throws IllegalAccessException 
-     * @throws InstantiationException 
+	 * @throws BDException
      */
-    public static AppMusic getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
-    IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-    ClassNotFoundException, DAOException {
-    	
+    public static AppMusic getUnicaInstancia() throws BDException , DAOException {
     	if (unicaInstancia == null)
     		unicaInstancia = new AppMusic();
     	return unicaInstancia;

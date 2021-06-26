@@ -1,6 +1,5 @@
 package es.um.tds.persistencia;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +9,8 @@ import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.modelo.Usuario;
@@ -41,18 +42,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	/**
 	 * Constructor.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	private TDSUsuarioDAO() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	private TDSUsuarioDAO() throws BDException, DAOException {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		adaptadorListaCanciones = TDSListaCancionesDAO.getUnicaInstancia();
 	}
@@ -61,18 +53,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
 	 * @return única instancia del adaptador de Usuario.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public static TDSUsuarioDAO getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	public static TDSUsuarioDAO getUnicaInstancia() throws BDException, DAOException {
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSUsuarioDAO(); 
 		return unicaInstancia;       
@@ -167,7 +150,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Usuario get(int id) throws NullPointerException {
+	public Usuario get(int id) {
 		// Si no está devolvemos null
 		Entidad eUsuario = servPersistencia.recuperarEntidad(id);
 		if(eUsuario == null)

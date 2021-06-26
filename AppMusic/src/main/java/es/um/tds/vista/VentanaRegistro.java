@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.regex.Pattern;
@@ -23,8 +22,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Usuario;
-import es.um.tds.persistencia.DAOException;
 import es.um.tds.vista.VentanaLogin;
 
 import javax.swing.border.Border;
@@ -86,18 +86,9 @@ public class VentanaRegistro {
 	/**
 	 * Constructor
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public VentanaRegistro() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	public VentanaRegistro() throws BDException, DAOException {		
 		controlador = AppMusic.getUnicaInstancia();
 		initialize();
 	}

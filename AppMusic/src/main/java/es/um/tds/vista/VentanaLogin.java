@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -26,7 +25,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import es.um.tds.controlador.AppMusic;
-import es.um.tds.persistencia.DAOException;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.vista.VentanaRegistro;
 import es.um.tds.vista.VentanaLogin;
 
@@ -47,18 +47,9 @@ public class VentanaLogin {
 	/**
 	 * Constructor
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public VentanaLogin() throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, 
-	DAOException {
-		
+	public VentanaLogin() throws BDException, DAOException {		
 		controlador = AppMusic.getUnicaInstancia();
 		initialize();
 	}

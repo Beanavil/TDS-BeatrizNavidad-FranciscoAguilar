@@ -20,9 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
-import es.um.tds.persistencia.DAOException;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -229,7 +229,7 @@ public class Reproductor {
 			com.sun.javafx.application.PlatformImpl.startup(() -> {});
 	        uri = new URL(cancion.getRutaFichero());
 	        
-	        System.setProperty("java.io.tmpdir", tempPath);
+	        System.setProperty("java.io.tmpdir", "./");
 	        Path mp3 = Files.createTempFile("now-playing", ".mp3");
 	        
 	        try (InputStream stream = uri.openStream()) {
@@ -240,7 +240,7 @@ public class Reproductor {
 		    Media media = new Media(mp3.toFile().toURI().toString());
 		    mediaPlayer = new MediaPlayer(media);
 		    mediaPlayer.play();
-	    
+		    
 		} catch (MalformedURLException e) {
 			JOptionPane.showMessageDialog(panelReproductor, "Error al cargar canción.\n",
 					"Error", JOptionPane.ERROR_MESSAGE);

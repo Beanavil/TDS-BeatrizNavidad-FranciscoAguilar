@@ -1,7 +1,7 @@
 package es.um.tds.persistencia;
 
-import java.lang.reflect.InvocationTargetException;
-
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.persistencia.TDSUsuarioDAO;
 
 /**
@@ -16,56 +16,30 @@ public final class TDSFactoriaDAO extends FactoriaDAO{
 	/**
 	 * {@inheritDoc}
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
 	@Override
-	public TDSCancionDAO getCancionDAO() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {	
+	public TDSCancionDAO getCancionDAO() throws BDException, DAOException {	
 		return TDSCancionDAO.getUnicaInstancia(); 
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
 	@Override
-	public TDSListaCancionesDAO getListaCancionesDAO() throws InstantiationException, 
-	IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, 
-	SecurityException, ClassNotFoundException, DAOException {	
-		
+	public TDSListaCancionesDAO getListaCancionesDAO() throws BDException, DAOException {	
 		return TDSListaCancionesDAO.getUnicaInstancia(); 
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
 	@Override
-	public TDSUsuarioDAO getUsuarioDAO() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {	
-		
+	public TDSUsuarioDAO getUsuarioDAO() throws BDException, DAOException {		
 		return TDSUsuarioDAO.getUnicaInstancia(); 
 	}
 }

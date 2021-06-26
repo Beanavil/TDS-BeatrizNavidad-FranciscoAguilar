@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +22,11 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
-import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
@@ -61,18 +61,9 @@ public class PanelNuevaLista extends JPanel{
 	/**
 	 * Constructor de la clase //TODO pasar todo a método initialize();
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-
-	public PanelNuevaLista() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException{
+	public PanelNuevaLista() throws BDException, DAOException{
 
 		super();
 		controlador = AppMusic.getUnicaInstancia();

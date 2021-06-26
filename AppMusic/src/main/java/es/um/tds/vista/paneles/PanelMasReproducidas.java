@@ -1,7 +1,6 @@
 package es.um.tds.vista.paneles;
 
 import java.awt.BorderLayout;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
@@ -10,7 +9,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import es.um.tds.controlador.AppMusic;
-import es.um.tds.persistencia.DAOException;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
@@ -20,10 +20,7 @@ public class PanelMasReproducidas extends JPanel {
 
 	private AppMusic controlador;
 	
-	public PanelMasReproducidas() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	public PanelMasReproducidas() throws BDException, DAOException {
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();

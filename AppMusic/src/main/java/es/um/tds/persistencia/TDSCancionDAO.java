@@ -1,11 +1,12 @@
 package es.um.tds.persistencia;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import beans.Entidad;
 import beans.Propiedad;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
 import es.um.tds.utils.StringUtils;
@@ -31,16 +32,9 @@ public class TDSCancionDAO implements CancionDAO {
 	/**
 	 * Constructor
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	private TDSCancionDAO () throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
+	private TDSCancionDAO () throws BDException, DAOException {
 		
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
@@ -49,17 +43,9 @@ public class TDSCancionDAO implements CancionDAO {
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
 	 * @return única instancia del adaptador de Cancion.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public static TDSCancionDAO getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
+	public static TDSCancionDAO getUnicaInstancia() throws BDException, DAOException {
 		
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSCancionDAO(); 
@@ -70,7 +56,7 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void store(Cancion cancion) throws NullPointerException {
+	public void store(Cancion cancion) {
 		// Comprobamos primero que no esté ya registrada
 		if (cancion.getId() >= 0)
 			return;
@@ -122,7 +108,7 @@ public class TDSCancionDAO implements CancionDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Cancion get(int id) throws NullPointerException {
+	public Cancion get(int id) {
 		// Si no está devolvemos null
 		Entidad eCancion = servPersistencia.recuperarEntidad(id);
 		if (eCancion == null)

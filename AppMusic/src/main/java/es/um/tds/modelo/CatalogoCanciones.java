@@ -1,13 +1,13 @@
 package es.um.tds.modelo;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.persistencia.CancionDAO;
-import es.um.tds.persistencia.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.utils.StringUtils;
 
@@ -23,10 +23,7 @@ public class CatalogoCanciones {
 	private FactoriaDAO factoria;
 	private CancionDAO adaptadorCancion;
 	
-	private CatalogoCanciones() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	private CatalogoCanciones() throws BDException, DAOException {
 		canciones = new HashMap<>();
 		cancionesTitulo = new HashMap<>();
 		factoria = FactoriaDAO.getInstancia(FactoriaDAO.DAO_TDS);
@@ -38,18 +35,9 @@ public class CatalogoCanciones {
 	 * Método para obtener la única instancia del catálogo
 	 * @return instancia
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public static CatalogoCanciones getUnicaInstancia() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	public static CatalogoCanciones getUnicaInstancia() throws BDException, DAOException {	
 		if(unicaInstancia == null)
 			unicaInstancia = new CatalogoCanciones();
 		return unicaInstancia;
