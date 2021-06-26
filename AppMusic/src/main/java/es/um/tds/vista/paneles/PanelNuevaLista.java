@@ -34,6 +34,9 @@ import es.um.tds.vista.ModeloTabla;
 public class PanelNuevaLista extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private static final int TAM_CUADRO_TEXTO = 10;
+	//TODO No se si exportar esta variable o qué
+	private static final int COLUMNA_TITULO = 0;
+	private static final int COLUMNA_AUTOR = 1;
 	
 	private AppMusic controlador;
 		
@@ -51,12 +54,14 @@ public class PanelNuevaLista extends JPanel{
 	
 	private JButton btnAdd;
 	private JButton btnRetirar;
-	
-	private JButton btnAceptar;
-	private JButton btnCancelar;
+
+	private JButton btnFinalizar;
 	
 	//TODO ¿Es necesario añadir los paneles como atributos de la clase?
+	private JPanel panelTablaDer;
 	private JPanel panelInv;
+	
+	private String nombreLista;
 	
 	/**
 	 * Constructor de la clase //TODO pasar todo a método initialize();
@@ -104,6 +109,7 @@ public class PanelNuevaLista extends JPanel{
 		btnEliminar.setVisible(false);
 		
 		crearManejadorBotonCrear();
+		crearManejadorBotonEliminar();
 		return panel;
 	}
 	
@@ -167,7 +173,7 @@ public class PanelNuevaLista extends JPanel{
 		panel.add(panelBtn);
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
-		JPanel panelTablaDer = new JPanel();
+		panelTablaDer = new JPanel();
 		panelTablaDer.setBorder(new TitledBorder(null, "PlayList", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		tablaDer = new JTable(new ModeloTabla());
 		tablaDer.setPreferredScrollableViewportSize(new Dimension(350,200));
@@ -180,18 +186,16 @@ public class PanelNuevaLista extends JPanel{
 	}
 	
 	/**
-	 * Crea el panel con los botones Aceptar y Cancelar 
+	 * Crea el con el botón finalizar
 	 */
 	private JPanel crearPanel4() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER,0,10));
-		btnAceptar = new JButton("Aceptar");
-		btnCancelar = new JButton("Cancelar");
+		btnFinalizar = new JButton("Finalizar");
 		
-		crearManejadorBotonCancelar();
-		
-		panel.add(btnAceptar);
-		panel.add(btnCancelar);
+		crearManejadorBotonFinalizar();
+
+		panel.add(btnFinalizar);
 		return panel;
 	}
 	
@@ -202,6 +206,8 @@ public class PanelNuevaLista extends JPanel{
 		btnRetirar = new JButton("<<");
 		panel.add(btnAdd);
 		panel.add(btnRetirar);
+		crearManejadorBotonAdd();
+		crearManejadorBotonRetirar();
 		return panel;
 	}
 	
@@ -212,7 +218,7 @@ public class PanelNuevaLista extends JPanel{
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(controlador.getCanciones());
-				String nombreLista = txtCrear.getText();
+				nombreLista = txtCrear.getText();
 				
 				//En caso de que la lista no existiese
 				if (!controlador.existeLista(nombreLista)) {
@@ -246,16 +252,16 @@ public class PanelNuevaLista extends JPanel{
 	 * Crear manejador para el botón "Eliminar" //TODO
 	 */
 	private void crearManejadorBotonEliminar() {
-		btnCancelar.addActionListener(new ActionListener() {
+		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showOptionDialog(panelInv, 
-						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+						"¿Está seguro de que desea eliminar la lista?", "Confirmar eliminar lista",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
-					String nombreLista = txtCrear.getText();
+					//String nombreLista = txtCrear.getText();
 					ListaCanciones lista = controlador.getListaCanciones(nombreLista);
-					//controlador.eli //TODO vas por aquí, necesitas el adaptador de listas de canciones y eso
+					controlador.eliminarLista(lista);
 					txtCrear.setText("");
 					txtTitulo.setText("");
 					txtInterprete.setText("");
@@ -294,14 +300,15 @@ public class PanelNuevaLista extends JPanel{
 		});
 	}
 	
+	//TODO Cambiar Aceptar y Cancelar por finalizar, Bea??
 	/**
 	 * Crea manejador para el botón "Cancelar"
 	 */
-	private void crearManejadorBotonCancelar() {
-		btnCancelar.addActionListener(new ActionListener() {
+	private void crearManejadorBotonFinalizar() {
+		btnFinalizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showOptionDialog(panelInv, 
-						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+						"¿Está seguro de que desea finalizar la creación?", "Confirmar finalizar creación",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
@@ -312,6 +319,36 @@ public class PanelNuevaLista extends JPanel{
 					btnEliminar.setVisible(false);
 					panelInv.setVisible(false);
 				}
+			}
+		});
+	}
+	
+	private void crearManejadorBotonAdd() {
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 int fila = tablaIzq.getSelectedRow();
+				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
+				 Cancion cancion = ((ModeloTabla)tablaIzq.getModel()).getListaCanciones().get(fila);
+				 controlador.addCancionToLista(lista, cancion);
+				 
+				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+				 tablaDer.revalidate();
+				 tablaDer.repaint();	 
+			}
+		});
+	}
+	
+	private void crearManejadorBotonRetirar() {
+		btnRetirar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 int fila = tablaDer.getSelectedRow();
+				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
+				 Cancion cancion = ((ModeloTabla)tablaDer.getModel()).getListaCanciones().get(fila);
+				 controlador.eliminarCancionFromLista(lista, cancion);
+				 
+				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+				 tablaDer.revalidate();
+				 tablaDer.repaint(); 
 			}
 		});
 	}

@@ -287,7 +287,6 @@ public final class AppMusic implements ICargadoListener{
     	adaptadorUsuario.update(usuarioActual);
     }
     
-    
     // Funcionalidad lista de canciones
     
     /**
@@ -318,6 +317,9 @@ public final class AppMusic implements ICargadoListener{
      * @param lista
      */
     public void eliminarLista(ListaCanciones lista) {
+    	adaptadorListaCanciones.delete(lista);
+    	usuarioActual.removeListaCanciones(lista);
+    	adaptadorUsuario.update(usuarioActual);
     }
     
     /**
@@ -336,6 +338,27 @@ public final class AppMusic implements ICargadoListener{
     	return null;
     }
     
+    
+    public void addCancionToLista (ListaCanciones lista, Cancion cancion) {
+    	if (usuarioActual != null) {
+    		if (!lista.isCancionEnLista(cancion)) {
+    			lista.addCancion(cancion);
+        		adaptadorListaCanciones.update(lista);
+        		//TODO Esto es necesario??
+        		adaptadorUsuario.update(usuarioActual);
+    		}
+    	}
+    }
+    
+    
+    public void eliminarCancionFromLista(ListaCanciones lista, Cancion cancion) {
+    	if (usuarioActual != null) {
+    		lista.removeCancion(cancion);
+    		adaptadorListaCanciones.update(lista);
+    		//TODO Esto es necesario??
+    		adaptadorUsuario.update(usuarioActual);
+    	}
+    }
     
     public List<Cancion> getCancionesRecientes() {
 		List<Cancion> recientes = new ArrayList<>();

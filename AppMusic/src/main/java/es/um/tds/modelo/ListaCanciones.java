@@ -75,6 +75,9 @@ public class ListaCanciones {
 			this.numCanciones = numCanciones;
 	}
 	
+	public boolean isCancionEnLista(Cancion cancion) {
+		return this.getCanciones().contains(cancion);
+	}
 	
 	public void addCancion(Cancion cancion) {
 		this.canciones.add(cancion);
@@ -84,7 +87,6 @@ public class ListaCanciones {
 	public void removeCancion(Cancion cancion) {
 		this.canciones.remove(cancion);
 	}
-	
 	
 	public void removeFirst() {
 		if(this.canciones.size() > 0)

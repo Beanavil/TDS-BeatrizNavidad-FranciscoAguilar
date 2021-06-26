@@ -150,6 +150,10 @@ public class Usuario {
 		listasCanciones.add(lista); 
 	}
 	
+	public void removeListaCanciones(ListaCanciones lista) {
+		listasCanciones.remove(lista);
+	}
+	
 	public ListaCanciones getListaRecientes() {
 		return cancionesRecientes;
 	}
