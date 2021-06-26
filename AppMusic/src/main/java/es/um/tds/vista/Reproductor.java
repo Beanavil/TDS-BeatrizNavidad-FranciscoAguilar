@@ -8,7 +8,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.io.File;
@@ -19,23 +18,20 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
-
-import es.um.tds.controlador.AppMusic;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.persistencia.DAOException;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 
 public class Reproductor {
 
 	  private MediaPlayer mediaPlayer;
 	  private ListaCanciones listaActual;
 	  private int indiceCancionActual;
-	  
-	  private AppMusic controlador;
+	  private final String tempPath = "./temp";
 
 	  private JPanel panelReproductor;
 
@@ -66,17 +62,8 @@ public class Reproductor {
 		panelReproductor = new JPanel(new BorderLayout());
 		panelReproductor.add(panelBotones, BorderLayout.CENTER);
 		panelReproductor.setVisible(true);
-		
-		controlador = AppMusic.getUnicaInstancia();
 
 		listaActual = new ListaCanciones(" ");
-
-	    try {
-	      com.sun.javafx.application.PlatformImpl.startup(() -> {});
-	    } catch (Exception e) {
-	      e.printStackTrace();
-	      System.out.println("Exception: " + e.getMessage());
-	    }
 	}
 
 	
@@ -148,7 +135,7 @@ public class Reproductor {
 					  if (listaActual.getNumCanciones() > 0) { 
 						  indiceCancionActual =
 								  indiceCancionActual == 0 ? (listaActual.getNumCanciones() - 1) : (indiceCancionActual - 1);
-								  cambiarCancion(listaActual.getCancion(indiceCancionActual));
+								  disposePlayer(listaActual.getCancion(indiceCancionActual));
 					  }
 				  });
 		  panelBotones.add(btnPrev);
@@ -165,22 +152,23 @@ public class Reproductor {
 	          if (listaActual.getNumCanciones() == 0)
 	        	  return;
 	          else if (mediaPlayer == null) {
-	            crearMediaPlayer();
-	            mediaPlayer.play();
+	            reproducirCancion();
 	            btnPlay.setIcon(stop);
 	          } else {
 	            switch (mediaPlayer.getStatus()) {
 	              case DISPOSED:
 	              case READY:
-	                crearMediaPlayer();
+	            	  System.out.println("in ready");
+	                reproducirCancion();
+	                btnPlay.setIcon(stop);
 	              case STOPPED:
 	              case PAUSED:
+	                reanudarCancion();
 	                btnPlay.setIcon(stop);
-	                mediaPlayer.play();
 	                break;
 	              case PLAYING:
+	                pausarCancion();
 	                btnPlay.setIcon(play);
-	                mediaPlayer.pause();
 	                break;
 	              default:
 	                break;
@@ -201,7 +189,7 @@ public class Reproductor {
 				event -> {
 					if (listaActual.getNumCanciones() > 0) { 
 						indiceCancionActual = (indiceCancionActual + 1) % listaActual.getNumCanciones();
-						cambiarCancion(listaActual.getCancion(indiceCancionActual));
+						disposePlayer(listaActual.getCancion(indiceCancionActual));
 					}
 				});
 		panelBotones.add(btnNext);
@@ -210,9 +198,10 @@ public class Reproductor {
 	
 	  
 	  /**
-	   * Cambia de canción
+	   * Libera todos los recursos asignados al player anterior (dispose)
+	   * y establece el icono del botón play/stop que corresponde
 	   */
-	  private void cambiarCancion(Cancion cancion) {
+	  private void disposePlayer(Cancion cancion) {
 	    if (mediaPlayer != null) {
 	      mediaPlayer.dispose();
 	    }
@@ -221,80 +210,100 @@ public class Reproductor {
 
 	  
 	  /**
-	   * Inicialización del mediaPlayer
+	   * Reproduce canción
+	   * @throws IOException 
 	   */
-	  private void crearMediaPlayer() {
+	  private void reproducirCancion() {
 		if (listaActual.getNumCanciones() == 0)
 			return;
 		
-	    Cancion cancion = listaActual.getCancion(indiceCancionActual);
-	    File f;
-	    try {
-	      f = rutaToFichero(cancion.getRutaFichero());
-	    } catch (IOException e) {
-	      JOptionPane.showMessageDialog(
-	          panelReproductor,
-	          "Error al intentar reproducir la canción",
-	          "Canción no disponible",
-	          JOptionPane.ERROR_MESSAGE);
-	      return;
-	    }
-	    Media media = new Media(f.toURI().toString());
-	    media.getMarkers().put("listened", new Duration(10 * 1000)); // 10 = secs to be listened
-
-	    mediaPlayer = new MediaPlayer(media);
-	    mediaPlayer.setOnMarker(
-	        mEvent -> {
-	        // Añadir a reproducidas recientes y actualizar la lista de más reproducidas
-	          controlador.actualizarNumReproducciones(cancion);
-	          controlador.addReciente(cancion);
-	        });
-	    mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(mediaPlayer.getStartTime()));
+		if(mediaPlayer != null) pararCancion();
+		Cancion cancion = listaActual.getCancion(indiceCancionActual);
+		com.sun.javafx.application.PlatformImpl.startup(() -> {});
+        URL url;
+        Path mp3;
+		try {
+			url = new URL(cancion.getRutaFichero());
+        
+	        System.setProperty("java.io.tmpdir", tempPath);
+	        mp3 = Files.createTempFile("now-playing", ".mp3");
+	        
+	        try (InputStream stream = url.openStream()) {
+	          Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
+	        }
+	        
+		    Media media = new Media(mp3.toFile().toURI().toString());
+		    mediaPlayer = new MediaPlayer(media);
+		    mediaPlayer.play();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(panelReproductor, "Error al cargar canción.\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+		}
 	  }
 
 	  
 	  /**
-	   * Devuelfe el fichero con la ruta especificada o un fichero temporal si la ruta comienza con http
-	   * @param ruta
-	   * @return Fichero de la ruta
-	   * @throws IOException
+	   * Finaliza la reproducción de una canción y 
+	   * elimina los archivos temporales descargados para la reproducción
 	   */
-	  private File rutaToFichero(String ruta) throws IOException {
-	    if (ruta.startsWith("http")) {
-	      URL url = new URL(ruta);
-	      Path rutaFicheroMP3 = Files.createTempFile("now-playing", ".mp3");
-	      try (InputStream stream = url.openStream()) {
-	        Files.copy(stream, rutaFicheroMP3, StandardCopyOption.REPLACE_EXISTING);
-	      }
-	      return rutaFicheroMP3.toFile();
-	    } else {
-	      return new File(ruta);
+	  public void pararCancion() {
+	        if (mediaPlayer != null) mediaPlayer.stop();
+	        File directorio = new File(tempPath);
+	        
+	        String[] files = directorio.list();
+	        for (String archivo : files) {
+	        	File fichero = new File(tempPath + File.separator + archivo);
+	        	fichero.delete();
+	        }
+	        mediaPlayer = null;
 	    }
-	  }
-
+	  
+	  
 	  /**
-	   * Reproduce una lista de canciones a partir de una canción en concreto
+	   * Reanuda la reproducción de una canción
+	   */
+	  public void reanudarCancion() {
+	        if(mediaPlayer != null)
+	            mediaPlayer.play();
+	    }
+	  
+	  /**
+	   * Pausa la reproducción de una canción
+	   */
+	  public void pausarCancion() {
+	        if(mediaPlayer != null)
+	            mediaPlayer.pause();
+	    }
+	  
+	  /**
+	   * Establece una lista de canciones a reproducir a partir de un número de 
+	   * canción en concreto
 	   * @param lista Lista de canciones a reproducir
 	   * @param index Índice de la canción por la que empezar
 	   */
-	  public void play(ListaCanciones lista, int index) {
+	  public void setListaReproduccion(ListaCanciones lista, int index) {
 	    if (!panelReproductor.isVisible()) {
 	      panelReproductor.setVisible(true);
 	    }
 	    listaActual = lista;
 	    indiceCancionActual = index;
-	    cambiarCancion(listaActual.getCancion(index));
-	  }
-
-	  /**
-	   * Reproduce una lista de canciones desde el principio
-	   * @param lista Lista de canciones a reproducir
-	   */
-	  public void play(ListaCanciones lista) {
-	    play(lista, 0);
+	    disposePlayer(listaActual.getCancion(index));
 	  }
 
 	  
+	  /**
+	   * Establece una lista de canciones a reproducir desde el principio
+	   * @param lista Lista de canciones a reproducir
+	   */
+	  public void setListaReproduccion(ListaCanciones lista) {
+	    setListaReproduccion(lista, 0);
+	  }
+
+	  
+	  /**
+	   * Devuelve el panel de botones del reproductor
+	   * @return
+	   */
 	  public JPanel getPanelReproductor() {
 		  return panelReproductor;
 	  }
