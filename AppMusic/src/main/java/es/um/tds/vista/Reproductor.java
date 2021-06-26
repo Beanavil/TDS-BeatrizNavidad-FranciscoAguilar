@@ -13,13 +13,13 @@ import javax.swing.JPanel;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
@@ -31,10 +31,9 @@ public class Reproductor {
 	  private MediaPlayer mediaPlayer;
 	  private ListaCanciones listaActual;
 	  private int indiceCancionActual;
-	  
-	  private String binPath;
-	  private String tempPath;
 
+	  private final String tempPath = "./temp";
+	  
 	  private JPanel panelReproductor;
 
 	  private JButton btnPrev;
@@ -49,19 +48,9 @@ public class Reproductor {
 	/**
 	 * Constructor
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public Reproductor() throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
-		
-		binPath = Reproductor.class.getClassLoader().getResource(".").getPath();
-		tempPath = binPath.replace("/bin", "/temp");
+	public Reproductor() throws BDException, DAOException {
 		
 		JPanel panelBotones = crearPanelBotones();
 		panelReproductor = new JPanel(new BorderLayout());
@@ -229,7 +218,7 @@ public class Reproductor {
 			com.sun.javafx.application.PlatformImpl.startup(() -> {});
 	        uri = new URL(cancion.getRutaFichero());
 	        
-	        System.setProperty("java.io.tmpdir", "./");
+	        System.setProperty("java.io.tmpdir", tempPath);
 	        Path mp3 = Files.createTempFile("now-playing", ".mp3");
 	        
 	        try (InputStream stream = uri.openStream()) {
