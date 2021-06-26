@@ -14,11 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.stream.Stream;
 
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
@@ -31,7 +31,9 @@ public class Reproductor {
 	  private MediaPlayer mediaPlayer;
 	  private ListaCanciones listaActual;
 	  private int indiceCancionActual;
-	  private final String tempPath = "./temp";
+	  
+	  private String binPath;
+	  private String tempPath;
 
 	  private JPanel panelReproductor;
 
@@ -57,6 +59,9 @@ public class Reproductor {
 	 */
 	public Reproductor() throws InstantiationException, IllegalAccessException, IllegalArgumentException, 
 	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
+		
+		binPath = Reproductor.class.getClassLoader().getResource(".").getPath();
+		tempPath = binPath.replace("/bin", "/temp");
 		
 		JPanel panelBotones = crearPanelBotones();
 		panelReproductor = new JPanel(new BorderLayout());
@@ -219,22 +224,27 @@ public class Reproductor {
 		
 		if(mediaPlayer != null) pararCancion();
 		Cancion cancion = listaActual.getCancion(indiceCancionActual);
-		com.sun.javafx.application.PlatformImpl.startup(() -> {});
-        URL url;
-        Path mp3;
+		URL uri = null;
 		try {
-			url = new URL(cancion.getRutaFichero());
-        
-	        System.setProperty("java.io.tmpdir", tempPath);
-	        mp3 = Files.createTempFile("now-playing", ".mp3");
+			com.sun.javafx.application.PlatformImpl.startup(() -> {});
+	        uri = new URL(cancion.getRutaFichero());
 	        
-	        try (InputStream stream = url.openStream()) {
+	        System.setProperty("java.io.tmpdir", tempPath);
+	        Path mp3 = Files.createTempFile("now-playing", ".mp3");
+	        
+	        try (InputStream stream = uri.openStream()) {
 	          Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
 	        }
+	        //System.out.println("finished-copy: " + mp3.getFileName());
 	        
 		    Media media = new Media(mp3.toFile().toURI().toString());
 		    mediaPlayer = new MediaPlayer(media);
 		    mediaPlayer.play();
+	    
+		} catch (MalformedURLException e) {
+			JOptionPane.showMessageDialog(panelReproductor, "Error al cargar canción.\n",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(panelReproductor, "Error al cargar canción.\n",
 					"Error", JOptionPane.ERROR_MESSAGE);
