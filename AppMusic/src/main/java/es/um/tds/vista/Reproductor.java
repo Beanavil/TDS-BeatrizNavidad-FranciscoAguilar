@@ -19,10 +19,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import es.um.tds.controlador.AppMusic;
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
+import es.um.tds.vista.paneles.PanelMasReproducidas;
+import es.um.tds.vista.paneles.PanelRecientes;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -31,8 +34,9 @@ public class Reproductor {
 	  private MediaPlayer mediaPlayer;
 	  private ListaCanciones listaActual;
 	  private int indiceCancionActual;
-
 	  private final String tempPath = "./temp";
+	  
+	  private AppMusic controlador;
 	  
 	  private JPanel panelReproductor;
 
@@ -51,7 +55,15 @@ public class Reproductor {
 	 * @throws BDException
 	 */
 	public Reproductor() throws BDException, DAOException {
-		
+		controlador = AppMusic.getUnicaInstancia();
+		inicialize();
+	}
+
+	
+	/**
+	 * Inicializa los componentes del reproductor
+	 */
+	public void inicialize() {
 		JPanel panelBotones = crearPanelBotones();
 		panelReproductor = new JPanel(new BorderLayout());
 		panelReproductor.add(panelBotones, BorderLayout.CENTER);
@@ -59,7 +71,7 @@ public class Reproductor {
 
 		listaActual = new ListaCanciones(" ");
 	}
-
+	
 	
 	  /**
 	   * Crea el panel de botones del reproductor
@@ -129,7 +141,8 @@ public class Reproductor {
 					  if (listaActual.getNumCanciones() > 0) { 
 						  indiceCancionActual =
 								  indiceCancionActual == 0 ? (listaActual.getNumCanciones() - 1) : (indiceCancionActual - 1);
-								  disposePlayer(listaActual.getCancion(indiceCancionActual));
+								  disposePlayer();
+								  reproducirCancion();
 					  }
 				  });
 		  panelBotones.add(btnPrev);
@@ -152,7 +165,6 @@ public class Reproductor {
 	            switch (mediaPlayer.getStatus()) {
 	              case DISPOSED:
 	              case READY:
-	            	  System.out.println("in ready");
 	                reproducirCancion();
 	                btnPlay.setIcon(stop);
 	              case STOPPED:
@@ -183,7 +195,8 @@ public class Reproductor {
 				event -> {
 					if (listaActual.getNumCanciones() > 0) { 
 						indiceCancionActual = (indiceCancionActual + 1) % listaActual.getNumCanciones();
-						disposePlayer(listaActual.getCancion(indiceCancionActual));
+						disposePlayer();
+						reproducirCancion();
 					}
 				});
 		panelBotones.add(btnNext);
@@ -195,7 +208,7 @@ public class Reproductor {
 	   * Libera todos los recursos asignados al player anterior (dispose)
 	   * y establece el icono del botón play/stop que corresponde
 	   */
-	  private void disposePlayer(Cancion cancion) {
+	  private void disposePlayer() {
 	    if (mediaPlayer != null) {
 	      mediaPlayer.dispose();
 	    }
@@ -224,11 +237,18 @@ public class Reproductor {
 	        try (InputStream stream = uri.openStream()) {
 	          Files.copy(stream, mp3, StandardCopyOption.REPLACE_EXISTING);
 	        }
-	        //System.out.println("finished-copy: " + mp3.getFileName());
 	        
 		    Media media = new Media(mp3.toFile().toURI().toString());
-		    mediaPlayer = new MediaPlayer(media);
-		    mediaPlayer.play();
+		    controlador.actualizarNumReproducciones(cancion);
+		    controlador.addReciente(cancion);
+		    PanelRecientes.refresh();
+		    PanelMasReproducidas.refresh();
+		    
+		    
+		    System.out.println("sonando cancion: " + cancion.getTitulo()); // TODO quitar
+//		    mediaPlayer = new MediaPlayer(media);
+//		    mediaPlayer.play(); // TODO esto falla en ubuntu
+
 		    
 		} catch (MalformedURLException e) {
 			JOptionPane.showMessageDialog(panelReproductor, "Error al cargar canción.\n",
@@ -286,7 +306,7 @@ public class Reproductor {
 	    }
 	    listaActual = lista;
 	    indiceCancionActual = index;
-	    disposePlayer(listaActual.getCancion(index));
+	    disposePlayer();
 	  }
 
 	  

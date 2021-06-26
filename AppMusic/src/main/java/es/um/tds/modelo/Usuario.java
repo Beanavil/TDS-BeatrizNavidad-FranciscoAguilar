@@ -1,6 +1,7 @@
 package es.um.tds.modelo;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +9,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import es.um.tds.modelo.descuentos.Descuento65;
+import es.um.tds.modelo.descuentos.DescuentoNulo;
+import es.um.tds.modelo.descuentos.DescuentoPremium;
+import es.um.tds.modelo.descuentos.IDescuento;
+
 /**
  * Representa un usuario de la aplicación.
  * 
  * @author Beatriz y Francisco
  */
-public class Usuario implements Descuento {
+public class Usuario {
 	public static final String LISTA_RECIENTES = "Canciones recientes";
 	public static final int NUM_RECIENTES = 10;
 	
@@ -24,6 +30,7 @@ public class Usuario implements Descuento {
 	private String login;
 	private String password;
 	private boolean premium;
+	private IDescuento descuento;
 	private List<ListaCanciones> listasCanciones;
 	private ListaCanciones cancionesRecientes;
 	private Map<Cancion, Integer> cancionesMasReproducidas;
@@ -56,6 +63,7 @@ public class Usuario implements Descuento {
 		this.login = nombreUsuario;
 		this.password = contrasena;
 		this.premium = premium;
+		this.descuento = calcDescuento();
 		this.listasCanciones = new ArrayList<>(listasCanciones);
 		if (cancionesRecientes.getNumCanciones() > 10)
 			this.cancionesRecientes = new ListaCanciones(LISTA_RECIENTES, cancionesRecientes.getCanciones().subList(0, 10));
@@ -130,6 +138,10 @@ public class Usuario implements Descuento {
 		return premium;
 	}
 	
+	public IDescuento getDescuento() {
+		return this.descuento;
+	}
+	
 	public List<ListaCanciones> getListasCanciones() {
 		return new ArrayList<>(listasCanciones);
 	}
@@ -142,8 +154,13 @@ public class Usuario implements Descuento {
 		return cancionesRecientes;
 	}
 	
+	/**
+	 * Añade una canción a la lista de recientes. Si ya hay 10 (el máximo)
+	 * elimina la menos reciente (la primera añadida)
+	 * @param cancion Canción a añadir a recientes
+	 */
 	public void addCancionReciente(Cancion cancion) {
-		if (!this.cancionesRecientes.getCanciones().contains(cancion)) {
+		if (!this.isReciente(cancion)) {
 			if (this.cancionesRecientes.getNumCanciones() < NUM_RECIENTES)
 				cancionesRecientes.addCancion(cancion);
 			else {
@@ -153,16 +170,46 @@ public class Usuario implements Descuento {
 		}
 	}
 	
+	/**
+	 * Indica si una cancion está en recientes o no
+	 * @param cancion
+	 * @return
+	 */
+	public boolean isReciente(Cancion cancion) {
+		return cancionesRecientes.getCanciones().stream()		
+		.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
+	}
+	
+	
+	/**
+	 * Indica si una cancion está en más reproducidas o no
+	 * @param cancion
+	 * @return
+	 */
+	public boolean isMasReproducida(Cancion cancion) {
+		return cancionesMasReproducidas.keySet().stream()		
+		.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
+	}
+	
+	/**
+	 * Elimina una canción de recientes
+	 * @param cancion
+	 */
 	public void removeCancionReciente(Cancion cancion) {
 		cancionesRecientes.removeCancion(cancion);
 	}
+	
 	
 	public Map<Cancion, Integer> getMasReproducidas() {
 		return cancionesMasReproducidas;
 	}
 	
+	
 	public void addMasReproducida(Cancion cancion) {
-		cancionesMasReproducidas.replace(cancion, cancion.getNumReproducciones());
+		if (isMasReproducida(cancion))
+			cancionesMasReproducidas.replace(cancion, cancion.getNumReproducciones());
+		else
+			cancionesMasReproducidas.put(cancion, cancion.getNumReproducciones());
 	}
 	
 	public int getId() {
@@ -178,6 +225,7 @@ public class Usuario implements Descuento {
 	
 	public void setPremium(boolean premium) {
 		this.premium = premium;
+		this.actualizaDescuento();
 	}
 
 	public void setApellidos(String apellidos) {
@@ -197,8 +245,11 @@ public class Usuario implements Descuento {
 	}
 
 	public void setPassword(String password) {
-		// TODO: comprobar el formato de la password en la vista
 		this.password = password;
+	}
+	
+	public void actualizaDescuento() {
+		this.descuento = this.calcDescuento();
 	}
 	
 	public void setListasCanciones(List<ListaCanciones> listasCanciones) {
@@ -218,13 +269,7 @@ public class Usuario implements Descuento {
 			   "fecha de nacimiento= " + fechaNacimiento.format(formatter) + ", usuario=" + login +
 			   ", contraseña=" + password + ", id=" + id + "]";
 	}
-
-	/**
-	 * Método para realizar un pago
-	 */
-	public void realizarPago() {
-		// TODO xd
-	}
+	
 	
 	/**
 	 * Método para calcular el descuento a aplicar en función 
@@ -232,8 +277,13 @@ public class Usuario implements Descuento {
 	 * @param precio cantidad de la que calculamos el descuento
 	 * @return descuento a aplicar
 	 */
-	public double calcDescuento(double precio) { // TODO descuentos
-		return 0;
+	private IDescuento calcDescuento() { 
+		LocalDate fechaActual = LocalDate.now();
+		if (Period.between(fechaNacimiento, fechaActual).getYears() >= 65)
+			return new Descuento65();
+		else if (this.premium)
+			return new DescuentoPremium();
+		else 
+			return new DescuentoNulo();		
 	}
-
 }

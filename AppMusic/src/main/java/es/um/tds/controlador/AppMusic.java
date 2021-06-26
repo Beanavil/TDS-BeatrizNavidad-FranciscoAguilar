@@ -2,6 +2,9 @@ package es.um.tds.controlador;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.swing.JOptionPane;
 
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
@@ -15,6 +18,7 @@ import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
+import es.um.tds.vista.Reproductor;
 import umu.tds.componente.CancionesEvent;
 import umu.tds.componente.CargadorCanciones;
 import umu.tds.componente.ICargadoListener;
@@ -235,9 +239,13 @@ public final class AppMusic implements ICargadoListener{
      * @param cancion
      */
     public void actualizarNumReproducciones(Cancion cancion) {
+    	// Actualizamos reproducciones de cancion
     	cancion.setNumReproducciones(cancion.getNumReproducciones() + 1);
     	adaptadorCancion.update(cancion);
+    	
+    	// Actualizamos más reproducidas del usuario
     	usuarioActual.addMasReproducida(cancion);
+    	adaptadorUsuario.update(usuarioActual);
     }
     
     
@@ -273,7 +281,10 @@ public final class AppMusic implements ICargadoListener{
      * @param cancion
      */
     public void addReciente(Cancion cancion) {
+    	// Añadir canción a la lista de recientes del usuario actual
     	usuarioActual.addCancionReciente(cancion);
+    	// Actualiza la bd
+    	adaptadorUsuario.update(usuarioActual);
     }
     
     
@@ -326,17 +337,6 @@ public final class AppMusic implements ICargadoListener{
     }
     
     
-    
-    public void addCancion(ListaCanciones lista, List<Cancion> cancion) {
-    	
-    }
-    
-    
-    public void removeCancion(ListaCanciones lista, List<Cancion> cancion) {
-    	
-    }
-    
-    
     public List<Cancion> getCancionesRecientes() {
 		List<Cancion> recientes = new ArrayList<>();
 		if (usuarioActual != null) {
@@ -350,7 +350,8 @@ public final class AppMusic implements ICargadoListener{
 	public List<Cancion> getCancionesMasReproducidas() {
 		List<Cancion> masReproducidas = new ArrayList<>();
 		if (usuarioActual != null)
-			masReproducidas = new ArrayList<Cancion>(usuarioActual.getMasReproducidas().keySet());
+			masReproducidas = usuarioActual.getMasReproducidas().keySet().stream()
+			.collect(Collectors.toList());
 		return masReproducidas;
 	}
     
@@ -385,6 +386,22 @@ public final class AppMusic implements ICargadoListener{
     
     public void setUsuarioActual(Usuario usuario) {
     	usuarioActual = usuario;
+    }
+    
+    public void upgradeUsuarioActual() {
+    	if (usuarioActual != null)
+    		usuarioActual.setPremium(true);
+    }
+    
+    public void degradeUsuarioActual() {
+    	if (usuarioActual != null)
+    		usuarioActual.setPremium(false);
+    }
+    
+    public boolean isUsuarioPremium() {
+    	if (usuarioActual != null)
+    		return usuarioActual.isPremium();
+    	return false;
     }
 
 }

@@ -40,7 +40,14 @@ import javax.swing.JButton;
 public class VentanaPrincipal {
 
 	private AppMusic controlador;
+	
 	private JFrame frmVentanaPrincipal;
+	
+	private JButton btnUpgrade;
+	
+	private ImageIcon upgIcon;
+	private ImageIcon degIcon;
+	
 	private JPanel panelExplorar;
 	private JPanel panelNuevaLista;
 	private JPanel panelRecientes;
@@ -223,39 +230,33 @@ public class VentanaPrincipal {
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
 		// Botón mejora
-		JButton btnUpgrade = new JButton("Hazte premium");
+		btnUpgrade = new JButton("Hazte premium");
 		panel.add(btnUpgrade);
 		
-		BufferedImage icon = null;
+		BufferedImage iconU = null; // icono upgrade
+		BufferedImage iconD = null; // icono degrade
 		try {
-			icon = ImageIO.read(new File("./resources/premium-icon.png")); 
+			iconU = ImageIO.read(new File("./resources/premium-icon.png")); 
+			iconD = ImageIO.read(new File("./resources/poor-icon.png")); 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		ImageIcon tabIcon = new ImageIcon(icon);
-		Image image = tabIcon.getImage();
+		// Icono upgrade
+		upgIcon = new ImageIcon(iconU);
+		Image image = upgIcon.getImage();
 		Image scaledimage = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
-		tabIcon = new ImageIcon(scaledimage);
-		btnUpgrade.setIcon(tabIcon);
-		btnUpgrade.setBorder(new LineBorder(new Color(164, 230, 246)));
-		btnUpgrade.setOpaque(false);
-		btnUpgrade.setContentAreaFilled(false);
-		btnUpgrade.setBorderPainted(false);
+		upgIcon = new ImageIcon(scaledimage);
 		
-		btnUpgrade.addMouseListener(new MouseAdapter() {
-	         public void mouseEntered(MouseEvent evt) {
-	        	 btnUpgrade.setOpaque(true);
-	     		 btnUpgrade.setContentAreaFilled(true);
-	     		 btnUpgrade.setBorderPainted(true);
-	     		 btnUpgrade.setBackground(new Color(164, 230, 246));
-	         }
-	         public void mouseExited(MouseEvent evt) {
-	        	 btnUpgrade.setOpaque(false);
-	     		 btnUpgrade.setContentAreaFilled(false);
-	     		 btnUpgrade.setBorderPainted(false);
-	          }
-		});
+		// Icono degrade
+		degIcon = new ImageIcon(iconD);
+		image = degIcon.getImage();
+		scaledimage = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
+		degIcon = new ImageIcon(scaledimage);
+		
+		// Al inicio el botón tiene el icono upgrade
+		btnUpgrade.setIcon(upgIcon);
+		customizarBotonUpgrade();
 		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
@@ -263,18 +264,18 @@ public class VentanaPrincipal {
 		JButton btnLogout = new JButton("Logout");
 		panel.add(btnLogout);
 		
-		icon = null;
+		iconU = null;
 		try {
-			icon = ImageIO.read(new File("./resources/logout-icon.png")); 
+			iconU = ImageIO.read(new File("./resources/logout-icon.png")); 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		tabIcon = new ImageIcon(icon);
-		image = tabIcon.getImage();
+		ImageIcon logoutIcon = new ImageIcon(iconU);
+		image = logoutIcon.getImage();
 		scaledimage = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
-		tabIcon = new ImageIcon(scaledimage);
-		btnLogout.setIcon(tabIcon);
+		logoutIcon = new ImageIcon(scaledimage);
+		btnLogout.setIcon(logoutIcon);
 		btnLogout.setBorder(new LineBorder(new Color(164, 230, 246)));
 		btnLogout.setOpaque(false);
 		btnLogout.setContentAreaFilled(false);
@@ -304,6 +305,29 @@ public class VentanaPrincipal {
 	}
 	
 	
+	private void customizarBotonUpgrade() {
+		btnUpgrade.setBorder(new LineBorder(TabsColoresUI.COLOR_AZUL));
+		btnUpgrade.setOpaque(false);
+		btnUpgrade.setContentAreaFilled(false);
+		btnUpgrade.setBorderPainted(false);
+		
+		// Manejador de eventos de ratón sobre el botón
+		btnUpgrade.addMouseListener(new MouseAdapter() {
+	         public void mouseEntered(MouseEvent evt) {
+	        	 btnUpgrade.setOpaque(true);
+	     		 btnUpgrade.setContentAreaFilled(true);
+	     		 btnUpgrade.setBorderPainted(true);
+	     		 btnUpgrade.setBackground(TabsColoresUI.COLOR_AZUL);
+	         }
+	         public void mouseExited(MouseEvent evt) {
+	        	 btnUpgrade.setOpaque(false);
+	     		 btnUpgrade.setContentAreaFilled(false);
+	     		 btnUpgrade.setBorderPainted(false);
+	          }
+		});
+	}
+
+
 	/**
 	 * Crea manejador para el botón de logout
 	 */
@@ -336,14 +360,32 @@ public class VentanaPrincipal {
 	private void crearManejadorBotonMejora(JButton btnMejora) {
 		btnMejora.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				int result = JOptionPane.showConfirmDialog(frmVentanaPrincipal, 
-//						"¿Está seguro de que desea cerrar sesión?", "Confirmar cerrar sesión",
-//						JOptionPane.YES_NO_OPTION);
-//				if (result == JOptionPane.YES_OPTION) {
-//					VentanaLogin window = new VentanaLogin();
-//					window.mostrarVentana();
-//					frmVentanaPrincipal.dispose();
-//				}
+				int result;
+				if (controlador.isUsuarioPremium()) {
+					result = JOptionPane.showOptionDialog(frmVentanaPrincipal, 
+							"¿Quiere dejar de ser premium?", "Confirmar dejar premium",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							new String[]{"Sí", "No"}, "default");
+					if (result == JOptionPane.YES_OPTION) {
+						// Hacer al usuario no-premium
+						controlador.degradeUsuarioActual();
+						// Cambiar botón
+						btnUpgrade.setText("Hazte premium");
+						btnUpgrade.setIcon(upgIcon);
+					}
+				} else {
+					result = JOptionPane.showOptionDialog(frmVentanaPrincipal, 
+							"¿Quiere hacer su cuenta premium?", "Confirmar pasar a premium",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							new String[]{"Sí", "No"}, "default");
+					if (result == JOptionPane.YES_OPTION) {
+						// Hacer al usuario premium
+						controlador.upgradeUsuarioActual();
+						// Cambiar botón
+						btnUpgrade.setText("Dejar de ser premium");
+						btnUpgrade.setIcon(degIcon);
+					}
+				}
 			}
 		});
 	}

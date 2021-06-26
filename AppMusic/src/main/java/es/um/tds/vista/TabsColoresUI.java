@@ -12,7 +12,7 @@ import javax.swing.plaf.basic.*;
  */
 public class TabsColoresUI extends BasicTabbedPaneUI {
 	
-	private static Color COLOR_AZUL = new Color(164, 230, 246);
+	public static Color COLOR_AZUL = new Color(164, 230, 246);
     private Polygon figura;
 
     @Override

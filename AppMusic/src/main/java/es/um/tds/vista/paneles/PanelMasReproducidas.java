@@ -1,24 +1,32 @@
 package es.um.tds.vista.paneles;
 
 import java.awt.BorderLayout;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
+import es.um.tds.modelo.Cancion;
+import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.utils.ComponentUtils;
-import es.um.tds.vista.ModeloTabla;
+import es.um.tds.vista.ModeloTablaReproducciones;
 import es.um.tds.vista.Reproductor;
 
 public class PanelMasReproducidas extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	private AppMusic controlador;
+	private static AppMusic controlador;
+	private static JTable tablaCanciones;
+	private static List<Cancion> listaActual;
+	private static Reproductor repr;
 	
 	public PanelMasReproducidas() throws BDException, DAOException {
 		super();
@@ -44,14 +52,15 @@ public class PanelMasReproducidas extends JPanel {
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 	    
 		JPanel panelVacio = new JPanel(new BorderLayout());
-		ComponentUtils.fixedSize(panelVacio, 20, 20);
+		ComponentUtils.fixedSize(panelVacio, 100, 100);
 		panelCentral.add(panelVacio, BorderLayout.NORTH);
 		
 		JPanel panelTabla = new JPanel(new BorderLayout());
-		//ComponentUtils.fixedSize(panelTabla, 600, 200);
+		ComponentUtils.fixedSize(panelTabla, 600, 182);
 		panelCentral.add(panelTabla, BorderLayout.CENTER);
 	    
-		JTable tablaCanciones = new JTable(new ModeloTabla(controlador.getCancionesMasReproducidas()));
+		listaActual = controlador.getCancionesMasReproducidas();
+		tablaCanciones = new JTable(new ModeloTablaReproducciones(listaActual));
 		tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tablaCanciones.setFillsViewportHeight(true);
 		
@@ -65,7 +74,6 @@ public class PanelMasReproducidas extends JPanel {
 		JPanel panelInferior = new JPanel();
 		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
 		
-		Reproductor repr = null;
 		try{
 			repr = new Reproductor();
 		} catch (Exception e) {
@@ -73,9 +81,28 @@ public class PanelMasReproducidas extends JPanel {
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		//ComponentUtils.fixedSize(panelRepr, 250, 50);
 		panelInferior.add(panelRepr);
 		
+		tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+				repr.setListaReproduccion(new ListaCanciones("Lista recientes", listaActual), 
+						tablaCanciones.getSelectedRow());
+	        }
+		});
 		return panelInferior;
 	}
+	
+	// Refrescar tabla de mas reproducidas
+		public static void refresh() {
+			listaActual = controlador.getCancionesMasReproducidas();
+			tablaCanciones.setModel(new ModeloTablaReproducciones(listaActual));
+			tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				public void valueChanged(ListSelectionEvent event) {
+					repr.setListaReproduccion(new ListaCanciones("Lista más reproducidas", 
+							listaActual), tablaCanciones.getSelectedRow());
+		        }
+			});
+			tablaCanciones.repaint();
+			tablaCanciones.revalidate();
+		}
 }

@@ -27,7 +27,6 @@ public class PanelPulsador extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private AppMusic controlador;
-	
 	private JPanel panelCentral;
 
 	public PanelPulsador() throws BDException, DAOException {
@@ -46,9 +45,9 @@ public class PanelPulsador extends JPanel {
 		crearPanelCentral();
 		this.add(panelCentral, BorderLayout.CENTER);
 		
-		// Parte inferior
-		JPanel panelInferior = crearPanelInferior();
-		this.add(panelInferior, BorderLayout.SOUTH);
+//		// Parte inferior
+//		JPanel panelInferior = crearPanelInferior();
+//		this.add(panelInferior, BorderLayout.SOUTH);
 	}
 	
 
@@ -115,20 +114,20 @@ public class PanelPulsador extends JPanel {
 		
 	}
 	
-	private JPanel crearPanelInferior() {
-		JPanel panelInferior = new JPanel();
-		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
-		Reproductor repr = null;
-		try{
-			repr = new Reproductor();
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
-					"Error", JOptionPane.ERROR_MESSAGE);
-		}
-		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		//ComponentUtils.fixedSize(panelRepr, 250, 50);
-		panelInferior.add(panelRepr);
-		
-		return panelInferior;
-	}
+//	private JPanel crearPanelInferior() {
+//		JPanel panelInferior = new JPanel();
+//		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
+//		Reproductor repr = null;
+//		try{
+//			repr = new Reproductor();
+//		} catch (Exception e) {
+//			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
+//					"Error", JOptionPane.ERROR_MESSAGE);
+//		}
+//		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
+//		//ComponentUtils.fixedSize(panelRepr, 250, 50);
+//		panelInferior.add(panelRepr);
+//		
+//		return panelInferior;
+//	}
 }

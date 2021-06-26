@@ -1,11 +1,13 @@
 package es.um.tds.modelo;
 
+import java.lang.Comparable;
+
 /**
  * Representa una canción.
  * 
  * @author Beatriz y Francisco
  */
-public class Cancion {
+public class Cancion implements Comparable<Cancion> {
 	private String titulo;
 	private Estilo estilo;
 	private String interprete;
@@ -116,4 +118,12 @@ public class Cancion {
 		return "Cancion [título=" + titulo + ", intérprete= " + interprete + ", estilo= " + estilo + 
 			   ", número de reproducciones= " + numReproducciones + ", id= " + id + "]";
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int compareTo(Cancion c) {
+        return this.getTitulo().compareTo(c.getTitulo());
+    }
 }
