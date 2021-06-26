@@ -253,7 +253,7 @@ public class PanelExplorar extends JPanel {
 				// Definimos el comportamiento de la app cuando se selecciona un elemento (canción) de la tabla:
 				tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 					public void valueChanged(ListSelectionEvent event) {
-						repr.setListaReproduccion(resultadoBusqueda);
+						repr.setListaReproduccion(resultadoBusqueda, tablaCanciones.getSelectedRow());
 			        }
 				});
 				
