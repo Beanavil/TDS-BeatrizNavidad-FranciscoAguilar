@@ -1,8 +1,8 @@
 package es.um.tds.persistencia;
 
-import java.lang.reflect.InvocationTargetException;
 
-import es.um.tds.persistencia.DAOException;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.persistencia.FactoriaDAO;
 
 /**
@@ -23,41 +23,27 @@ public abstract class FactoriaDAO {
 	 * Crea una instancia de un tipo de factoría (solo existe TDSFactoriaDAO) o devuelve la que ya hay.
 	 * @param tipo nombre de la clase del tipo de factoría a crear.
 	 * @return única instancia de la clase FactoriaDAO.
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws DAOException.
+	 * @throws BDException 
 	 */
 
-	public static FactoriaDAO getInstancia(String tipo) throws DAOException, 
-	InstantiationException, IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
-		if (unicaInstancia == null) {
-			unicaInstancia = (FactoriaDAO)Class.forName(tipo).getDeclaredConstructor().newInstance();
-		} 
-		return unicaInstancia;
+	public static FactoriaDAO getInstancia(String tipo) throws BDException {
+		try {
+			if (unicaInstancia == null) {
+				unicaInstancia = (FactoriaDAO)Class.forName(tipo).getDeclaredConstructor().newInstance();
+			} 
+			return unicaInstancia;
+		} catch (Exception e) {
+			throw new BDException(e.getMessage());
+		}
 	}
 	
 	/**
 	 * Crea un tipo de factoria DAO (TDSFactoriaDAO) o devuelve el que ya hay creado.
 	 * @return Única instancia de la factoría.
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
 	 * @throws DAOException.
+	 * @throws BDException 
 	 */
-	public static FactoriaDAO getInstancia() throws DAOException, 
-	InstantiationException, IllegalAccessException, IllegalArgumentException, 
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException {
-		
+	public static FactoriaDAO getInstancia() throws DAOException, BDException {
 		return getInstancia(FactoriaDAO.DAO_TDS);
 	}
 
@@ -69,41 +55,23 @@ public abstract class FactoriaDAO {
 	 * Método factoría para obtener el adaptador de Cancion.
 	 * @return adaptador TDSCancionDAO.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public abstract CancionDAO getCancionDAO() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;
+	public abstract CancionDAO getCancionDAO() throws BDException, DAOException;
 	
 	/**
 	 * Método factoría para obtener el adaptador de ListaCanciones.
 	 * @return adaptador TDSListaCancionesDAO.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public abstract ListaCancionesDAO getListaCancionesDAO() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;
+	public abstract ListaCancionesDAO getListaCancionesDAO() throws BDException, DAOException;
 	
 	/**
 	 * Método factoría para obtener el adaptador de Usuario.
 	 * @return adaptador TDSUsuarioDAO.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public abstract UsuarioDAO getUsuarioDAO() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException;	
+	public abstract UsuarioDAO getUsuarioDAO() throws BDException, DAOException;	
 }

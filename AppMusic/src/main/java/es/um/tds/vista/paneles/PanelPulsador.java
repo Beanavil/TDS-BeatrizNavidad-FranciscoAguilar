@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.EventObject;
 
 import javax.swing.BorderFactory;
@@ -17,7 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.um.tds.controlador.AppMusic;
-import es.um.tds.persistencia.DAOException;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.Reproductor;
 import pulsador.Luz;
@@ -30,9 +30,7 @@ public class PanelPulsador extends JPanel {
 	
 	private JPanel panelCentral;
 
-	public PanelPulsador() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
+	public PanelPulsador() throws BDException, DAOException {
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();

@@ -1,7 +1,6 @@
 package es.um.tds.vista.paneles;
 
 import java.awt.GridLayout;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JList;
@@ -12,7 +11,8 @@ import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import es.um.tds.controlador.AppMusic;
-import es.um.tds.persistencia.DAOException;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 
 import javax.swing.border.TitledBorder;
 
@@ -32,8 +32,7 @@ public class PanelMisListas extends JPanel{
 	private JList<String> lista;
 	private JTable tabla;
 
-	public PanelMisListas() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-	InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException, DAOException {
+	public PanelMisListas() throws BDException, DAOException {
 		super();
 		this.controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

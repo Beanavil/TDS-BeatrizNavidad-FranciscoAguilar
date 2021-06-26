@@ -1,6 +1,5 @@
 package es.um.tds.persistencia;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +7,8 @@ import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
 import tds.driver.FactoriaServicioPersistencia;
@@ -29,18 +30,9 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	/**
 	 * Constructor.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	private TDSListaCancionesDAO () throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	private TDSListaCancionesDAO () throws BDException, DAOException {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 		adaptadorCancion = TDSCancionDAO.getUnicaInstancia();
 	}
@@ -49,18 +41,9 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
 	 * @return única instancia del adaptador de ListaCanciones.
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public static TDSListaCancionesDAO getUnicaInstancia() throws InstantiationException, 
-	IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, 
-	SecurityException, ClassNotFoundException, DAOException {
-		
+	public static TDSListaCancionesDAO getUnicaInstancia() throws BDException, DAOException {	
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSListaCancionesDAO(); 
 		return unicaInstancia;       
@@ -71,7 +54,7 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void store(ListaCanciones lista) throws NullPointerException {
+	public void store(ListaCanciones lista) {
 		// Comprobamos primero que no esté ya registrada
 		if (lista.getId() >= 0)
 			return;

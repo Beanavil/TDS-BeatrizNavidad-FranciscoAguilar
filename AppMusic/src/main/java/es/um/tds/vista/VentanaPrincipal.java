@@ -12,7 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,7 +22,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import es.um.tds.controlador.AppMusic;
-import es.um.tds.persistencia.DAOException;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.vista.paneles.PanelExplorar;
 import es.um.tds.vista.paneles.PanelMasReproducidas;
 import es.um.tds.vista.paneles.PanelMisListas;
@@ -51,17 +51,9 @@ public class VentanaPrincipal {
 	/**
 	 * Constructor
 	 * @throws DAOException 
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws BDException
 	 */
-	public VentanaPrincipal() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException { 
+	public VentanaPrincipal() throws BDException, DAOException { 
 		// TODO saber el usuario actual
 		controlador = AppMusic.getUnicaInstancia();
 		initialize();

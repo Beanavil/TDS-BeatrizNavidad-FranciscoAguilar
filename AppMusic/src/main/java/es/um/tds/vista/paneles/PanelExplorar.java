@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +24,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import es.um.tds.controlador.AppMusic;
+import es.um.tds.excepciones.BDException;
+import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.Estilo;
 import es.um.tds.modelo.ListaCanciones;
-import es.um.tds.persistencia.DAOException;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
@@ -60,10 +60,7 @@ public class PanelExplorar extends JPanel {
 	private JButton btnCancelar;
 	
 	
-	public PanelExplorar() throws InstantiationException, IllegalAccessException, 
-	IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, 
-	ClassNotFoundException, DAOException {
-		
+	public PanelExplorar() throws BDException, DAOException {
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();
@@ -256,7 +253,7 @@ public class PanelExplorar extends JPanel {
 				// Definimos el comportamiento de la app cuando se selecciona un elemento (canción) de la tabla:
 				tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 					public void valueChanged(ListSelectionEvent event) {
-						repr.play(resultadoBusqueda, tablaCanciones.getSelectedRow());
+						repr.setListaReproduccion(resultadoBusqueda);
 			        }
 				});
 				
