@@ -93,16 +93,10 @@ public class PanelMasReproducidas extends JPanel {
 	}
 	
 	// Refrescar tabla de mas reproducidas
-		public static void refrescar() {
-			listaActual = controlador.getCancionesMasReproducidas();
-			tablaCanciones.setModel(new ModeloTablaReproducciones(listaActual));
-			tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-				public void valueChanged(ListSelectionEvent event) {
-					repr.setListaReproduccion(new ListaCanciones("Lista más reproducidas", 
-							listaActual), tablaCanciones.getSelectedRow());
-		        }
-			});
-			tablaCanciones.repaint();
-			tablaCanciones.revalidate();
-		}
+	public static void refrescar() {
+		listaActual = controlador.getCancionesMasReproducidas();
+		((ModeloTablaReproducciones)tablaCanciones.getModel()).setListaCanciones(listaActual);		
+		tablaCanciones.repaint();
+		tablaCanciones.revalidate();
+	}
 }

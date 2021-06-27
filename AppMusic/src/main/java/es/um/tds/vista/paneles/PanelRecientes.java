@@ -28,6 +28,7 @@ import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.vista.ModeloTabla;
+import es.um.tds.vista.ModeloTablaReproducciones;
 import es.um.tds.vista.Reproductor;
 import es.um.tds.vista.TabsColoresUI;
 
@@ -105,11 +106,10 @@ public class PanelRecientes extends JPanel {
 		return panelInferior;
 	}
 	
-
 	// Refrescar tabla de recientes
 	public static void refrescar() {
 		listaActual = controlador.getCancionesRecientes();
-		tablaCanciones.setModel(new ModeloTabla(listaActual));
+		((ModeloTabla)tablaCanciones.getModel()).setListaCanciones(listaActual);
 		tablaCanciones.repaint();
 		tablaCanciones.revalidate();
 	}

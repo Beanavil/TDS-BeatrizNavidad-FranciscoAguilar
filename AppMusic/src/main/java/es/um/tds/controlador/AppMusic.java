@@ -117,17 +117,10 @@ public final class AppMusic implements ICargadoListener{
     /**
      * Método para eliminar un usuario
      * @param usuario Usuario a eliminar
-     * @return True si es eliminado, false si no
      */
-    public boolean eliminarUsuario(Usuario usuario) {
-    	// Si el usuario no está registrado, no hacemos nada
-    	if (!esUsuarioRegistrado(usuario.getLogin()))
-    		return false;
-    	
-    	// Si está registrado, lo eliminamos de la bbdd y del catálogo
+    public void eliminarUsuario(Usuario usuario) {
     	adaptadorUsuario.delete(usuario);
     	catalogoUsuarios.removeUsuario(usuario);
-    	return true;
     }
     
     /**
@@ -154,7 +147,7 @@ public final class AppMusic implements ICargadoListener{
      * @return
      */
     public List<ListaCanciones> usuarioGetListas() {
-    		List<ListaCanciones> lista = usuarioActual.getListasCanciones();
+    		List<ListaCanciones> lista = usuarioActual.getListas();
     		return lista;
     }
     
@@ -181,17 +174,10 @@ public final class AppMusic implements ICargadoListener{
     /**
      * Método para eliminar una canción
      * @param cancion Canción a eliminar
-     * @return True si es eliminada, false si no
      */
-    public boolean eliminarCancion(Cancion cancion) {
-    	// Si la canción no está en la bd, no hacemos nada
-    	if (cancion.getId() < 0)
-    		return false;
-    	
-    	// Si está registrada, la eliminamos de la bbdd y del catálogo
+    public void eliminarCancion(Cancion cancion) {
     	adaptadorCancion.delete(cancion);
     	catalogoCanciones.removeCancion(cancion);
-    	return true;
     }
     
     
@@ -223,13 +209,6 @@ public final class AppMusic implements ICargadoListener{
     	return catalogoCanciones.getAllArtistStyle(interprete, estilo);
     }
     
-    
-    /**
-     * Retorna todas las canciones del catálogo
-     */
-    public List<Cancion> obtenerCanciones() {
-    	return catalogoCanciones.getAll();
-    }
     
     /**
      * Aumenta el número de reproducciones de una canción en 1 unidad
@@ -293,7 +272,7 @@ public final class AppMusic implements ICargadoListener{
      */
     public boolean existeLista(String nombreLista) {
     	if (usuarioActual != null) {
-    		boolean existe = usuarioActual.getListasCanciones().stream()
+    		boolean existe = usuarioActual.getListas().stream()
     				.anyMatch(lc -> lc.getNombre().equals(nombreLista));
     		return existe;
     	}
@@ -326,7 +305,7 @@ public final class AppMusic implements ICargadoListener{
      */
     public ListaCanciones getListaCanciones(String nombreLista) {
     	if (usuarioActual != null) {
-    		ListaCanciones lista = usuarioActual.getListasCanciones().stream()
+    		ListaCanciones lista = usuarioActual.getListas().stream()
     				.filter(lc -> lc.getNombre().equals(nombreLista))
     				.findAny()
     				.orElse(null);
@@ -358,7 +337,7 @@ public final class AppMusic implements ICargadoListener{
     public List<Cancion> getCancionesRecientes() {
 		List<Cancion> recientes = new ArrayList<>();
 		if (usuarioActual != null) {
-			ListaCanciones listaRecientes = usuarioActual.getListaRecientes();
+			ListaCanciones listaRecientes = usuarioActual.getRecientes();
 			recientes = (List<Cancion>) listaRecientes.getCanciones();
 		}
 		return recientes;

@@ -31,9 +31,9 @@ public class Usuario {
 	private String password;
 	private boolean premium;
 	private IDescuento descuento;
-	private List<ListaCanciones> listasCanciones;
-	private ListaCanciones cancionesRecientes;
-	private Map<Cancion, Integer> cancionesMasReproducidas;
+	private List<ListaCanciones> listas;
+	private ListaCanciones recientes;
+	private Map<Cancion, Integer> masReproducidas;
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES"));
 	private int id;
 	
@@ -47,14 +47,14 @@ public class Usuario {
 	 * @param login nombre de usuario en la app.
 	 * @param password contraseña de la cuenta.
 	 * @param premium si es premium o no.
-	 * @param listasCanciones listas de canciones del usuario.
-	 * @param cancionesRecientes Lista de canciones reproducidas recientemente
-	 * @param cancionesMasReproducidas Lista de canciones más reproducidas
+	 * @param listas listas de canciones del usuario.
+	 * @param recientes Lista de canciones reproducidas recientemente
+	 * @param masReproducidas Lista de canciones más reproducidas
 	 */
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
 			String email, String nombreUsuario, String contrasena, boolean premium, 
-			List<ListaCanciones> listasCanciones, ListaCanciones cancionesRecientes, 
-			Map<Cancion, Integer> cancionesMasReproducidas) {
+			List<ListaCanciones> listas, ListaCanciones recientes, 
+			Map<Cancion, Integer> masReproducidas) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
@@ -64,14 +64,14 @@ public class Usuario {
 		this.password = contrasena;
 		this.premium = premium;
 		this.descuento = calcDescuento();
-		this.listasCanciones = new ArrayList<>(listasCanciones);
-		if (cancionesRecientes.getNumCanciones() > 10)
-			this.cancionesRecientes = new ListaCanciones(LISTA_RECIENTES, cancionesRecientes.getCanciones().subList(0, 10));
+		this.listas = new ArrayList<>(listas);
+		if (recientes.getNumCanciones() > 10)
+			this.recientes = new ListaCanciones(LISTA_RECIENTES, recientes.getCanciones().subList(0, 10));
 		else {
-			cancionesRecientes.setNombre(LISTA_RECIENTES);
-			this.cancionesRecientes = cancionesRecientes;
+			recientes.setNombre(LISTA_RECIENTES);
+			this.recientes = recientes;
 		}
-		this.cancionesMasReproducidas =  new TreeMap<>(cancionesMasReproducidas); // TODO tener en cuenta orden ascendente para la vista
+		this.masReproducidas =  new TreeMap<>(masReproducidas); // TODO tener en cuenta orden ascendente para la vista
 		this.id = -1;
 	}
 	
@@ -84,12 +84,12 @@ public class Usuario {
 	 * @param login nombre de usuario en la app.
 	 * @param password contraseña de la cuenta.
 	 * @param premium si es premium o no.
-	 * @param listasCanciones listas de canciones del usuario.
+	 * @param listas listas de canciones del usuario.
 	 */
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
 			String email, String nombreUsuario, String contrasena, boolean premium, 
-			List<ListaCanciones> listasCanciones) {
-		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listasCanciones, 
+			List<ListaCanciones> listas) {
+		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listas, 
 				new ListaCanciones(LISTA_RECIENTES), new TreeMap<Cancion, Integer>()); 
 	}
 	
@@ -142,20 +142,20 @@ public class Usuario {
 		return this.descuento;
 	}
 	
-	public List<ListaCanciones> getListasCanciones() {
-		return new ArrayList<>(listasCanciones);
+	public List<ListaCanciones> getListas() {
+		return new ArrayList<>(listas);
 	}
 	
 	public void addListaCanciones(ListaCanciones lista) {
-		listasCanciones.add(lista); 
+		listas.add(lista); 
 	}
 	
 	public void removeListaCanciones(ListaCanciones lista) {
-		listasCanciones.remove(lista);
+		listas.remove(lista);
 	}
 	
-	public ListaCanciones getListaRecientes() {
-		return cancionesRecientes;
+	public ListaCanciones getRecientes() {
+		return recientes;
 	}
 	
 	/**
@@ -165,11 +165,11 @@ public class Usuario {
 	 */
 	public void addCancionReciente(Cancion cancion) {
 		if (!this.isReciente(cancion)) {
-			if (this.cancionesRecientes.getNumCanciones() < NUM_RECIENTES)
-				cancionesRecientes.addCancion(cancion);
+			if (this.recientes.getNumCanciones() < NUM_RECIENTES)
+				recientes.addCancion(cancion);
 			else {
-				cancionesRecientes.removeFirst();
-				cancionesRecientes.addCancion(cancion);
+				recientes.removeFirst();
+				recientes.addCancion(cancion);
 			}
 		}
 	}
@@ -180,7 +180,7 @@ public class Usuario {
 	 * @return
 	 */
 	public boolean isReciente(Cancion cancion) {
-		return cancionesRecientes.getCanciones().stream()		
+		return recientes.getCanciones().stream()		
 		.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
 	}
 	
@@ -191,7 +191,7 @@ public class Usuario {
 	 * @return
 	 */
 	public boolean isMasReproducida(Cancion cancion) {
-		return cancionesMasReproducidas.keySet().stream()		
+		return masReproducidas.keySet().stream()		
 		.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
 	}
 	
@@ -200,20 +200,20 @@ public class Usuario {
 	 * @param cancion
 	 */
 	public void removeCancionReciente(Cancion cancion) {
-		cancionesRecientes.removeCancion(cancion);
+		recientes.removeCancion(cancion);
 	}
 	
 	
 	public Map<Cancion, Integer> getMasReproducidas() {
-		return cancionesMasReproducidas;
+		return masReproducidas;
 	}
 	
 	
 	public void addMasReproducida(Cancion cancion) {
 		if (isMasReproducida(cancion))
-			cancionesMasReproducidas.replace(cancion, cancion.getNumReproducciones());
+			masReproducidas.replace(cancion, cancion.getNumReproducciones());
 		else
-			cancionesMasReproducidas.put(cancion, cancion.getNumReproducciones());
+			masReproducidas.put(cancion, cancion.getNumReproducciones());
 	}
 	
 	public int getId() {
@@ -257,7 +257,7 @@ public class Usuario {
 	}
 	
 	public void setListasCanciones(List<ListaCanciones> listasCanciones) {
-		this.listasCanciones = new ArrayList<>(listasCanciones);
+		this.listas = new ArrayList<>(listasCanciones);
 	}
 	
 	public void setId(int id) {
