@@ -33,7 +33,7 @@ public class GeneradorPDF {
 	 * @throws DocumentException
 	 */
 	public void generarPDF(Usuario usuario) throws FileNotFoundException, DocumentException {
-	  List<ListaCanciones> listas = usuario.getListasCanciones();
+	  List<ListaCanciones> listas = usuario.getListas();
 	  Document pdf = crearPDF();
 	  pdf.open();
 

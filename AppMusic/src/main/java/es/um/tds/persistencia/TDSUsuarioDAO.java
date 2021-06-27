@@ -71,10 +71,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 			return;
 		
 		// Guardamos las listas
-		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.store(lc));
+		usuario.getListas().stream().forEach(lc -> adaptadorListaCanciones.store(lc));
 		
 		// Guardamos la lista de recientes
-		adaptadorListaCanciones.store(usuario.getListaRecientes());
+		adaptadorListaCanciones.store(usuario.getRecientes());
 		
 		Entidad eUsuario = UsuarioToEntidad(usuario);
 		eUsuario = servPersistencia.registrarEntidad(eUsuario);
@@ -93,10 +93,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
 
 		// Eliminamos las listas
-		usuario.getListasCanciones().stream().forEach(lc -> adaptadorListaCanciones.delete(lc));
+		usuario.getListas().stream().forEach(lc -> adaptadorListaCanciones.delete(lc));
 		
 		// Eliminamos la lista de recientes
-		adaptadorListaCanciones.delete(usuario.getListaRecientes());
+		adaptadorListaCanciones.delete(usuario.getRecientes());
 		
 		return servPersistencia.borrarEntidad(eUsuario);
 	}
@@ -134,11 +134,11 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		servPersistencia.anadirPropiedadEntidad(eUsuario, PREMIUM, String.valueOf(usuario.isPremium()));
 		
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, LISTASCANCIONES);
-		servPersistencia.anadirPropiedadEntidad(eUsuario, LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListasCanciones()));
+		servPersistencia.anadirPropiedadEntidad(eUsuario, LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListas()));
 		
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, CANCIONESRECIENTES);
 		servPersistencia.anadirPropiedadEntidad(eUsuario, CANCIONESRECIENTES, 
-				adaptadorListaCanciones.getIdsFromCanciones(usuario.getListaRecientes().getCanciones()));
+				adaptadorListaCanciones.getIdsFromCanciones(usuario.getRecientes().getCanciones()));
 		
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS);
 		servPersistencia.anadirPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS, 
@@ -220,9 +220,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 				new Propiedad(LOGIN, usuario.getLogin()),
 				new Propiedad(PASSWORD, usuario.getPassword()),
 				new Propiedad(PREMIUM, String.valueOf(usuario.isPremium())),
-				new Propiedad(LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListasCanciones())),
+				new Propiedad(LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListas())),
 				new Propiedad(CANCIONESRECIENTES, 
-						adaptadorListaCanciones.getIdsFromCanciones(usuario.getListaRecientes().getCanciones())),
+						adaptadorListaCanciones.getIdsFromCanciones(usuario.getRecientes().getCanciones())),
 				new Propiedad(CANCIONESMASREPRODUCIDAS, 
 						adaptadorListaCanciones.getIdsFromCanciones(new ArrayList<Cancion>(usuario.getMasReproducidas().keySet()))))));
 		return eUsuario;
