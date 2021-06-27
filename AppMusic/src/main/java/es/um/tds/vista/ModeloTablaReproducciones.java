@@ -6,6 +6,11 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import es.um.tds.modelo.Cancion;
 
+/**
+ * Modelo para una JTable.
+ * 
+ * @author Beatriz y Francisco
+ */
 public class ModeloTablaReproducciones extends AbstractTableModel{
 	private static final long serialVersionUID = 1L;
 	

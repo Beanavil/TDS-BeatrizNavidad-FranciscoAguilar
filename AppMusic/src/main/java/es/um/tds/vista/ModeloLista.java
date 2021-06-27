@@ -6,6 +6,12 @@ import javax.swing.AbstractListModel;
 import es.um.tds.modelo.ListaCanciones;
 
 //TODO Muchas cosas que parece que no se usan
+
+/**
+ * Modelo para una JList.
+ * 
+ * @author Beatriz y Francisco
+ */
 public class ModeloLista extends AbstractListModel<String> {
 
 	private static final long serialVersionUID = 1L;

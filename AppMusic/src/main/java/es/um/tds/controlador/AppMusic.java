@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.JOptionPane;
-
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
 import es.um.tds.modelo.Cancion;
@@ -18,7 +16,6 @@ import es.um.tds.persistencia.CancionDAO;
 import es.um.tds.persistencia.FactoriaDAO;
 import es.um.tds.persistencia.ListaCancionesDAO;
 import es.um.tds.persistencia.UsuarioDAO;
-import es.um.tds.vista.Reproductor;
 import umu.tds.componente.CancionesEvent;
 import umu.tds.componente.CargadorCanciones;
 import umu.tds.componente.ICargadoListener;
