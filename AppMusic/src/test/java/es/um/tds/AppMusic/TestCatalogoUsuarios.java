@@ -54,5 +54,4 @@ public class TestCatalogoUsuarios {
 		
 		assertEquals("Resultado testAddUsuario1",resultadoEsperado1, catalogoUsuarios.getUsuario("Pruebo"));
 	}
-
 }

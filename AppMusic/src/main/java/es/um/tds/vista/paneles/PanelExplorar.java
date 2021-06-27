@@ -238,7 +238,7 @@ public class PanelExplorar extends JPanel {
 				
 				// Eliminamos el contenido anterior
 				panelCentral.removeAll();
-				
+				 
 				// Creamos una lista de canciones con las canciones encontradas
 				resultadoBusqueda = new ListaCanciones("Resultado búsqueda", canciones);
 				

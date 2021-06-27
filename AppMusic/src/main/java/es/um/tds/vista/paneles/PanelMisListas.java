@@ -45,15 +45,16 @@ public class PanelMisListas extends JPanel{
 	}
 
 	/**
-	 * Crea el panel que contendrá la lista de las PlayLists del usuario y la tabla con las
-	 * canciones que componen cada una de estas listas
+	 * Crea el panel que contendrá la lista de las PlayLists del usuario y la tabla con
+	 * las canciones que componen cada una de estas listas
 	 */
 	private JPanel crearPanelSuperior() {
 		JPanel panel = new JPanel();
 		JPanel panelLista = new JPanel();
 		
 		panel.setLayout(new GridLayout(1,2));
-		panelLista.setBorder(new TitledBorder(null, "Mis listas.", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelLista.setBorder(new TitledBorder(null, "Mis listas.",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		tabla = new JTable(new ModeloTabla());
 		tabla.setFillsViewportHeight(true);
@@ -67,7 +68,8 @@ public class PanelMisListas extends JPanel{
 							@SuppressWarnings("unchecked")
 							JList<String> fuente = (JList<String>)evento.getSource();
 							String nombreLista = fuente.getSelectedValue().toString();
-							((ModeloTabla)tabla.getModel()).setListaCanciones(controlador.getListaCanciones(nombreLista).getCanciones());
+							((ModeloTabla)tabla.getModel()).setListaCanciones(controlador
+									.getListaCanciones(nombreLista).getCanciones());
 							tabla.revalidate();
 							tabla.repaint();
 						}
@@ -84,7 +86,6 @@ public class PanelMisListas extends JPanel{
 	
 	/**
 	 * Crea el panel inferior que contendrá el reproductor
-	 * @return
 	 */
 	private JPanel crearPanelInferior() {
         JPanel panel = new JPanel();

@@ -199,6 +199,10 @@ public class PanelNuevaLista extends JPanel{
 		return panel;
 	}
 	
+	/**
+	 * Crea el panel que contendrá los botones añadir y retirar
+	 * @return
+	 */
 	private JPanel crearPanelBtn() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -259,7 +263,6 @@ public class PanelNuevaLista extends JPanel{
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
-					//String nombreLista = txtCrear.getText();
 					ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 					controlador.eliminarLista(lista);
 					txtCrear.setText("");
@@ -300,9 +303,8 @@ public class PanelNuevaLista extends JPanel{
 		});
 	}
 	
-	//TODO Cambiar Aceptar y Cancelar por finalizar, Bea??
 	/**
-	 * Crea manejador para el botón "Cancelar"
+	 * Crea manejador para el botón "Finalizar"
 	 */
 	private void crearManejadorBotonFinalizar() {
 		btnFinalizar.addActionListener(new ActionListener() {
@@ -322,7 +324,10 @@ public class PanelNuevaLista extends JPanel{
 			}
 		});
 	}
-	
+
+	/**
+	 * Crea el manejador para el boton "Añadir"
+	 */
 	private void crearManejadorBotonAdd() {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -338,6 +343,9 @@ public class PanelNuevaLista extends JPanel{
 		});
 	}
 	
+	/**
+	 * Crea rl manejador para el boton "Retirar"
+	 */
 	private void crearManejadorBotonRetirar() {
 		btnRetirar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
