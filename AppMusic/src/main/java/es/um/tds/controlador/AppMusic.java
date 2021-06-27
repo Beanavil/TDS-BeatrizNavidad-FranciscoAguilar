@@ -341,8 +341,6 @@ public final class AppMusic implements ICargadoListener{
     		if (!lista.isCancionEnLista(cancion)) {
     			lista.addCancion(cancion);
         		adaptadorListaCanciones.update(lista);
-        		//TODO Esto es necesario??
-        		adaptadorUsuario.update(usuarioActual);
     		}
     	}
     }

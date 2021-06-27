@@ -55,6 +55,6 @@ public class TestCatalogoUsuarios {
 		Usuario resultadoEsperado1 = pruebo;
 		catalogoUsuarios.addUsuario(pruebo);
 		
-		assertEquals("Resultado testGetUsuarioString1",resultadoEsperado1, catalogoUsuarios.getUsuario("Pruebo"));
+		assertEquals("Resultado testGetUsuarioString1",resultadoEsperado1, catalogoUsuarios.getUsuario("pruebo"));
 	}
 }

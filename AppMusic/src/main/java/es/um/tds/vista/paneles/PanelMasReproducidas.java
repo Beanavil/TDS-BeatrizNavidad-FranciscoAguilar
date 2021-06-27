@@ -93,7 +93,7 @@ public class PanelMasReproducidas extends JPanel {
 	}
 	
 	// Refrescar tabla de mas reproducidas
-		public static void refresh() {
+		public static void refrescar() {
 			listaActual = controlador.getCancionesMasReproducidas();
 			tablaCanciones.setModel(new ModeloTablaReproducciones(listaActual));
 			tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

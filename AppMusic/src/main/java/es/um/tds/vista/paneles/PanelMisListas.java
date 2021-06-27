@@ -10,6 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -25,6 +28,7 @@ import javax.swing.event.ListSelectionListener;
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
+import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.GeneradorPDF;
 
@@ -33,6 +37,7 @@ import javax.swing.border.TitledBorder;
 
 import es.um.tds.vista.ModeloLista;
 import es.um.tds.vista.ModeloTabla;
+import es.um.tds.vista.ModeloTablaReproducciones;
 import es.um.tds.vista.Reproductor;
 import es.um.tds.vista.TabsColoresUI;
 
@@ -40,24 +45,47 @@ public class PanelMisListas extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	
-	private AppMusic controlador;
+	private static AppMusic controlador;
 	
 	private JPanel panelSuperior;
 	private JPanel panelInferior;
 	private JButton btnPDF;
-	private JList<String> lista;
-	private JTable tabla;
+	private static JList<String> lista;
+	private static JTable tabla;
+	private Reproductor repr;
 
 	public PanelMisListas() throws BDException, DAOException {
 		super();
 		this.controlador = AppMusic.getUnicaInstancia();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
+		try{
+            repr = new Reproductor();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+		
 		panelSuperior = crearPanelSuperior();
 		crearPanelInferior();
 		
 		this.add(panelSuperior);
 		this.add(panelInferior);
+	}
+	
+	public static void refrescar() {
+		List<ListaCanciones> listas = controlador.usuarioGetListas();	
+		((ModeloLista)lista.getModel()).setListaPlaylists(listas);
+		
+		lista.repaint();
+		lista.revalidate();
+		
+		int indice = lista.getSelectedIndex();
+		if (indice >= 0) {
+			((ModeloTabla)tabla.getModel()).setListaCanciones(listas.get(indice).getCanciones());
+		}
+		tabla.repaint();
+		tabla.revalidate();
 	}
 
 	/**
@@ -95,6 +123,15 @@ public class PanelMisListas extends JPanel{
 		panelLista.add(lista);
 		panel.add(panelLista);
 		JScrollPane scrollPane = new JScrollPane(tabla);
+		
+		tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+				ListaCanciones listaRep = new
+						ListaCanciones("actual",((ModeloTabla)tabla.getModel()).getListaCanciones());
+				repr.setListaReproduccion(listaRep, tabla.getSelectedRow());
+	        }
+		}); 
+		
 		panel.add(scrollPane);
 		
 		return panel;
@@ -129,13 +166,6 @@ public class PanelMisListas extends JPanel{
      	crearManejadorBotonPDF();
      		
      	// Reproductor
-        Reproductor repr = null;
-        try{
-            repr = new Reproductor();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
         JPanel panelRepr = (JPanel) repr.getPanelReproductor();
         panelInferior.add(panelRepr, BorderLayout.CENTER);
 

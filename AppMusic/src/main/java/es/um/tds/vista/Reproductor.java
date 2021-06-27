@@ -241,13 +241,13 @@ public class Reproductor {
 		    Media media = new Media(mp3.toFile().toURI().toString());
 		    controlador.actualizarNumReproducciones(cancion);
 		    controlador.addReciente(cancion);
-		    PanelRecientes.refresh();
-		    PanelMasReproducidas.refresh();
+		    PanelRecientes.refrescar();
+		    PanelMasReproducidas.refrescar();
 		    
 		    
 		    System.out.println("sonando cancion: " + cancion.getTitulo()); // TODO quitar
-//		    mediaPlayer = new MediaPlayer(media);
-//		    mediaPlayer.play(); // TODO esto falla en ubuntu
+		    mediaPlayer = new MediaPlayer(media);
+		    mediaPlayer.play(); // TODO esto falla en ubuntu
 
 		    
 		} catch (MalformedURLException e) {

@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -120,22 +121,21 @@ public class PanelNuevaLista extends JPanel{
 	private JPanel crearPanel2() {
 		//Definición de los objetos necesarios
 		JPanel panel = new JPanel();
-		JLabel lblInterprete = new JLabel("Intérprete");
 		JLabel lblTitulo = new JLabel("Título");
+		JLabel lblInterprete = new JLabel("Intérprete");
 		JLabel lblEstilo = new JLabel("Estilo");
-		txtInterprete = new JTextField(TAM_CUADRO_TEXTO);
 		txtTitulo = new JTextField(TAM_CUADRO_TEXTO);
+		txtInterprete = new JTextField(TAM_CUADRO_TEXTO);
 		boxEstilo = new JComboBox<Estilo>();
 		btnBuscar = new JButton("Buscar");
-		
-		
-		panel.add(lblInterprete);
-		lblInterprete.setLabelFor(txtInterprete);
-		panel.add(txtInterprete);
 		
 		panel.add(lblTitulo);
 		lblTitulo.setLabelFor(txtTitulo);
 		panel.add(txtTitulo);
+		
+		panel.add(lblInterprete);
+		lblInterprete.setLabelFor(txtInterprete);
+		panel.add(txtInterprete);
 		
 		boxEstilo.setBackground(new Color(255,255,255));
 		panel.add(lblEstilo);
@@ -230,24 +230,34 @@ public class PanelNuevaLista extends JPanel{
 						"¿Desea crear una nueva lista?", "Crear nueva Lista",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						new String[]{"Sí", "No"}, "default");
+					
 					if (result == JOptionPane.YES_OPTION) {
 						controlador.crearLista(nombreLista);
+						ListaCanciones lista = controlador.getListaCanciones(nombreLista);
+						((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
 						panelInv.setVisible(true);
+						btnEliminar.setVisible(false);
+						tablaDer.revalidate();
+						tablaDer.repaint();
 					} else return;
 				}
 				
 				//Si la lista existe
 				else {
-					int result = JOptionPane.showConfirmDialog(panelInv, 
+					int result = JOptionPane.showOptionDialog(panelInv, 
 							"¿Desea modificarla?", "Ya existe una lista con ese nombre",
-							JOptionPane.YES_NO_OPTION);
+							JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,
+							new String[]{"Sí", "No"}, "default");
 						if (result == JOptionPane.YES_OPTION) {
 							ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 							((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+							tablaDer.revalidate();
+							tablaDer.repaint();	
 							panelInv.setVisible(true);
 							btnEliminar.setVisible(true);
 						}
 				}
+				PanelMisListas.refrescar();
 			}
 		});
 	}
@@ -270,6 +280,8 @@ public class PanelNuevaLista extends JPanel{
 					txtInterprete.setText("");
 					boxEstilo.setSelectedItem(null);
 					panelInv.setVisible(false);
+					btnEliminar.setVisible(false);
+					PanelMisListas.refrescar();
 				}
 			}
 		});
@@ -294,7 +306,10 @@ public class PanelNuevaLista extends JPanel{
 				}
 				// Si hay título, filtramos las canciones anteriores por título
 				if (!titulo.trim().isEmpty()) {
-					canciones.stream().filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo));
+					canciones = canciones.stream()
+										 .filter(c -> StringUtils
+										 .containsIgnoreCase(c.getTitulo(), titulo))
+										 .collect(Collectors.toList());
 				}
 				
 				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(canciones);
@@ -332,13 +347,16 @@ public class PanelNuevaLista extends JPanel{
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				 int fila = tablaIzq.getSelectedRow();
+				 if (fila < 0) 
+					 return;
 				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 				 Cancion cancion = ((ModeloTabla)tablaIzq.getModel()).getListaCanciones().get(fila);
 				 controlador.addCancionToLista(lista, cancion);
 				 
 				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
 				 tablaDer.revalidate();
-				 tablaDer.repaint();	 
+				 tablaDer.repaint();	
+				 PanelMisListas.refrescar();
 			}
 		});
 	}
@@ -350,6 +368,8 @@ public class PanelNuevaLista extends JPanel{
 		btnRetirar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				 int fila = tablaDer.getSelectedRow();
+				 if (fila < 0) 
+					 return;
 				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 				 Cancion cancion = ((ModeloTabla)tablaDer.getModel()).getListaCanciones().get(fila);
 				 controlador.eliminarCancionFromLista(lista, cancion);
@@ -357,6 +377,7 @@ public class PanelNuevaLista extends JPanel{
 				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
 				 tablaDer.revalidate();
 				 tablaDer.repaint(); 
+				 PanelMisListas.refrescar();
 			}
 		});
 	}

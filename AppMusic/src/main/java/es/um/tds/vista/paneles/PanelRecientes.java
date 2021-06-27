@@ -107,7 +107,7 @@ public class PanelRecientes extends JPanel {
 	
 
 	// Refrescar tabla de recientes
-	public static void refresh() {
+	public static void refrescar() {
 		listaActual = controlador.getCancionesRecientes();
 		tablaCanciones.setModel(new ModeloTabla(listaActual));
 		tablaCanciones.repaint();

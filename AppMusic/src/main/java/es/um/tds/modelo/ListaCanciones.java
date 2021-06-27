@@ -76,7 +76,8 @@ public class ListaCanciones {
 	}
 	
 	public boolean isCancionEnLista(Cancion cancion) {
-		return this.getCanciones().contains(cancion);
+		return this.getCanciones().stream()
+				.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
 	}
 	
 	public void addCancion(Cancion cancion) {
