@@ -4,6 +4,11 @@ import java.awt.Dimension;
 
 import javax.swing.JComponent;
 
+/**
+ * Funciones para aplicar a objetos de tipo Component.
+ * 
+ * @author Beatriz y Francisco
+ */
 public class ComponentUtils {
 
 	/**

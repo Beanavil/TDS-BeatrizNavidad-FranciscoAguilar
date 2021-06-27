@@ -39,7 +39,7 @@ public class PanelRecientes extends JPanel {
 	private static List<Cancion> listaActual;
 	private static Reproductor repr;
 	
-	private JButton btnPDF;
+	
 
 	public PanelRecientes() throws BDException, DAOException {
 		super();
@@ -98,64 +98,13 @@ public class PanelRecientes extends JPanel {
 	}
 	
 	private JPanel crearPanelInferior() {
-		JPanel panelInferior = new JPanel(new BorderLayout());
-		//panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
-		
-		// Botón de generar pdf
-		JPanel panelPDF = new JPanel();
-		panelPDF.setLayout(new BoxLayout(panelPDF, BoxLayout.X_AXIS));
-		panelInferior.add(panelPDF, BorderLayout.WEST);
-		
-		BufferedImage iconPDF = null;
-		try {
-			iconPDF = ImageIO.read(new File("./resources/pdf-icon.png")); 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		ImageIcon pdfIcon = new ImageIcon(iconPDF);
-		Image image = pdfIcon.getImage();
-		Image scaledimage = image.getScaledInstance(60, 60, java.awt.Image.SCALE_SMOOTH);
-		pdfIcon = new ImageIcon(scaledimage);
-		btnPDF = new JButton();
-		btnPDF.setIcon(pdfIcon);
-		btnPDF.setOpaque(false);
-		btnPDF.setContentAreaFilled(false);
-		btnPDF.setBorderPainted(false);
-		btnPDF.addMouseListener(new MouseAdapter() {
-	         public void mouseEntered(MouseEvent evt) {
-	        	 btnPDF.setOpaque(true);
-	        	 btnPDF.setContentAreaFilled(true);
-	        	 btnPDF.setBorderPainted(true);
-	        	 btnPDF.setBorder(new LineBorder(TabsColoresUI.COLOR_AZUL));
-	        	 btnPDF.setBackground(TabsColoresUI.COLOR_AZUL);
-	         }
-	         public void mouseExited(MouseEvent evt) {
-	        	 btnPDF.setOpaque(false);
-	        	 btnPDF.setContentAreaFilled(false);
-	        	 btnPDF.setBorderPainted(false);
-	          }
-		});
-		
-		panelPDF.add(btnPDF);
-		
-		
-		crearManejadorBotonPDF();
-		
-		// Reproductor
+		JPanel panelInferior = new JPanel();
+		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		panelInferior.add(panelRepr, BorderLayout.CENTER);
-		
+		panelInferior.add(panelRepr);
 		return panelInferior;
 	}
 	
-	
-	/**
-	 * Crea manejador del botón de generar pdf
-	 */
-	private void crearManejadorBotonPDF() {
-		// TODO 
-		
-	}
 
 	// Refrescar tabla de recientes
 	public static void refresh() {

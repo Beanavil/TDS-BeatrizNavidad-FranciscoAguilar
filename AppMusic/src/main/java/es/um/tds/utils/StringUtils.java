@@ -1,5 +1,10 @@
 package es.um.tds.utils;
 
+/**
+ * Funciones para aplicar a objetos de tipo String.
+ * 
+ * @author Beatriz y Francisco
+ */
 public class StringUtils {
 	/**
 	 * Método auxiliar para ver si un string contiene a otro como subcadena sin tener en 

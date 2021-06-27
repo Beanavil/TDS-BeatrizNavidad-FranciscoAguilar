@@ -4,6 +4,11 @@ import java.io.IOException;
 
 import es.um.tds.vista.VentanaLogin;
 
+/**
+ * Lanzador de la aplicación.
+ * 
+ * @author Beatriz y Francisco
+ */
 public class Lanzador {
 	/**
 	 * Método principal
@@ -16,7 +21,5 @@ public class Lanzador {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//AppMusic.getUnicaInstancia().cargarCanciones("./xml/canciones.xml");
-		//AppMusic.getUnicaInstancia().getCanciones().stream().forEach(c -> System.out.println(c.toString()));
 	}
 }

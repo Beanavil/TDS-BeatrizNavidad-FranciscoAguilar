@@ -6,7 +6,7 @@ import javax.swing.plaf.basic.*;
 
 
 /**
- * Propio BasicTabbedPaneUI para las pestañas de la ventana principal
+ * Propio BasicTabbedPaneUI para las pestañas de la ventana principal.
  * 
  * @author Beatriz y Francisco
  */

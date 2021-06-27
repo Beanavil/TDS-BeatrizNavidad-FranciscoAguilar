@@ -86,48 +86,33 @@ public class PanelPulsador extends JPanel {
 			        int returnValue = jfc.showOpenDialog(panelCentral);
 	
 			        if (returnValue == JFileChooser.APPROVE_OPTION) {
-			        	//System.out.println(jfc.getSelectedFile().getAbsolutePath());
 			        	controlador.cargarCanciones(jfc.getSelectedFile().getAbsolutePath());
-			        	
 			            panelCentral.revalidate();
+			            
+			            JOptionPane.showMessageDialog(panelCentral, 
+			            		"Canciones cargadas con éxito.\n", "", JOptionPane.INFORMATION_MESSAGE);
 			        }
 			       luz.setEncendido(false);
 				}
 			}
 		});
 		
-		JPanel panelVacio = new JPanel();
-		ComponentUtils.fixedSize(panelVacio, 20, 20);
-		panelCentral.add(panelVacio);
-		
-		JPanel panelURL = new JPanel();
-		panelURL.setLayout(new BoxLayout(panelURL, BoxLayout.X_AXIS));
-		panelCentral.add(panelURL);
-		
-		JLabel urlLabel = new JLabel("O introduce la URL de una canción:");//		
-		JTextField urlField = new JTextField();
-		urlField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		ComponentUtils.fixedSize(urlField, 500, 20);
-		
-		panelURL.add(urlLabel, BorderLayout.CENTER);
-		panelURL.add(urlField, BorderLayout.CENTER);
+//		JPanel panelVacio = new JPanel();
+//		ComponentUtils.fixedSize(panelVacio, 20, 20);
+//		panelCentral.add(panelVacio);
+//		
+//		JPanel panelURL = new JPanel();
+//		panelURL.setLayout(new BoxLayout(panelURL, BoxLayout.X_AXIS));
+//		panelCentral.add(panelURL);
+//		
+//		JLabel urlLabel = new JLabel("O introduce la URL de una canción:");//		
+//		JTextField urlField = new JTextField();
+//		urlField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+//		ComponentUtils.fixedSize(urlField, 500, 20);
+//		
+//		panelURL.add(urlLabel, BorderLayout.CENTER);
+//		panelURL.add(urlField, BorderLayout.CENTER);
 		
 	}
 	
-//	private JPanel crearPanelInferior() {
-//		JPanel panelInferior = new JPanel();
-//		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
-//		Reproductor repr = null;
-//		try{
-//			repr = new Reproductor();
-//		} catch (Exception e) {
-//			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
-//					"Error", JOptionPane.ERROR_MESSAGE);
-//		}
-//		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-//		//ComponentUtils.fixedSize(panelRepr, 250, 50);
-//		panelInferior.add(panelRepr);
-//		
-//		return panelInferior;
-//	}
 }
