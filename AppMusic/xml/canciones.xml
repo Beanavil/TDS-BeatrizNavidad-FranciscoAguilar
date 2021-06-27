@@ -1,12 +1,6 @@
 <?xml version="1.0" ?>
 <canciones xmlns="http://www.tds.es/canciones" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
 	xs:schemaLocation="http://www.tds.es/canciones canciones.xsd">
-	
-	<cancion titulo="I'll take a melody">
-		<URL><![CDATA[https://ia801406.us.archive.org/8/items/tsheaffer2020-11-08/16%20I%27ll%20Take%20A%20Melody.mp3]]></URL>
-		<estilo>Folk</estilo>
-		<interprete>Todd Sheaffer</interprete>
-	</cancion>
 
 	<cancion titulo="La Vie en rose">
 		<URL><![CDATA[https://ia801605.us.archive.org/16/items/78_la-vie-en-rose-slow-chante_edith-piaf-louiguy-edith-piaf-chansons-parisiennes-guy_gbia0000684a/La%20Vie%20En%20Rose%20%28Slow%20Chante%29%20-%20Edith%20Piaf-restored.mp3]]></URL>
@@ -37,5 +31,209 @@
 		<estilo>Tango</estilo>
 		<interprete>Pietro</interprete>
 	</cancion>
+	
+	<cancion titulo="You've got a friend in me">
+		<URL><![CDATA[https://archive.org/download/tvtunes_26997/Toy%20Story%20-%20Youve%20Got%20a%20Friend%20in%20Me.mp3]]></URL>
+		<estilo>Theme</estilo>
+		<interprete>Randy Newman</interprete>
+	</cancion>
+	
+	<cancion titulo="He's a pirate">
+		<URL><![CDATA[https://ia600904.us.archive.org/29/items/tvtunes_13046/Pirates%20of%20the%20Caribbean%20-%20Hes%20a%20Pirate.mp3]]></URL>
+		<estilo>Theme</estilo>
+		<interprete>Hans Zimmer</interprete>
+	</cancion>
+	
+	<cancion titulo="Red right hand">
+		<URL><![CDATA[https://ia800902.us.archive.org/28/items/tvtunes_27282/Peaky%20Blinders.mp3]]></URL>
+		<estilo>Theme</estilo>
+		<interprete>Nick Cave and the Bad Seeds</interprete>
+	</cancion>
+	
+	<cancion titulo="Red right hand">
+		<URL><![CDATA[https://ia800902.us.archive.org/28/items/tvtunes_27282/Peaky%20Blinders.mp3]]></URL>
+		<estilo>Theme</estilo>
+		<interprete>Nick Cave and the Bad Seeds</interprete>
+	</cancion>
+	
+	<cancion titulo="Brutal">
+		<URL><![CDATA[https://ia601508.us.archive.org/15/items/03-olivia-rodrigo-drivers-license-explicit/01%20-%20Olivia%20Rodrigo%20-%20brutal%28Explicit%29.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Olivia Rodrigo</interprete>
+	</cancion>
+	
+	<cancion titulo="Drivers license">
+		<URL><![CDATA[https://ia801508.us.archive.org/15/items/03-olivia-rodrigo-drivers-license-explicit/03%20-%20Olivia%20Rodrigo%20-%20drivers%20license%28Explicit%29.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Olivia Rodrigo</interprete>
+	</cancion>
+	
+	<cancion titulo="Good 4 u">
+		<URL><![CDATA[https://ia801508.us.archive.org/15/items/03-olivia-rodrigo-drivers-license-explicit/06%20-%20Olivia%20Rodrigo%20-%20good%204%20u%28Explicit%29.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Olivia Rodrigo</interprete>
+	</cancion>
+	
+	<cancion titulo="Deja vu">
+		<URL><![CDATA[https://ia801508.us.archive.org/15/items/03-olivia-rodrigo-drivers-license-explicit/05%20-%20Olivia%20Rodrigo%20-%20deja%20vu%28Explicit%29.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Olivia Rodrigo</interprete>
+	</cancion>
+	
+	<cancion titulo="How you like that">
+		<URL><![CDATA[https://ia801906.us.archive.org/4/items/01-how-you-like-that_202010/01%20-%20How%20You%20Like%20That.mp3]]></URL>
+		<estilo>Kpop</estilo>
+		<interprete>BLACKPINK</interprete>
+	</cancion>
+	
+	<cancion titulo="Pretty savage">
+		<URL><![CDATA[https://ia601906.us.archive.org/4/items/01-how-you-like-that_202010/03%20-%20Pretty%20Savage.mp3]]></URL>
+		<estilo>Kpop</estilo>
+		<interprete>BLACKPINK</interprete>
+	</cancion>
+	
+	<cancion titulo="Look what you made me do">
+		<URL><![CDATA[https://ia801001.us.archive.org/35/items/reputation_201804/Look%20What%20You%20Made%20Me%20Do.mp3]]></URL>
+		<estilo>Pop</estilo>
+		<interprete>Taylor Swift</interprete>
+	</cancion>
+	
+	<cancion titulo="Blinding lights">
+		<URL><![CDATA[https://ia802909.us.archive.org/35/items/The-Weeknd-Blinding-Lights/The%20Weeknd%20-%20Blinding%20Lights.mp3]]></URL>
+		<estilo>Electropop</estilo>
+		<interprete>The Weekend</interprete>
+	</cancion>
+	
+	<cancion titulo="SOS">
+		<URL><![CDATA[https://ia801007.us.archive.org/33/items/aviciiheavenlyricvideo/Avicii%20-%20SOS%20%28Lyrics%29%20ft.%20Aloe%20Blacc.mp3]]></URL>
+		<estilo>Electrohouse</estilo>
+		<interprete>Avicii</interprete>
+	</cancion>
+	
+	<cancion titulo="Darkside">
+		<URL><![CDATA[https://ia902800.us.archive.org/9/items/AlanWalkerDarksidefeat.AuRaAndTomineHarket/Alan%20Walker%20-%20Darkside%20%28feat.%20AuRa%20and%20Tomine%20Harket%29.mp3]]></URL>
+		<estilo>Electrohouse</estilo>
+		<interprete>Alan Walker</interprete>
+	</cancion>
+	
+	<cancion titulo="Cruel summer">
+		<URL><![CDATA[https://ia801003.us.archive.org/9/items/lovertaylorswift/02%20Cruel%20Summer.mp3]]></URL>
+		<estilo>Pop</estilo>
+		<interprete>Taylor Swift</interprete>
+	</cancion>
+	
+	<cancion titulo="Monster">
+		<URL><![CDATA[https://ia801701.us.archive.org/4/items/skillet-monster-lyrics/Skillet%20-%20Monster%20%28Lyrics%29.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Skillet</interprete>
+	</cancion>
+	
+	<cancion titulo="Legendary">
+		<URL><![CDATA[https://ia801809.us.archive.org/27/items/skillet-greatest-hits/skillet%20legendary%20official%20video.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Skillet</interprete>
+	</cancion>
+	
+	<cancion titulo="Whispers in the dark">
+		<URL><![CDATA[https://ia801809.us.archive.org/27/items/skillet-greatest-hits/whispers%20in%20the%20dark.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Skillet</interprete>
+	</cancion>
+	
+	<cancion titulo="Hero">
+		<URL><![CDATA[https://ia801809.us.archive.org/27/items/skillet-greatest-hits/skillet%20hero%20official%20video.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Skillet</interprete>
+	</cancion>
+	
+	<cancion titulo="Livin' on a prayer">
+		<URL><![CDATA[https://ia801901.us.archive.org/15/items/bonjovigreatesthits_202006/1-01%20Livin%27%20On%20a%20Prayer.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Bon Jovi</interprete>
+	</cancion>
+	
+	<cancion titulo="Runaway">
+		<URL><![CDATA[https://ia801901.us.archive.org/15/items/bonjovigreatesthits_202006/2-01%20Runaway.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Bon Jovi</interprete>
+	</cancion>
+	
+	<cancion titulo="Miracles">
+		<URL><![CDATA[https://ia803104.us.archive.org/18/items/coldplaymusicoggvorbis/A%20Head%20Full%20Of%20Dreams/A%20Head%20Full%20Of%20Dreams%20%28Japanese%20Edition%29/Coldplay%20-%20Miracles.mp3]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Coldplay</interprete>
+	</cancion>
+	
+	<cancion titulo="Viva la vida">
+		<URL><![CDATA[https://ia803104.us.archive.org/18/items/coldplaymusicoggvorbis/Greatest%20Hits%20%5B2009%5D/Greatest%20Hits%20%28CD%201%29/Coldplay%20-%20Viva%20la%20vida.mp3]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Coldplay</interprete>
+	</cancion>
+	
+	<cancion titulo="Paradise">
+		<URL><![CDATA[https://ia803104.us.archive.org/18/items/coldplaymusicoggvorbis/Mylo%20Xyloto/Coldplay%20-%20Paradise.mp3]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Coldplay</interprete>
+	</cancion>
+	
+	<cancion titulo="Creep">
+		<URL><![CDATA[https://ia903007.us.archive.org/25/items/CreepRadioHead/creep%20-%20radio%20head.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Radiohead</interprete>
+	</cancion>
+	
+	<cancion titulo="Believer">
+		<URL><![CDATA[https://ia803001.us.archive.org/22/items/imaginedragonsbelieveraudio/Imagine%20Dragons%20-%20Believer%20%28Audio%29]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Imagine Dragons</interprete>
+	</cancion>
+	
+	<cancion titulo="Shots">
+		<URL><![CDATA[https://ia801504.us.archive.org/16/items/the-fall_202105/Shots.mp3]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Imagine Dragons</interprete>
+	</cancion>
+	
+	<cancion titulo="Warriors">
+		<URL><![CDATA[https://ia801504.us.archive.org/16/items/the-fall_202105/Warriors.mp3]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Imagine Dragons</interprete>
+	</cancion>
+	
+	<cancion titulo="Song on fire">
+		<URL><![CDATA[https://ia802800.us.archive.org/29/items/20200305_20200305_1536/%282017%29%2003%20Song%20On%20Fire.mp3]]></URL>
+		<estilo>Rock</estilo>
+		<interprete>Nickelback</interprete>
+	</cancion>
+	
+	<cancion titulo="Animal">
+		<URL><![CDATA[https://ia601802.us.archive.org/18/items/animal-neon-trees-lyrics/Animal%20-%20Neon%20Trees%20Lyrics.mp3]]></URL>
+		<estilo>Pop Rock</estilo>
+		<interprete>Neon trees</interprete>
+	</cancion>
+	
+	<cancion titulo="Silhouette">
+		<URL><![CDATA[https://ia803107.us.archive.org/18/items/narutosilhouette/Kana-Boon%20-%20Silhouette%20%28Official%20Music%20Video%29.mp3]]></URL>
+		<estilo>Rock japones</estilo>
+		<interprete>KANA-BOON</interprete>
+	</cancion>
+	
+	<cancion titulo="WTF do i know">
+		<URL><![CDATA[https://ia801801.us.archive.org/23/items/miley-cyrus-plastic-hearts-2020/01.%20WTF%20Do%20I%20Know.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Miley Cyrus</interprete>
+	</cancion>
+	
+	<cancion titulo="Night crawling">
+		<URL><![CDATA[https://ia801801.us.archive.org/23/items/miley-cyrus-plastic-hearts-2020/06.%20Night%20Crawling%20%28Feat.%20Billy%20Idol%29.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Miley Cyrus</interprete>
+	</cancion>
 
+	<cancion titulo="Midnight sky">
+		<URL><![CDATA[https://ia801801.us.archive.org/23/items/miley-cyrus-plastic-hearts-2020/07.%20Midnight%20Sky.mp3]]></URL>
+		<estilo>Pop Punk</estilo>
+		<interprete>Miley Cyrus</interprete>
+	</cancion>
+	
 </canciones>
