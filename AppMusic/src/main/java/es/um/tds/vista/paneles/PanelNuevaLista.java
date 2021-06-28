@@ -268,7 +268,6 @@ public class PanelNuevaLista extends JPanel {
 						btnEliminar.setVisible(false);
 						tablaDer.revalidate();
 						tablaDer.repaint();
-						PanelMisListas.refrescar();
 					} else return;
 				}
 				
@@ -287,7 +286,6 @@ public class PanelNuevaLista extends JPanel {
 							btnEliminar.setVisible(true);
 							tablaDer.revalidate();
 							tablaDer.repaint();	
-							PanelMisListas.refrescar();
 						}
 				}
 				PanelMisListas.refrescar(); // refrescamos la pestaña de "Mis listas"
