@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import es.um.tds.modelo.descuentos.Descuento65;
 import es.um.tds.modelo.descuentos.DescuentoNulo;
 import es.um.tds.modelo.descuentos.DescuentoPremium;

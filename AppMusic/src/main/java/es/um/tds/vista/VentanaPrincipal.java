@@ -39,7 +39,7 @@ import javax.swing.JButton;
 
 public class VentanaPrincipal {
 
-	private AppMusic controlador;
+	private static AppMusic controlador;
 	
 	private JFrame frmVentanaPrincipal;
 	
@@ -47,16 +47,16 @@ public class VentanaPrincipal {
 	
 	private ImageIcon upgIcon;
 	private ImageIcon degIcon;
-	private ImageIcon MRIcon;
+	private static ImageIcon MRIcon;
 	
-	private JTabbedPane tabbedPane;
+	private static JTabbedPane tabbedPane;
 	
 	private JPanel panelExplorar;
 	private JPanel panelNuevaLista;
 	private JPanel panelRecientes;
 	private JPanel panelMisListas;
 	private JPanel panelPulsador;
-	private JPanel panelMasReproducidas;
+	private static JPanel panelMasReproducidas;
 	
 	private static final int NUMERO_TABS = 6;
 	
@@ -240,7 +240,7 @@ public class VentanaPrincipal {
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
 		// Botón mejora
-		btnUpgrade = new JButton("Hazte premium");
+		btnUpgrade = (controlador.isUsuarioPremium()) ? new JButton("Dejar de ser premium") : new JButton("Hazte premium");
 		panel.add(btnUpgrade);
 		
 		BufferedImage iconUpgrade = null; 
@@ -264,8 +264,11 @@ public class VentanaPrincipal {
 		scaledimage = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH);
 		degIcon = new ImageIcon(scaledimage);
 		
-		// Al inicio el botón tiene el icono upgrade
-		btnUpgrade.setIcon(upgIcon);
+		// Al inicio el botón tiene el icono upgrade si el usuario no es premium o el degrade si lo es
+		if (controlador.isUsuarioPremium())
+			btnUpgrade.setIcon(degIcon);
+		else
+			btnUpgrade.setIcon(upgIcon);
 		customizarBoton(btnUpgrade);
 		
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
@@ -388,5 +391,18 @@ public class VentanaPrincipal {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Refresca las pestañas de la ventana principal 
+	 */
+	public static void refrescar() {
+		// Si un usuario es premium y el siguiente que hace login no, elimina la pesaña "Más reproducidas"
+		if (!controlador.isUsuarioPremium() && tabbedPane.getTabCount() == NUMERO_TABS)
+			tabbedPane.removeTabAt(NUMERO_TABS-1);
+		
+		// Si un usuario no es premium y el siguiente que hace login sí, añade la pesaña "Más reproducidas"
+		if (controlador.isUsuarioPremium() && tabbedPane.getTabCount() < NUMERO_TABS)
+			tabbedPane.addTab("Más reproducidas", MRIcon, panelMasReproducidas);
 	}
 }

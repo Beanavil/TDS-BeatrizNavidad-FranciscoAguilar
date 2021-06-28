@@ -128,7 +128,7 @@ public class PanelMasReproducidas extends JPanel {
 		listaActual = controlador.getCancionesMasReproducidas();
 		((ModeloTablaReproducciones)tablaCanciones.getModel()).setListaCanciones(listaActual);		
 		tablaCanciones.repaint();
-		tablaCanciones.revalidate();
+		tablaCanciones.revalidate();		
 	}
 	
 }
