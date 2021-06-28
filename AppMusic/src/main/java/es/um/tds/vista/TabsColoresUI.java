@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.plaf.basic.*;
 
-
 /**
  * Propio BasicTabbedPaneUI para las pestañas de la ventana principal.
  * 
@@ -15,6 +14,9 @@ public class TabsColoresUI extends BasicTabbedPaneUI {
 	public static Color COLOR_AZUL = new Color(164, 230, 246);
     private Polygon figura;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void installDefaults() {
         super.installDefaults();
@@ -50,7 +52,6 @@ public class TabsColoresUI extends BasicTabbedPaneUI {
         }
         g2D.fill(figura);
     }
-    
     
     /**
      * Sobreescribe el método layoutLabel para que el título de las pestañas salga alineado a la izquierda

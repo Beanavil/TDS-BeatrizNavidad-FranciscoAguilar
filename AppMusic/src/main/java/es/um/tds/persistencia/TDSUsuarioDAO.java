@@ -38,11 +38,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	private static TDSUsuarioDAO unicaInstancia;
 	private TDSListaCancionesDAO adaptadorListaCanciones;  
 
-
 	/**
 	 * Constructor.
+	 * @throws BDException 
 	 * @throws DAOException 
-	 * @throws BDException
 	 */
 	private TDSUsuarioDAO() throws BDException, DAOException {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
@@ -51,9 +50,9 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	
 	/**
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
-	 * @return única instancia del adaptador de Usuario.
-	 * @throws DAOException 
+	 * @return única instancia del adaptador de Usuario
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	public static TDSUsuarioDAO getUnicaInstancia() throws BDException, DAOException {
 		if (unicaInstancia == null) 
@@ -69,13 +68,11 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		// Comprobamos primero que no esté ya registrado
 		if (usuario.getId() >= 0)
 			return;
-		
 		// Guardamos las listas
 		usuario.getListas().stream().forEach(lc -> adaptadorListaCanciones.store(lc));
-		
 		// Guardamos la lista de recientes
 		adaptadorListaCanciones.store(usuario.getRecientes());
-		
+
 		Entidad eUsuario = UsuarioToEntidad(usuario);
 		eUsuario = servPersistencia.registrarEntidad(eUsuario);
 		usuario.setId(eUsuario.getId());
@@ -89,12 +86,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		// Si no está no podemos borrar al usuario
 		if (usuario.getId() < 0)
 			return false;
-		
 		Entidad eUsuario = servPersistencia.recuperarEntidad(usuario.getId());
-
 		// Eliminamos las listas
-		usuario.getListas().stream().forEach(lc -> adaptadorListaCanciones.delete(lc));
-		
+		usuario.getListas().stream()
+						   .forEach(lc -> adaptadorListaCanciones.delete(lc));
 		// Eliminamos la lista de recientes
 		adaptadorListaCanciones.delete(usuario.getRecientes());
 		
@@ -166,17 +161,20 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		List<Usuario> usuarios = new ArrayList<>();
 		List<Entidad> eUsuarios = servPersistencia.recuperarEntidades(USUARIO); 
 		if (eUsuarios != null)
-			eUsuarios.stream().forEach(e -> usuarios.add(get(e.getId())));
+			eUsuarios.stream()
+					 .forEach(e -> usuarios.add(get(e.getId())));
 		return usuarios;
 		
 	}
 
-	// Métodos auxiliares
+	
+	// MÉTODOS AUXILIARES
+	
 	
 	/**
-	 * Método auxiliar que convierte una entidad en un objeto de tipo Usuario.
-	 * @param eUsuario entidad con los datos de una instancia de Usuario.
-	 * @return objeto ListaCanciones correspondiente.
+	 * Convierte una entidad en un objeto de tipo Usuario.
+	 * @param eUsuario entidad con los datos de una instancia de Usuario
+	 * @return objeto ListaCanciones correspondiente
 	 */
 	private Usuario entidadToUsuario(Entidad eUsuario) {
 		String nombre = servPersistencia.recuperarPropiedadEntidad(eUsuario, NOMBRE);
@@ -187,10 +185,12 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		String contrasena = servPersistencia.recuperarPropiedadEntidad(eUsuario, PASSWORD);
 		boolean premium = Boolean.parseBoolean(servPersistencia.recuperarPropiedadEntidad(eUsuario, PREMIUM));
 		
-		List<ListaCanciones> listas = getListasCancionesFromIds(servPersistencia.recuperarPropiedadEntidad(eUsuario, LISTASCANCIONES));
+		List<ListaCanciones> listas = getListasCancionesFromIds(
+				servPersistencia.recuperarPropiedadEntidad(eUsuario, LISTASCANCIONES));
 		
 		ListaCanciones cancionesRecientes = new ListaCanciones(Usuario.LISTA_RECIENTES, 
-				adaptadorListaCanciones.getCancionesFromIds(servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESRECIENTES)));
+				adaptadorListaCanciones.getCancionesFromIds(
+						servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESRECIENTES)));
 		
 		Map<Cancion, Integer> cancionesMasReproducidas = new TreeMap<>();
 		List<Cancion> canciones = adaptadorListaCanciones.getCancionesFromIds(
@@ -203,11 +203,10 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		return usuario;
 	}
 	
-	
 	/**
-	 * Método auxiliar que convierte un usuario en un objeto de tipo Entidad equivalente.
-	 * @param usuario objeto de tipo Usuario a transformar en Entidad.
-	 * @return entidad con los datos correspondientes al usuario.
+	 * Convierte un usuario en un objeto de tipo Entidad equivalente.
+	 * @param usuario objeto de tipo Usuario a transformar en Entidad
+	 * @return entidad con los datos correspondientes al usuario
 	 */
 	private Entidad UsuarioToEntidad(Usuario usuario) {
 		Entidad eUsuario = new Entidad();
@@ -224,35 +223,35 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 				new Propiedad(CANCIONESRECIENTES, 
 						adaptadorListaCanciones.getIdsFromCanciones(usuario.getRecientes().getCanciones())),
 				new Propiedad(CANCIONESMASREPRODUCIDAS, 
-						adaptadorListaCanciones.getIdsFromCanciones(new ArrayList<Cancion>(usuario.getMasReproducidas().keySet()))))));
+						adaptadorListaCanciones.getIdsFromCanciones(
+								new ArrayList<Cancion>(usuario.getMasReproducidas().keySet()))))));
 		return eUsuario;
 	}
 	
 	/**
-	 * Método auxiliar para guardar como cadena de caracteres los ids de las listas de canciones
+	 * Guarda como cadena de caracteres los ids de las listas de canciones
 	 * de un usuario.
-	 * @param listasCanciones lista de listas de canciones.
-	 * @return string con los ids.
+	 * @param listasCanciones Lista de listas de canciones
+	 * @return String con los ids separados por espacios
 	 */
 	private String getIdsFromListasCanciones(List<ListaCanciones> listasCanciones) {
 		String ids = listasCanciones.stream()
-				.map(lc -> String.valueOf(lc.getId()))
-				.collect(Collectors.joining(" "));
+									.map(lc -> String.valueOf(lc.getId()))
+									.collect(Collectors.joining(" "));
 		return ids;
 	}
 	
 	/**
-	 * Método auxiliar para extraer los objetos ListaCanciones asociados a los ids guardados como String.
-	 * @param ids String con los ids.
-	 * @return lista de listas de canciones.
+	 * Extrae los objetos ListaCanciones asociados a los ids guardados como String.
+	 * @param ids String con los ids
+	 * @return Lista de listas de canciones correspondientes
 	 */
 	private List<ListaCanciones> getListasCancionesFromIds(String ids) {
 		if (ids.trim().isEmpty())
 			return new ArrayList<ListaCanciones>();
-		
 		List<ListaCanciones> listasCanciones = Arrays.stream(ids.split(" "))
-                .map(id -> adaptadorListaCanciones.get(Integer.valueOf(id)))
-                .collect(Collectors.toList());
+									                 .map(id -> adaptadorListaCanciones.get(Integer.valueOf(id)))
+									                 .collect(Collectors.toList());
 		return listasCanciones;
 	}
 }

@@ -15,9 +15,9 @@ public class ListaCanciones {
 	private int id;
 
 	/**
-	 * Constructor
-	 * @param nombre nombre de la lista
-	 * @param canciones lista de canciones
+	 * Constructor.
+	 * @param nombre Nombre de la lista
+	 * @param canciones Lista de canciones
 	 */
 	public ListaCanciones(String nombre, List<Cancion> canciones) {
 		this.nombre = nombre;
@@ -27,14 +27,17 @@ public class ListaCanciones {
 	}
 	
 	/**
-	 * Constructor para una lista que no tiene canciones aún
-	 * @param nombre nombre de la lista
+	 * Constructor para una lista que no tiene canciones aún.
+	 * @param nombre Nombre de la lista
 	 */
 	public ListaCanciones(String nombre) {
 		this(nombre, new ArrayList<>());
 	}
 	
-	// Getters
+	
+	//GETTERS
+	
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -55,8 +58,10 @@ public class ListaCanciones {
 		return numCanciones;
 	}
 
-	// Setters
-	// TODO ver si algunos tienen que ser privados
+	
+	// SETTERS
+	
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -69,39 +74,42 @@ public class ListaCanciones {
 		this.id = id;
 	}
 	
-	public void setNumCanciones(int numCanciones) {
-		// TODO ¿esto hace falta?
-		if(numCanciones == canciones.size())
-			this.numCanciones = numCanciones;
-	}
 	
+	// FUNCIONALIDAD
+	
+	
+	/**
+	 * Indica si una canción está en la lista.
+	 * @param cancion Canción en cuestión
+	 * @return True si está, false si no
+	 */
 	public boolean isCancionEnLista(Cancion cancion) {
-		return this.getCanciones().stream()
-				.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
+		return this.getCanciones()
+				   .stream()
+				   .anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
 	}
 	
+	/**
+	 * Añade una canción a la lista.
+	 * @param cancion Canción en cuestión
+	 */
 	public void addCancion(Cancion cancion) {
 		this.canciones.add(cancion);
 	}
 	
-	
+	/**
+	 * Elimina una canción de la lista.
+	 * @param cancion Canción en cuestión
+	 */
 	public void removeCancion(Cancion cancion) {
 		this.canciones.remove(cancion);
 	}
 	
+	/**
+	 * Elimina la primera canción de la lista, si se puede.
+	 */
 	public void removeFirst() {
 		if(this.canciones.size() > 0)
 			this.canciones.remove(0);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		final String s = "ListaCanciones [nombre= " + nombre + ", lista de canciones=" ;
-		this.canciones.stream().forEach(c -> s.concat("\n  "+c.toString()));
-		return s.concat("]");
 	}
 }

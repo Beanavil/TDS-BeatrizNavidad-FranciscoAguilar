@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 
 
 /**
- * Ventana de login de AppMusic
+ * Ventana de login de AppMusic.
  * 
  * @author Beatriz y Francisco
  */
@@ -45,18 +45,17 @@ public class VentanaLogin {
 	private JPasswordField textPassword;
 
 	/**
-	 * Constructor
-	 * @throws DAOException 
+	 * Constructor.
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	public VentanaLogin() throws BDException, DAOException {		
 		controlador = AppMusic.getUnicaInstancia();
 		initialize();
 	}
 
-	
 	/**
-	 * Muestra la ventana de login
+	 * Muestra la ventana de login.
 	 */
 	public void mostrarVentana() {
 		frmLogin.setLocationRelativeTo(null);
@@ -65,7 +64,7 @@ public class VentanaLogin {
 	
 	
 	/**
-	 * Inicializa la ventana de login
+	 * Inicializa la ventana de login.
 	 */
 	private void initialize() {
 		frmLogin = new JFrame();
@@ -83,14 +82,14 @@ public class VentanaLogin {
 
 	
 	/**
-	 * Crea el panel con el título (nombre) de la app
+	 * Crea el panel con el título (nombre) de la app.
 	 */
 	private void crearPanelTitulo() {
-		JPanel panel_Norte = new JPanel();
-		frmLogin.getContentPane().add(panel_Norte, BorderLayout.NORTH);
-		panel_Norte.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 15));
+		JPanel panelTitulo = new JPanel();
+		frmLogin.getContentPane().add(panelTitulo, BorderLayout.NORTH);
+		panelTitulo.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 15));
 
-		// Icono de AppMusic
+		// Carga el icono de AppMusic y lo añade al panel
 		BufferedImage logo = null;
 		try {
 			logo = ImageIO.read(new File("./resources/appmusic.png")); 
@@ -101,24 +100,23 @@ public class VentanaLogin {
 		Image image = imageIcon.getImage();
 		Image scaledimage = image.getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH);
 		imageIcon = new ImageIcon(scaledimage);
-		panel_Norte.add(new JLabel(imageIcon));
+		panelTitulo.add(new JLabel(imageIcon));
 		
-		// Nombre
+		// Añade el nombre de la app
 		JLabel lblTitulo = new JLabel("AppMusic");
 		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblTitulo.setForeground(Color.DARK_GRAY);
-		panel_Norte.add(lblTitulo);
+		panelTitulo.add(lblTitulo);
 	}
 
-	
 	/**
-	 * Crea el panel que contendrá los campos del login y la contraseña
+	 * Crea el panel que contendrá los campos del login y la contraseña.
 	 */
 	private void crearPanelLogin() {
 		JPanel panelLogin = new JPanel();
 		panelLogin.setBorder(new EmptyBorder(10, 10, 10, 10));
 		frmLogin.getContentPane().add(panelLogin, BorderLayout.CENTER);
-		panelLogin.setLayout(new BorderLayout(0, 0));
+		panelLogin.setLayout(new BorderLayout());
 
 		panelLogin.add(crearPanelCampos(), BorderLayout.NORTH);
 		panelLogin.add(crearPanelBotones(), BorderLayout.SOUTH);
@@ -126,14 +124,14 @@ public class VentanaLogin {
 
 	
 	/**
-	 * Crea el panel con los campos del login y la contraseña
+	 * Crea el panel con los campos del login y la contraseña.
 	 */
 	private JPanel crearPanelCampos() {
 		JPanel panelCampos = new JPanel();
 		panelCampos.setBorder(new TitledBorder(null, "Login", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelCampos.setLayout(new BoxLayout(panelCampos, BoxLayout.Y_AXIS));
 
-		// Panel campo login
+		// Panel para el campo de login
 		JPanel panelCampoUsuario = new JPanel();
 		panelCampos.add(panelCampoUsuario);
 		panelCampoUsuario.setLayout(new BorderLayout(0, 0));
@@ -147,7 +145,7 @@ public class VentanaLogin {
 		panelCampoUsuario.add(textUsuario, BorderLayout.EAST);
 		textUsuario.setColumns(15);
 
-		// Panel campo contraseña
+		// Panel para el campo de contraseña
 		JPanel panelCampoPassword = new JPanel();
 		panelCampos.add(panelCampoPassword);
 		panelCampoPassword.setLayout(new BorderLayout(0, 0));
@@ -166,31 +164,34 @@ public class VentanaLogin {
 
 	
 	/**
-	 * Crea el panel con los botones de login, registro y salir
+	 * Crea el panel con los botones de login, registro y salir.
 	 */
 	private JPanel crearPanelBotones() {
 		JPanel panelBotones = new JPanel();
 		panelBotones.setBorder(new EmptyBorder(5, 0, 5, 0));
 		panelBotones.setLayout(new BorderLayout(0, 0));
 
+		// Panel de botones login y registro
 		JPanel panelBotonesLoginRegistro = new JPanel();
 		panelBotones.add(panelBotonesLoginRegistro, BorderLayout.WEST);
-
+		// Botón login
 		JButton btnLogin = new JButton("Login");
 		panelBotonesLoginRegistro.add(btnLogin);
 		btnLogin.setVerticalAlignment(SwingConstants.BOTTOM);
-
+		//Botón registro
 		JButton btnRegistro = new JButton("Registro");
 		panelBotonesLoginRegistro.add(btnRegistro);
 		btnRegistro.setVerticalAlignment(SwingConstants.BOTTOM);
 
+		// Panel de botón salir
 		JPanel panelBotonSalir = new JPanel();
 		panelBotones.add(panelBotonSalir, BorderLayout.EAST);
-
+		// Botón salir
 		JButton btnSalir = new JButton("Salir");
 		btnSalir.setVerticalAlignment(SwingConstants.BOTTOM);
 		panelBotonSalir.add(btnSalir);
 
+		// Creamos los manejadores de los botones
 		crearManejadorBotonLogin(btnLogin);
 		crearManejadorBotonRegistro(btnRegistro);
 		crearManejadorBotonSalir(btnSalir);
@@ -198,21 +199,22 @@ public class VentanaLogin {
 		return panelBotones;
 	}
 	
-	
 	/**
-	 * Crea un manejador del boton de login
+	 * Crea un manejador del botón de login.
 	 */
 	private void crearManejadorBotonLogin(JButton btnLogin) {
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent aEvent) {
 				try {
+					// Preguntamos al controlador si el login es válido
 					boolean login = controlador.loginUsuario(textUsuario.getText(),
 							new String(textPassword.getPassword()));
-					
+					// Si lo es, entramos a la app
 					if (login) {
 							VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
 							ventanaPrincipal.mostrarVentana();
 							frmLogin.dispose();
+					// Si no, informamos al usuario
 					} else
 						JOptionPane.showMessageDialog(frmLogin, "Nombre de usuario o contraseña no válido",
 								"Error", JOptionPane.ERROR_MESSAGE);
@@ -224,14 +226,14 @@ public class VentanaLogin {
 		});
 	}
 
-	
 	/**
-	 * Crea un manejador del boton de registro
+	 * Crea un manejador del botón de registro.
 	 */
 	private void crearManejadorBotonRegistro(JButton btnRegistro) {
 		btnRegistro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent aEvent) {
 				try {
+					// Nos reconduce a la ventana de registro
 					VentanaRegistro ventanaRegistro = new VentanaRegistro();
 					ventanaRegistro.mostrarVentana();
 					frmLogin.dispose();
@@ -242,9 +244,8 @@ public class VentanaLogin {
 		});
 	}
 	
-	
 	/**
-	 * Crea un manejador del boton de salir
+	 * Crea un manejador del botón de salir.
 	 */
 	private void crearManejadorBotonSalir(JButton btnSalir) {
 		btnSalir.addActionListener(new ActionListener() {
@@ -254,6 +255,7 @@ public class VentanaLogin {
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 						new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
+					// Finalizamos el programa
 					frmLogin.dispose();
 					System.exit(0);
 				}

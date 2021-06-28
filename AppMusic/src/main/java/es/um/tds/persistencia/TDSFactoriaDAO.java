@@ -5,18 +5,18 @@ import es.um.tds.excepciones.DAOException;
 import es.um.tds.persistencia.TDSUsuarioDAO;
 
 /**
- * Tipo de factoría que hereda de FactoriaDAO.
+ * Factoría particular de nuestro proyecto.
  * 
  * @author Beatriz y Francisco
  */
-public final class TDSFactoriaDAO extends FactoriaDAO{
+public final class TDSFactoriaDAO extends FactoriaDAO {
 	
-	public TDSFactoriaDAO() {	}
+	public TDSFactoriaDAO() {}
 	
 	/**
 	 * {@inheritDoc}
-	 * @throws DAOException 
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	@Override
 	public TDSCancionDAO getCancionDAO() throws BDException, DAOException {	
@@ -25,8 +25,8 @@ public final class TDSFactoriaDAO extends FactoriaDAO{
 	
 	/**
 	 * {@inheritDoc}
-	 * @throws DAOException 
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	@Override
 	public TDSListaCancionesDAO getListaCancionesDAO() throws BDException, DAOException {	
@@ -35,8 +35,8 @@ public final class TDSFactoriaDAO extends FactoriaDAO{
 	
 	/**
 	 * {@inheritDoc}
-	 * @throws DAOException 
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	@Override
 	public TDSUsuarioDAO getUsuarioDAO() throws BDException, DAOException {		

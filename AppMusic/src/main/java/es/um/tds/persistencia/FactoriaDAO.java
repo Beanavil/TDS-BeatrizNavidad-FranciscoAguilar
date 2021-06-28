@@ -11,21 +11,20 @@ import es.um.tds.persistencia.FactoriaDAO;
  * @author Beatriz y Francisco
  */
 public abstract class FactoriaDAO {
-	public static final String DAO_TDS = "es.um.tds.persistencia.TDSFactoriaDAO"; // TODO cambiar por TDSFactoriaDAO.class.getName()?
+	public static final String DAO_TDS = "es.um.tds.persistencia.TDSFactoriaDAO";
 	private static FactoriaDAO unicaInstancia = null;
 	
 	/**
-	 * Constructor
+	 * Constructor.s
 	 */
-	protected FactoriaDAO (){}
+	protected FactoriaDAO() {}
 
 	/** 
 	 * Crea una instancia de un tipo de factoría (solo existe TDSFactoriaDAO) o devuelve la que ya hay.
-	 * @param tipo nombre de la clase del tipo de factoría a crear.
-	 * @return única instancia de la clase FactoriaDAO.
+	 * @param tipo Nombre de la clase del tipo de factoría a crear
+	 * @return única Instancia de la factoría
 	 * @throws BDException 
 	 */
-
 	public static FactoriaDAO getInstancia(String tipo) throws BDException {
 		try {
 			if (unicaInstancia == null) {
@@ -38,21 +37,17 @@ public abstract class FactoriaDAO {
 	}
 	
 	/**
-	 * Crea un tipo de factoria DAO (TDSFactoriaDAO) o devuelve el que ya hay creado.
-	 * @return Única instancia de la factoría.
-	 * @throws DAOException.
+	 * Crea un tipo de factoría DAO (TDSFactoriaDAO) o devuelve el que ya hay creado.
+	 * @return Única instancia de la factoría
+	 * @throws DAOException
 	 * @throws BDException 
 	 */
 	public static FactoriaDAO getInstancia() throws DAOException, BDException {
 		return getInstancia(FactoriaDAO.DAO_TDS);
 	}
-
-	
-	
-	// Metodos factoria para obtener adaptadores
 	
 	/**
-	 * Método factoría para obtener el adaptador de Cancion.
+	 * Devuelve el adaptador de Cancion.
 	 * @return adaptador TDSCancionDAO.
 	 * @throws DAOException 
 	 * @throws BDException
@@ -60,7 +55,7 @@ public abstract class FactoriaDAO {
 	public abstract CancionDAO getCancionDAO() throws BDException, DAOException;
 	
 	/**
-	 * Método factoría para obtener el adaptador de ListaCanciones.
+	 * Devuelve el adaptador de ListaCanciones.
 	 * @return adaptador TDSListaCancionesDAO.
 	 * @throws DAOException 
 	 * @throws BDException
@@ -68,7 +63,7 @@ public abstract class FactoriaDAO {
 	public abstract ListaCancionesDAO getListaCancionesDAO() throws BDException, DAOException;
 	
 	/**
-	 * Método factoría para obtener el adaptador de Usuario.
+	 * Devuelve el adaptador de Usuario.
 	 * @return adaptador TDSUsuarioDAO.
 	 * @throws DAOException 
 	 * @throws BDException

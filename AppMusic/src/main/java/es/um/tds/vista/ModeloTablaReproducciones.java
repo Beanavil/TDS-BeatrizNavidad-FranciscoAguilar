@@ -22,32 +22,56 @@ public class ModeloTablaReproducciones extends AbstractTableModel{
 	
 	private List<Cancion> listaCanciones;
 	
+	/**
+	 * Constructor.
+	 * @param listaCanciones Lista de canciones asignada al modelo.
+	 */
 	public ModeloTablaReproducciones(List<Cancion> listaCanciones) {
 		this.listaCanciones = listaCanciones;
 	}
 	
-	 public ModeloTablaReproducciones() {
-		 this(new ArrayList<Cancion>()); 
-	 }
+	/**
+	 * Constructor vacío.
+	 */
+	public ModeloTablaReproducciones() {
+		this(new ArrayList<Cancion>()); 
+	}
 	 
+	/**
+	 * Devuelve la lista de canciones asignada al modelo.
+	 * @return
+	 */
 	public List<Cancion> getListaCanciones() {
 	  return listaCanciones;
 	}
 
+	/**
+	 * Establece la lista de canciones asignada al modelo.
+	 * @return
+	 */
 	public void setListaCanciones(List<Cancion> listaCanciones) {
 	  this.listaCanciones = listaCanciones;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getColumnCount() {
 		return N_COLUMNAS;
 	}
 	  
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getRowCount() {
 		return listaCanciones.size();
 	}
 	  
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getColumnName (int col) {
 		switch (col) {
@@ -60,6 +84,9 @@ public class ModeloTablaReproducciones extends AbstractTableModel{
 	  }
 	}
 	  
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Object getValueAt(int fila, int col) {
 		switch (col) {

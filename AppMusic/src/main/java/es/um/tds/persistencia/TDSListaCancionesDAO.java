@@ -29,8 +29,8 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 
 	/**
 	 * Constructor.
-	 * @throws DAOException 
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	private TDSListaCancionesDAO () throws BDException, DAOException {
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
@@ -38,17 +38,16 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	}
 
 	/**
-	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
-	 * @return única instancia del adaptador de ListaCanciones.
-	 * @throws DAOException 
+	 * Crea una instancia del adaptador o devuelve la que ya hay creada.
+	 * @return única instancia del adaptador de ListaCanciones
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	public static TDSListaCancionesDAO getUnicaInstancia() throws BDException, DAOException {	
 		if (unicaInstancia == null) 
 			unicaInstancia = new TDSListaCancionesDAO(); 
 		return unicaInstancia;       
 	} 
-	
 
 	/**
 	 * {@inheritDoc}
@@ -106,16 +105,19 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	public List<ListaCanciones> getAll() throws NullPointerException {
 		List<ListaCanciones> listas = new ArrayList<>();
 		List<Entidad> eListas = servPersistencia.recuperarEntidades(LISTACANCIONES); // puede ser null
-		eListas.stream().forEach(e -> listas.add(get(e.getId())));
+		eListas.stream()
+			   .forEach(e -> listas.add(get(e.getId())));
 		return listas;
 	}
 	
-	// Métodos auxiliares
+	
+	// MÉTODOS AUXILIARES
+	
 	
 	/**
-	 * Método auxiliar que convierte una entidad en un objeto de tipo ListaCanciones.
-	 * @param eLista entidad con los datos de una instancia de ListaCanciones.
-	 * @return objeto ListaCanciones correspondiente.
+	 * Convierte una entidad en un objeto de tipo ListaCanciones.
+	 * @param eLista entidad con los datos de una instancia de ListaCanciones
+	 * @return objeto ListaCanciones correspondiente
 	 */
 	private ListaCanciones entidadToListaCanciones(Entidad eLista) {
 		String nombre = servPersistencia.recuperarPropiedadEntidad(eLista, NOMBRE);
@@ -125,9 +127,8 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 		return lista;
 	}
 	
-	
 	/**
-	 * Método auxiliar que convierte una lista de canciones en un objeto de tipo Entidad equivalente.
+	 * Convierte una lista de canciones en un objeto de tipo Entidad equivalente.
 	 * @param lista objeto de tipo ListaCanciones a transformar en Entidad.
 	 * @return entidad con los datos correspondientes a la lista.
 	 */
@@ -141,10 +142,10 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	}
 	
 	/**
-	 * Método auxiliar para guardar como cadena de caracteres los ids de las canciones.
+	 * Devuelve como cadena de caracteres los ids de las canciones
 	 * de una lista de canciones.
-	 * @param canciones lista de canciones.
-	 * @return string con los ids.
+	 * @param canciones Lista de canciones.
+	 * @return String con los ids separados por espacios.
 	 */
 	public String getIdsFromCanciones(List<Cancion> canciones) {
 		String ids = canciones.stream()
@@ -154,16 +155,16 @@ public class TDSListaCancionesDAO implements ListaCancionesDAO {
 	}
 	
 	/**
-	 * Método auxiliar para extraer los objetos Cancion asociados a los ids guardados como String.
-	 * @param ids String con los ids.
-	 * @return lista de canciones.
+	 * Extrae los objetos Cancion asociados a los ids guardados como String.
+	 * @param ids String con los ids separados por espacios.
+	 * @return Lista con las canciones correspondientes
 	 */
 	public List<Cancion> getCancionesFromIds(String ids) {
 		if (ids.trim().isEmpty())
 			return new ArrayList<Cancion>();
 		List<Cancion> canciones = Arrays.stream(ids.split(" "))
-                .map(id -> adaptadorCancion.get(Integer.valueOf(id)))
-                .collect(Collectors.toList());
+						                .map(id -> adaptadorCancion.get(Integer.valueOf(id)))
+						                .collect(Collectors.toList());
 		return canciones;
 	}
 }

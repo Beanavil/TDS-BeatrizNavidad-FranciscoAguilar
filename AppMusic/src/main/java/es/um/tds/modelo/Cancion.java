@@ -16,15 +16,15 @@ public class Cancion implements Comparable<Cancion> {
 	private int id;
 	
 	/**
-	 * Constructor
-	 * @param titulo título de la canción
-	 * @param estilo estilo musical
-	 * @param interprete cantante que interpreta la canción
-	 * @param rutaFichero ruta al fichero correspondiente a la canción
-	 * @param numReproducciones número de veces que se ha reproducido en la aplicación
+	 * Constructor.
+	 * @param titulo Título de la canción
+	 * @param estilo Estilo musical
+	 * @param interprete Cantante que interpreta la canción
+	 * @param rutaFichero Ruta al fichero correspondiente a la canción
+	 * @param numReproducciones Número de veces que se ha reproducido en la aplicación
 	 */
 	public Cancion (String titulo, String interprete, Estilo estilo, 
-				String rutaFichero, int numReproducciones) {
+					String rutaFichero, int numReproducciones) {
 		this.titulo = titulo;
 		this.interprete = interprete;
 		this.estilo = estilo;
@@ -34,11 +34,11 @@ public class Cancion implements Comparable<Cancion> {
 	}
 	
 	/**
-	 * Sobrecarga del constructor para cuando no se conoce el número de reproducciones
-	 * @param titulo titulo de la canción
-	 * @param estilo estilo musical
-	 * @param interprete cantante que interpreta la canción
-	 * @param rutaFichero ruta al fichero correspondiente a la canción
+	 * Sobrecarga del constructor para cuando no se conoce el número de reproducciones.
+	 * @param titulo Título de la canción
+	 * @param estilo Estilo musical
+	 * @param interprete Cantante que interpreta la canción
+	 * @param rutaFichero Ruta al fichero correspondiente a la canción
 	 */
 	public Cancion (String titulo, String interprete, Estilo estilo, 
 			String rutaFichero) {
@@ -46,15 +46,18 @@ public class Cancion implements Comparable<Cancion> {
 	}
 	
 	/**
-	 * Sobrecarga del constructor para cuando solo se conoce el título y el fichero de la canción
-	 * @param titulo titulo de la canción
-	 * @param rutaFichero ruta al fichero correspondiente a la canción
+	 * Sobrecarga del constructor para cuando solo se conoce el título y el fichero de la canción.
+	 * @param titulo Título de la canción
+	 * @param rutaFichero Ruta al fichero correspondiente a la canción
 	 */
 	public Cancion (String titulo, String rutaFichero) {
 		this(titulo, "", Estilo.UNKNOWN, rutaFichero);
 	}
 	
-	// Getters
+	
+	// GETTERS
+	
+	
 	public String getTitulo() {
 		return titulo;
 	}
@@ -84,8 +87,9 @@ public class Cancion implements Comparable<Cancion> {
 	}
 	
 	
-	// Setters
-	// TODO ver si algunos tienen que ser privados
+	// SETTERS
+	
+
 	public void setTitulo(String titulo) {
 		this.titulo = titulo;
 	}
@@ -110,14 +114,6 @@ public class Cancion implements Comparable<Cancion> {
 		this.id = id;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return "Cancion [título=" + titulo + ", intérprete= " + interprete + ", estilo= " + estilo + 
-			   ", número de reproducciones= " + numReproducciones + ", id= " + id + "]";
-	}
 	
 	/**
 	 * {@inheritDoc}

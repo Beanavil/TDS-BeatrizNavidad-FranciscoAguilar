@@ -34,40 +34,49 @@ import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
 import es.um.tds.vista.Reproductor;
 
+/**
+ * Pestaña "Explorar".
+ * 
+ * @author Beatriz y Francisco
+ */
 public class PanelExplorar extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private AppMusic controlador;
+	private ListaCanciones resultadoBusqueda;
+	private Reproductor repr;
 	
 	private JPanel panelCentral;
 	private JPanel panelCampos;
 	private JPanel panelInferior;
 	
-	private ListaCanciones resultadoBusqueda;
-	
-	private JTextField campoTitulo;
-	private JTextField campoInterprete;
-	
 	private final JLabel lblTitulo = new JLabel("Título");
 	private final JLabel lblInterprete = new JLabel("Intérprete");
 	private final JLabel lblEstilo = new JLabel("Estilo");
 	
-	private JComboBox<Estilo> boxEstilo;
-
-	private Reproductor repr;
+	private JTextField campoTitulo;
+	private JTextField campoInterprete;
 	
 	private JButton btnBuscar;
 	private JButton btnCancelar;
 	
+	private JComboBox<Estilo> boxEstilo;
 	
+	/**
+	 * Constructor.
+	 * @throws BDException
+	 * @throws DAOException
+	 */
 	public PanelExplorar() throws BDException, DAOException {
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();
 	}
 	
+	/**
+	 * Inicializa el panel.
+	 */
 	private void inicialize() {
-		//this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setLayout(new BorderLayout());
 		
 		// Parte superior
@@ -83,16 +92,17 @@ public class PanelExplorar extends JPanel {
 		this.add(panelInferior, BorderLayout.SOUTH);
 	}
 	
-	
 	/**
-	 * Crea el panel superior
+	 * Crea el panel superior.
 	 */
 	public JPanel crearPanelSuperior() {
+		// Inicializamos el panel
 		JPanel panelSuperior = new JPanel();
+		panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+		// Creamos los paneles de los campos y los botones
 		crearPanelCampos();
 		JPanel panelBotones = crearPanelBotones();
-		
-		panelSuperior.setLayout(new BoxLayout(panelSuperior, BoxLayout.Y_AXIS));
+		// Añadimos todo al panel
 		panelSuperior.add(Box.createRigidArea(new Dimension(20, 20)));
 		panelSuperior.add(panelCampos);
 		panelSuperior.add(Box.createRigidArea(new Dimension(20, 20)));
@@ -101,24 +111,24 @@ public class PanelExplorar extends JPanel {
 		return panelSuperior;
 	}
 	
-	
 	/**
-	 * Crea el panel central
+	 * Crea el panel central.
 	 */
 	public void crearPanelCentral() {
 		panelCentral = new JPanel();
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+		// Ocultamos el panel porque solo es visible al hacer una búsqueda
 		panelCentral.setVisible(false);
 	}
 	
-	
 	/**
-	 * Crea el panel inferior (reproductor)
+	 * Crea el panel inferior (reproductor).
 	 */
 	public void crearPanelInferior() {
 		panelInferior = new JPanel();
-		panelInferior.setVisible(false);
 		panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
+		// Ocultamos el panel porque solo es visible al hacer una búsqueda
+		panelInferior.setVisible(false);
 		
 		try{
 			repr = new Reproductor();
@@ -126,19 +136,19 @@ public class PanelExplorar extends JPanel {
 			JOptionPane.showMessageDialog(panelInferior, "Error interno.\n",
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
+		// Creamos y añadimos el panel del reproductor
 		JPanel panelRepr = (JPanel) repr.getPanelReproductor();
-		//VentanaPrincipal.fixedSize(panelRepr, 250, 50);
 		panelInferior.add(panelRepr);
 	}
 	
-	
 	/**
-	 * Crea panel de campos de texto del panel superior
+	 * Crea panel de campos de texto del panel superior.
 	 */
 	public void crearPanelCampos() {
 		panelCampos = new JPanel();
 		panelCampos.setLayout(new BoxLayout(panelCampos, BoxLayout.X_AXIS));
 		
+		// Inicializamos los paneles de cada sección y los añadimos al panel de campos
 		JPanel panelTitulo = new JPanel(new FlowLayout());
 		JPanel panelInterprete = new JPanel(new FlowLayout());
 		JPanel panelEstilo = new JPanel(new FlowLayout());
@@ -151,6 +161,7 @@ public class PanelExplorar extends JPanel {
 		panelCampos.add(panelInterprete);
 		panelCampos.add(panelEstilo);
 		
+		// Añadimos los componentes de cada sección
 		// Campo título
 		campoTitulo = new JTextField();
 		ComponentUtils.fixedSize(campoTitulo, 200, 20);
@@ -170,17 +181,15 @@ public class PanelExplorar extends JPanel {
 		boxEstilo.setBackground(new Color(255,255,255));
 		lblEstilo.setLabelFor(boxEstilo);
 		ComponentUtils.fixedSize(boxEstilo, 150, 20);
-		
+		// Añadimos los elementos del ComboBox y la opción de null (nada seleccionado)
 		for (Estilo e : Estilo.values()) {
 			boxEstilo.addItem(e);
 		}
 		boxEstilo.addItem(null);
 		boxEstilo.setSelectedItem(null);
-		
 		panelEstilo.add(lblEstilo);
 		panelEstilo.add(boxEstilo);
 	}
-	
 	
 	/**
 	 * Crea panel de botones del panel superior
@@ -189,6 +198,7 @@ public class PanelExplorar extends JPanel {
 		JPanel panelBotones = new JPanel();
 		panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.X_AXIS));
 		
+		// Inicializamos los paneles de cada sección y los añadimos al panel de botones
 		JPanel panelBuscar = new JPanel(new FlowLayout());
 		JPanel panelCancelar = new JPanel(new FlowLayout());
 		
@@ -198,57 +208,61 @@ public class PanelExplorar extends JPanel {
 		panelBotones.add(panelBuscar);
 		panelBotones.add(panelCancelar);
 		
+		// Botón buscar
 		btnBuscar = new JButton("Buscar");
 		panelBuscar.add(btnBuscar);
 		
+		// Botón cancelar
 		btnCancelar = new JButton("Cancelar");
 		panelCancelar.add(btnCancelar);
 		
+		// Creamos los manejadores de los botones
 		crearManejadorBotonBuscar();
 		crearManejadorBotonCancelar();
 		
 		return panelBotones;
 	}
-
 	
 	/**
-	 * Crea manejador para el botón de buscar
+	 * Crea manejador para el botón de buscar.
 	 */
 	private void crearManejadorBotonBuscar() {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Eliminamos el contenido anterior
+				panelCentral.removeAll();
+				
+				// Buscamos las canciones pedidas
+				List<Cancion> cancionesEncontradas;
 				String titulo = campoTitulo.getText();
 				String interprete = campoInterprete.getText();
-				List<Cancion> canciones;
+				Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
+				
 				if (interprete.trim().isEmpty()) {
-					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
-					canciones = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
+					cancionesEncontradas = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
 						new ArrayList<>(controlador.buscarPorEstilo(estilo.getNombre()));
 				} else {
-					Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
-					canciones = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
+					cancionesEncontradas = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
 						new ArrayList<>(controlador.buscarPorInterpreteEstilo(interprete, estilo.getNombre()));
 				}
 				// Si hay título, filtramos las canciones anteriores por título
 				if (!titulo.trim().isEmpty()) {
-					canciones = canciones.stream()
-					.filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo))
-					.collect(Collectors.toList());
+					cancionesEncontradas = cancionesEncontradas.stream()
+										 .filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo))
+										 .collect(Collectors.toList());
 				}
-				
-				// Eliminamos el contenido anterior
-				panelCentral.removeAll();
-				 
-				// Creamos una lista de canciones con las canciones encontradas
-				resultadoBusqueda = new ListaCanciones("Resultado búsqueda", canciones);
+				// Creamos un objeto ListaCanciones con las canciones encontradas
+				resultadoBusqueda = new ListaCanciones("Resultado búsqueda", cancionesEncontradas);
 				
 				// Añadimos un nuevo panel con la tabla de las canciones encontradas al panel central y lo hacemos visible
 				JPanel panelTabla = new JPanel(new BorderLayout());
-				//ComponentUtils.fixedSize(panelTabla, 600, 200);
-			    
-				JTable tablaCanciones = new JTable(new ModeloTabla(canciones));
+				
+				// Definimos la tabla scrolleable que contiene las canciones encontradas
+				JTable tablaCanciones = new JTable(new ModeloTabla(cancionesEncontradas));
 				tablaCanciones.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 				tablaCanciones.setFillsViewportHeight(true);
+				JScrollPane scrollPane = new JScrollPane(tablaCanciones);
+				panelTabla.add(scrollPane, BorderLayout.CENTER);
 				
 				// Definimos el comportamiento de la app cuando se selecciona un elemento (canción) de la tabla:
 				tablaCanciones.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -257,36 +271,35 @@ public class PanelExplorar extends JPanel {
 			        }
 				});
 				
-			    JScrollPane scrollPane = new JScrollPane(tablaCanciones);
-			    panelTabla.add(scrollPane, BorderLayout.CENTER);
-			    
+				// Añadimos la tabla al panel central y lo hacemos visible
 			    panelCentral.revalidate();
 			    panelCentral.add(panelTabla);
 				panelCentral.setVisible(true);
-				
-				// Hacemos visible el panel inferior(reproductor)
+				// Hacemos visible el panel reproductor
 				panelInferior.setVisible(true);
 			}
 		});
 	}
 	
 	/**
-	 * Crea manejador para el botón de cancelar
+	 * Crea manejador para el botón de cancelar.
 	 */
 	private void crearManejadorBotonCancelar() {
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showOptionDialog(panelCampos, 
-						"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[]{"Sí", "No"}, "default");
+							"¿Está seguro de que desea cancelar la búsqueda?", "Confirmar cancelar búsqueda",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
-					campoTitulo.setText("");
-					campoInterprete.setText("");
-					boxEstilo.setSelectedItem(null);
+					// Ocultamos el panel central y borramos los criterios de búsqueda
 					panelCentral.removeAll();
 					panelCentral.setVisible(false);
 					panelInferior.setVisible(false);
+
+					campoTitulo.setText("");
+					campoInterprete.setText("");
+					boxEstilo.setSelectedItem(null);
 				}
 			}
 		});
