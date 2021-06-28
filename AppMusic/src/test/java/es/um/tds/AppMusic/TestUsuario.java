@@ -62,5 +62,23 @@ public class TestUsuario {
 		lista = controlador.getCancionesMasReproducidas();
 		assertEquals("Resultado testIsMasReproducidass2",resultadoEsperado2, lista.contains(cancion));
 	}
+	
+	@Test
+	public void testCalcDescuento() {
+		int resultadoEsperado1 = 0;
+		int resultadoEsperado2 = 10;
+		int resultadoEsperado3 = 25;
+		
+		assertEquals("Resultado testCalcDescuento1",resultadoEsperado1, pruebo.getDescuento().getDescuento());
+		
+		pruebo.setPremium(true);
+		pruebo.actualizaDescuento();
+		assertEquals("Resultado testCalcDescuento2",resultadoEsperado2, pruebo.getDescuento().getDescuento());
+		
+		LocalDate date = LocalDate.parse("1930-02-27");
+		String fechaOld = date.format(Usuario.formatter);
+		Usuario oldMan = new Usuario("Old", "Guy", fechaOld, "oldMail", "oldy", "1234");
+		assertEquals("Resultado testCalcDesceunto3",resultadoEsperado3, oldMan.getDescuento().getDescuento());
+	}
 
 }

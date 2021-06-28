@@ -80,6 +80,7 @@ public class VentanaPrincipal {
 		frmVentanaPrincipal = new JFrame();
 		frmVentanaPrincipal.setTitle("AppMusic");
 		frmVentanaPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmVentanaPrincipal.setMinimumSize(new Dimension(900,500));
 		
 		// Parte superior
 		JPanel panelSuperior = new JPanel();
