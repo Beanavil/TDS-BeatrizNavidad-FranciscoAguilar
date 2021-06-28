@@ -244,11 +244,8 @@ public class Reproductor {
 		    PanelRecientes.refrescar();
 		    PanelMasReproducidas.refrescar();
 		    
-		    
-		    System.out.println("sonando cancion: " + cancion.getTitulo()); // TODO quitar
 		    mediaPlayer = new MediaPlayer(media);
-		    mediaPlayer.play(); // TODO esto falla en ubuntu
-
+		    mediaPlayer.play();
 		    
 		} catch (MalformedURLException e) {
 			JOptionPane.showMessageDialog(panelReproductor, "Error al cargar canción.\n",
