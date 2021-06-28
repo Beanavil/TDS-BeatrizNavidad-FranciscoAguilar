@@ -130,4 +130,5 @@ public class PanelMasReproducidas extends JPanel {
 		tablaCanciones.repaint();
 		tablaCanciones.revalidate();
 	}
+	
 }

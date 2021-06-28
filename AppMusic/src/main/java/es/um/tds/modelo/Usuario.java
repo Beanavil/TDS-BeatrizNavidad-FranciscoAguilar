@@ -31,7 +31,6 @@ public class Usuario {
 	private IDescuento descuento;
 	private List<ListaCanciones> listas;
 	private ListaCanciones recientes;
-	private Map<Cancion, Integer> masReproducidas;
 	private int id;
 	
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES"));
@@ -49,11 +48,9 @@ public class Usuario {
 	 * @param premium Si es premium o no.
 	 * @param listas Listas de canciones del usuario.
 	 * @param recientes Lista de canciones reproducidas recientemente
-	 * @param masReproducidas Lista de canciones más reproducidas
 	 */
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, String email, String nombreUsuario, 
-					String contrasena, boolean premium, List<ListaCanciones> listas, ListaCanciones recientes, 
-					Map<Cancion, Integer> masReproducidas) {
+					String contrasena, boolean premium, List<ListaCanciones> listas, ListaCanciones recientes) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
@@ -71,12 +68,11 @@ public class Usuario {
 			this.recientes = recientes;
 		}
 		
-		this.masReproducidas =  new TreeMap<>(masReproducidas);
 		this.id = -1;
 	}
 	
 	/**
-	 * Constructor sin recientes ni más reproducidas.
+	 * Constructor sin recientes.
 	 * @param nombre Nombre real.
 	 * @param apellidos Apellidos.
 	 * @param fechaNacimiento Fecha de nacimiento en formato "dd/MM/yyyy"
@@ -89,11 +85,11 @@ public class Usuario {
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, String email, String nombreUsuario, 
 					String contrasena, boolean premium, List<ListaCanciones> listas) {
 		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listas, 
-				new ListaCanciones(LISTA_RECIENTES), new TreeMap<Cancion, Integer>()); 
+				new ListaCanciones(LISTA_RECIENTES)); 
 	}
 	
 	/**
-	 * Constructor sin premium ni listas ni recientes ni más reproducidas.
+	 * Constructor sin premium ni listas ni recientes.
 	 * @param nombre Nombre real.
 	 * @param apellidos Apellidos.
 	 * @param fechaNacimiento Fecha de nacimiento en formato "dd/MM/yyyy"
@@ -237,35 +233,6 @@ public class Usuario {
 	 */
 	public void removeCancionReciente(Cancion cancion) {
 		recientes.removeCancion(cancion);
-	}
-	
-	/**
-	 * Indica si una cancion está en más reproducidas.
-	 * @param cancion Canción en cuestión
-	 * @return
-	 */
-	public boolean isMasReproducida(Cancion cancion) {
-		return masReproducidas.keySet()
-							  .stream()		
-							  .anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
-	}
-	
-	/**
-	 * Añade una canción a las más reproducidas del usuario.
-	 * @param cancion Canción a añadir
-	 */
-	public void addMasReproducida(Cancion cancion) {
-		if (isMasReproducida(cancion))
-			masReproducidas.replace(cancion, cancion.getNumReproducciones());
-		else
-			masReproducidas.put(cancion, cancion.getNumReproducciones());
-	}
-	
-	/**
-	 * Devuelve las canciones más reproducidas por el usuario.
-	 */
-	public Map<Cancion, Integer> getMasReproducidas() {
-		return masReproducidas;
 	}
 	
 	/**
