@@ -5,36 +5,44 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.EventObject;
-
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import es.um.tds.controlador.AppMusic;
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
 import es.um.tds.utils.ComponentUtils;
-import es.um.tds.vista.Reproductor;
 import pulsador.Luz;
 import pulsador.IEncendidoListener;
 
+/**
+ * Pestaña "Cargar canciones".
+ * 
+ * @author Beatriz y Francisco
+ */
 public class PanelPulsador extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private AppMusic controlador;
 	private JPanel panelCentral;
 
+	/**
+	 * Constructor.
+	 * @throws BDException
+	 * @throws DAOException
+	 */
 	public PanelPulsador() throws BDException, DAOException {
 		super();
 		controlador = AppMusic.getUnicaInstancia();
 		inicialize();
 	}
 	
+	/**
+	 * Inicializa el panel.
+	 */
 	private void inicialize() {
 		this.setLayout(new BorderLayout());
 		
@@ -44,13 +52,11 @@ public class PanelPulsador extends JPanel {
 		// Parte central
 		crearPanelCentral();
 		this.add(panelCentral, BorderLayout.CENTER);
-		
-//		// Parte inferior
-//		JPanel panelInferior = crearPanelInferior();
-//		this.add(panelInferior, BorderLayout.SOUTH);
 	}
 	
-
+	/**
+	 * Crea un panel vacío para separar el panel central del borde superior.
+	 */
 	private JPanel crearPanelNorte() {
 		JPanel panelNorte = new JPanel();
 		ComponentUtils.fixedSize(panelNorte, 60, 60);
@@ -58,12 +64,13 @@ public class PanelPulsador extends JPanel {
 	}
 
 	/** 
-	 * Panel donde va el jfilechooser y la caja de texto para buscar url
+	 * Crea el panel donde va el pulsador para cargar las canciones
 	 */
 	private void crearPanelCentral() {
 		panelCentral = new JPanel();
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
 		
+		// Panel donde ponemos el componente Luz
 		JPanel panelLuz = new JPanel();
 		panelLuz.setLayout(new BoxLayout(panelLuz, BoxLayout.X_AXIS));
 		panelCentral.add(panelLuz);
@@ -75,11 +82,15 @@ public class PanelPulsador extends JPanel {
 		panelLuz.add(luzLabel, BorderLayout.NORTH);
 		panelLuz.add(luz, BorderLayout.NORTH);
 		
+		/* 
+		 * Definimos el comportamiento del pulsador, que será llamar al controlador para cargar las canciones
+		 * seleccionadas por el usuario
+		 */
 		luz.addEncendidoListener(new IEncendidoListener() {
 			@Override
 			public void enteradoCambioEncendido(EventObject arg0) {
 				if (luz.isEncendido()) {
-					JFileChooser jfc = new JFileChooser(new File("./xml")); //FileSystemView.getFileSystemView().getHomeDirectory()
+					JFileChooser jfc = new JFileChooser(new File("./xml"));
 					FileNameExtensionFilter filter = new FileNameExtensionFilter("Xml Song Files", "xml");
 					jfc.setFileFilter(filter);
 	
@@ -96,23 +107,5 @@ public class PanelPulsador extends JPanel {
 				}
 			}
 		});
-		
-//		JPanel panelVacio = new JPanel();
-//		ComponentUtils.fixedSize(panelVacio, 20, 20);
-//		panelCentral.add(panelVacio);
-//		
-//		JPanel panelURL = new JPanel();
-//		panelURL.setLayout(new BoxLayout(panelURL, BoxLayout.X_AXIS));
-//		panelCentral.add(panelURL);
-//		
-//		JLabel urlLabel = new JLabel("O introduce la URL de una canción:");//		
-//		JTextField urlField = new JTextField();
-//		urlField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-//		ComponentUtils.fixedSize(urlField, 500, 20);
-//		
-//		panelURL.add(urlLabel, BorderLayout.CENTER);
-//		panelURL.add(urlField, BorderLayout.CENTER);
-		
 	}
-	
 }

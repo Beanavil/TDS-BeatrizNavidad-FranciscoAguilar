@@ -27,7 +27,7 @@ public class GeneradorPDF {
 	private static final String DIRECTORIO_PDF = "./pdf";
 	
 	/**
-	 * Genera un PDF con las listas del usuario
+	 * Genera un PDF con las listas del usuario.
 	 * @param usuario Usuario que solicita el pdf
 	 * @throws FileNotFoundException
 	 * @throws DocumentException
@@ -46,14 +46,12 @@ public class GeneradorPDF {
 	    pdf.add(tablaFromListaCanciones(lista));
 	    pdf.add(Chunk.NEWLINE);
 	  }
-
 	  pdf.close();
 	}
 
-	
 	/**
-	 * Convierte una lista de canciones en una PdfTable
-	 * @param lista Lista a  convertir
+	 * Convierte una lista de canciones en una PdfTable.
+	 * @param lista Lista a convertir
 	 * @return PdfTable con los datos de las canciones en sus filas
 	 */
 	private static PdfPTable tablaFromListaCanciones(ListaCanciones lista) {
@@ -69,10 +67,9 @@ public class GeneradorPDF {
 	  }
 	  return tabla;
 	}
-
 	
 	/**
-	 * Crea un documento pdf en el directorio establecido por defecto
+	 * Crea un documento pdf en el directorio establecido por defecto.
 	 * @return Documento pdf
 	 * @throws FileNotFoundException
 	 * @throws DocumentException

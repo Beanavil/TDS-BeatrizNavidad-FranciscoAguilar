@@ -30,20 +30,19 @@ public class TDSCancionDAO implements CancionDAO {
 	private static TDSCancionDAO unicaInstancia;
 
 	/**
-	 * Constructor
-	 * @throws DAOException 
+	 * Constructor.
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	private TDSCancionDAO () throws BDException, DAOException {
-		
 		servPersistencia = FactoriaServicioPersistencia.getInstance().getServicioPersistencia();
 	}
 	
 	/**
 	 * Crea una instancia del adaptador o devuelve la que ya haya creada.
-	 * @return única instancia del adaptador de Cancion.
-	 * @throws DAOException 
+	 * @return única instancia del adaptador de Cancion
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	public static TDSCancionDAO getUnicaInstancia() throws BDException, DAOException {
 		
@@ -74,7 +73,6 @@ public class TDSCancionDAO implements CancionDAO {
 		if (cancion.getId() < 0)
 			return false;
 		Entidad eCancion = servPersistencia.recuperarEntidad(cancion.getId());
-
 		return servPersistencia.borrarEntidad(eCancion);
 	}
 
@@ -115,7 +113,6 @@ public class TDSCancionDAO implements CancionDAO {
 			return null;
 		return entidadToCancion(eCancion);
 	}
-
 	
 	/**
 	 * {@inheritDoc}
@@ -125,7 +122,8 @@ public class TDSCancionDAO implements CancionDAO {
 		List<Cancion> canciones = new ArrayList<Cancion>();
 		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION);
 		if (entidades != null)
-			entidades.stream().forEach(e -> canciones.add(entidadToCancion(e)));
+			entidades.stream()
+					 .forEach(e -> canciones.add(entidadToCancion(e)));
 		return canciones;
 	}
 	
@@ -138,9 +136,9 @@ public class TDSCancionDAO implements CancionDAO {
 		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); 
 		if (entidades != null) {
 			entidades.stream()
-			// estilo puede ser una subcadena de algún otro estilo en la bd
-			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
-			.forEach(e -> canciones.add(entidadToCancion(e)));
+					 // estilo puede ser una subcadena de algún otro estilo en la bd
+					 .filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
+					 .forEach(e -> canciones.add(entidadToCancion(e)));
 		}
 		return canciones;
 	}
@@ -154,12 +152,11 @@ public class TDSCancionDAO implements CancionDAO {
 		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); 
 		if (entidades != null) {
 			entidades.stream()
-			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
-			.forEach(e -> canciones.add(entidadToCancion(e)));
+					 .filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
+					 .forEach(e -> canciones.add(entidadToCancion(e)));
 		}
 		return canciones;
 	}
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -170,37 +167,37 @@ public class TDSCancionDAO implements CancionDAO {
 		List<Entidad> entidades = servPersistencia.recuperarEntidades(CANCION); 
 		if (entidades != null) {
 			entidades.stream()
-			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
-			.filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
-			.forEach(e -> canciones.add(entidadToCancion(e)));
+					 .filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(1).getValor(), artista)) 
+					 .filter(e -> StringUtils.containsIgnoreCase(e.getPropiedades().get(2).getValor(), estilo)) 
+					 .forEach(e -> canciones.add(entidadToCancion(e)));
 		}
 		return canciones;
 	}
 	
-	// Métodos auxiliares
+	
+	// MÉTODOS AUXILIARES
 
+	
 	/**
-	 * Método auxiliar que convierte una entidad en un objeto de tipo Cancion.
-	 * @param eCancion entidad con los datos de una instancia de Cancion.
-	 * @return objeto Cancion correspondiente.
+	 * Convierte una entidad en un objeto de tipo Cancion.
+	 * @param eCancion entidad con los datos de una instancia de Cancion
+	 * @return objeto Cancion correspondiente
 	 */
 	private Cancion entidadToCancion(Entidad eCancion) throws NumberFormatException {
 		String titulo = servPersistencia.recuperarPropiedadEntidad(eCancion, TITULO);
 		String interprete = servPersistencia.recuperarPropiedadEntidad(eCancion, INTERPRETE);
 		String estilo = servPersistencia.recuperarPropiedadEntidad(eCancion, ESTILO);
 		String rutaFichero = servPersistencia.recuperarPropiedadEntidad(eCancion, RUTAFICHERO);
-		// valueOf puede lanzar una NumberFormatException 
 		int numReproducciones = Integer.valueOf(servPersistencia.recuperarPropiedadEntidad(eCancion, REPRODUCCIONES));
 		Cancion cancion = new Cancion(titulo, interprete, Estilo.valor(estilo), rutaFichero, numReproducciones);
 		cancion.setId(eCancion.getId());
 		return cancion;
 	}
 	
-	
 	/**
-	 * Método auxiliar que convierte una canción en un objeto de tipo Entidad equivalente.
-	 * @param cancion objeto de tipo Cancion a transformar en Entidad.
-	 * @return entidad con los datos correspondientes a la canción.
+	 * Convierte una canción en un objeto de tipo Entidad equivalente.
+	 * @param cancion objeto de tipo Cancion a transformar en Entidad
+	 * @return entidad con los datos correspondientes a la canción
 	 */
 	private Entidad CancionToEntidad(Cancion cancion) {
 		Entidad eCancion = new Entidad();

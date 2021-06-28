@@ -11,11 +11,10 @@ import es.um.tds.vista.VentanaLogin;
  */
 public class Lanzador {
 	/**
-	 * Método principal
+	 * Método principal.
 	 * @param args
 	 */
-	public static void main( String[] args ) throws IOException
-	{
+	public static void main(String[] args) throws IOException {
 		try {
 			new VentanaLogin();
 		} catch (Exception e) {

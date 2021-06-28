@@ -20,8 +20,6 @@ import es.um.tds.modelo.descuentos.IDescuento;
  * @author Beatriz y Francisco
  */
 public class Usuario {
-	public static final String LISTA_RECIENTES = "Canciones recientes";
-	public static final int NUM_RECIENTES = 10;
 	
 	private String nombre;
 	private String apellidos;
@@ -34,30 +32,30 @@ public class Usuario {
 	private List<ListaCanciones> listas;
 	private ListaCanciones recientes;
 	private Map<Cancion, Integer> masReproducidas;
-	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES"));
 	private int id;
 	
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "ES"));
+	public static final String LISTA_RECIENTES = "Canciones recientes";
+	public static final int NUM_RECIENTES = 10;
 	
 	/**
 	 * Constructor.
-	 * @param nombre nombre real.
-	 * @param apellidos apellidos.
-	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
-	 * @param email dirección de correo electrónico.
-	 * @param login nombre de usuario en la app.
-	 * @param password contraseña de la cuenta.
-	 * @param premium si es premium o no.
-	 * @param listas listas de canciones del usuario.
+	 * @param nombre Nombre real.
+	 * @param apellidos Apellidos.
+	 * @param fechaNacimiento Fecha de nacimiento en formato "dd/MM/yyyy"
+	 * @param email Dirección de correo electrónico.
+	 * @param login Nombre de usuario en la app.
+	 * @param password Contraseña de la cuenta.
+	 * @param premium Si es premium o no.
+	 * @param listas Listas de canciones del usuario.
 	 * @param recientes Lista de canciones reproducidas recientemente
 	 * @param masReproducidas Lista de canciones más reproducidas
 	 */
-	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
-			String email, String nombreUsuario, String contrasena, boolean premium, 
-			List<ListaCanciones> listas, ListaCanciones recientes, 
-			Map<Cancion, Integer> masReproducidas) {
+	public Usuario (String nombre, String apellidos, String fechaNacimiento, String email, String nombreUsuario, 
+					String contrasena, boolean premium, List<ListaCanciones> listas, ListaCanciones recientes, 
+					Map<Cancion, Integer> masReproducidas) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
-		// TODO implementar bien la lectura de fecha de nacimiento de un usuario en la vista para que esto no pueda lanzar excepción
 		this.fechaNacimiento = LocalDate.parse(fechaNacimiento, formatter); 
 		this.email = email;
 		this.login = nombreUsuario;
@@ -65,50 +63,54 @@ public class Usuario {
 		this.premium = premium;
 		this.descuento = calcDescuento();
 		this.listas = new ArrayList<>(listas);
+		
 		if (recientes.getNumCanciones() > 10)
 			this.recientes = new ListaCanciones(LISTA_RECIENTES, recientes.getCanciones().subList(0, 10));
 		else {
 			recientes.setNombre(LISTA_RECIENTES);
 			this.recientes = recientes;
 		}
-		this.masReproducidas =  new TreeMap<>(masReproducidas); // TODO tener en cuenta orden ascendente para la vista
+		
+		this.masReproducidas =  new TreeMap<>(masReproducidas);
 		this.id = -1;
 	}
 	
 	/**
 	 * Constructor sin recientes ni más reproducidas.
-	 * @param nombre nombre real.
-	 * @param apellidos apellidos.
-	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
-	 * @param email dirección de correo electrónico.
-	 * @param login nombre de usuario en la app.
-	 * @param password contraseña de la cuenta.
-	 * @param premium si es premium o no.
-	 * @param listas listas de canciones del usuario.
+	 * @param nombre Nombre real.
+	 * @param apellidos Apellidos.
+	 * @param fechaNacimiento Fecha de nacimiento en formato "dd/MM/yyyy"
+	 * @param email Dirección de correo electrónico.
+	 * @param login Nombre de usuario en la app.
+	 * @param password Contraseña de la cuenta.
+	 * @param premium Si es premium o no.
+	 * @param listas Listas de canciones del usuario.
 	 */
-	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
-			String email, String nombreUsuario, String contrasena, boolean premium, 
-			List<ListaCanciones> listas) {
+	public Usuario (String nombre, String apellidos, String fechaNacimiento, String email, String nombreUsuario, 
+					String contrasena, boolean premium, List<ListaCanciones> listas) {
 		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listas, 
 				new ListaCanciones(LISTA_RECIENTES), new TreeMap<Cancion, Integer>()); 
 	}
 	
 	/**
 	 * Constructor sin premium ni listas ni recientes ni más reproducidas.
-	 * @param nombre nombre real.
-	 * @param apellidos apellidos.
-	 * @param fechaNacimiento fecha de nacimiento en formato "dd/MM/yyyy"
-	 * @param email dirección de correo electrónico.
-	 * @param login nombre de usuario en la app.
-	 * @param password contraseña de la cuenta.
+	 * @param nombre Nombre real.
+	 * @param apellidos Apellidos.
+	 * @param fechaNacimiento Fecha de nacimiento en formato "dd/MM/yyyy"
+	 * @param email Dirección de correo electrónico.
+	 * @param login Nombre de usuario en la app.
+	 * @param password Contraseña de la cuenta.
 	 */
 	public Usuario (String nombre, String apellidos, String fechaNacimiento, 
-			String email, String nombreUsuario, String contrasena) {
-		
-		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, false, new ArrayList<ListaCanciones>());
+					String email, String nombreUsuario, String contrasena) {
+		this(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, 
+				false, new ArrayList<ListaCanciones>());
 	}
 
-	// Getters
+	
+	// GETTERS
+	
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -146,83 +148,18 @@ public class Usuario {
 		return new ArrayList<>(listas);
 	}
 	
-	public void addListaCanciones(ListaCanciones lista) {
-		listas.add(lista); 
-	}
-	
-	public void removeListaCanciones(ListaCanciones lista) {
-		listas.remove(lista);
-	}
-	
 	public ListaCanciones getRecientes() {
 		return recientes;
-	}
-	
-	/**
-	 * Añade una canción a la lista de recientes. Si ya hay 10 (el máximo)
-	 * elimina la menos reciente (la primera añadida)
-	 * @param cancion Canción a añadir a recientes
-	 */
-	public void addCancionReciente(Cancion cancion) {
-		if (!this.isReciente(cancion)) {
-			if (this.recientes.getNumCanciones() < NUM_RECIENTES)
-				recientes.addCancion(cancion);
-			else {
-				recientes.removeFirst();
-				recientes.addCancion(cancion);
-			}
-		}
-	}
-	
-	/**
-	 * Indica si una cancion está en recientes o no
-	 * @param cancion
-	 * @return
-	 */
-	public boolean isReciente(Cancion cancion) {
-		return recientes.getCanciones().stream()		
-		.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
-	}
-	
-	
-	/**
-	 * Indica si una cancion está en más reproducidas o no
-	 * @param cancion
-	 * @return
-	 */
-	public boolean isMasReproducida(Cancion cancion) {
-		return masReproducidas.keySet().stream()		
-		.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
-	}
-	
-	/**
-	 * Elimina una canción de recientes
-	 * @param cancion
-	 */
-	public void removeCancionReciente(Cancion cancion) {
-		recientes.removeCancion(cancion);
-	}
-	
-	
-	public Map<Cancion, Integer> getMasReproducidas() {
-		return masReproducidas;
-	}
-	
-	
-	public void addMasReproducida(Cancion cancion) {
-		if (isMasReproducida(cancion))
-			masReproducidas.replace(cancion, cancion.getNumReproducciones());
-		else
-			masReproducidas.put(cancion, cancion.getNumReproducciones());
 	}
 	
 	public int getId() {
 		return id;
 	}
-
 	
-	// Setters 	
-	// TODO ver si algunos tienen que ser privados
+	
+	// SETTERS	
+	
+	
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
@@ -264,22 +201,92 @@ public class Usuario {
 		this.id = id;
 	}
 	
+	
+	// FUNCIONALIDAD
+	
+	
 	/**
-	 * {@inheritDoc}
+	 * Indica si una cancion está en recientes o no
+	 * @param cancion
+	 * @return
 	 */
-	@Override
-	public String toString() {
-		return "Usuario [nombre= " + nombre + ", apellidos= " + apellidos + ", mail=" + email +
-			   "fecha de nacimiento= " + fechaNacimiento.format(formatter) + ", usuario=" + login +
-			   ", contraseña=" + password + ", id=" + id + "]";
+	public boolean isReciente(Cancion cancion) {
+		return recientes.getCanciones().stream()		
+				.anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
 	}
 	
+	/**
+	 * Añade una canción a la lista de recientes. Si ya hay 10 (el máximo)
+	 * elimina la menos reciente (la primera añadida)
+	 * @param cancion Canción a añadir a recientes
+	 */
+	public void addCancionReciente(Cancion cancion) {
+		if (!this.isReciente(cancion)) {
+			if (this.recientes.getNumCanciones() < NUM_RECIENTES)
+				recientes.addCancion(cancion);
+			else {
+				recientes.removeFirst();
+				recientes.addCancion(cancion);
+			}
+		}
+	}
 	
 	/**
-	 * Método para calcular el descuento a aplicar en función 
-	 * del tipo de cuenta.
-	 * @param precio cantidad de la que calculamos el descuento
-	 * @return descuento a aplicar
+	 * Elimina una canción de recientes.
+	 * @param cancion Canción a eliminar de recientes
+	 */
+	public void removeCancionReciente(Cancion cancion) {
+		recientes.removeCancion(cancion);
+	}
+	
+	/**
+	 * Indica si una cancion está en más reproducidas.
+	 * @param cancion Canción en cuestión
+	 * @return
+	 */
+	public boolean isMasReproducida(Cancion cancion) {
+		return masReproducidas.keySet()
+							  .stream()		
+							  .anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
+	}
+	
+	/**
+	 * Añade una canción a las más reproducidas del usuario.
+	 * @param cancion Canción a añadir
+	 */
+	public void addMasReproducida(Cancion cancion) {
+		if (isMasReproducida(cancion))
+			masReproducidas.replace(cancion, cancion.getNumReproducciones());
+		else
+			masReproducidas.put(cancion, cancion.getNumReproducciones());
+	}
+	
+	/**
+	 * Devuelve las canciones más reproducidas por el usuario.
+	 */
+	public Map<Cancion, Integer> getMasReproducidas() {
+		return masReproducidas;
+	}
+	
+	/**
+	 * Añade una lista de canciones al usuario.
+	 * @param lista Lista a añadir
+	 */
+	public void addListaCanciones(ListaCanciones lista) {
+		listas.add(lista); 
+	}
+	
+	/**
+	 * Elimina una lista de las listas del usuario.
+	 * @param lista Lista a eliminar
+	 */
+	public void removeListaCanciones(ListaCanciones lista) {
+		listas.remove(lista);
+	}
+
+	/**
+	 * Calcula el descuento a aplicar en función del tipo de cuenta del usuario.
+	 * @return Descuento a aplicar
 	 */
 	private IDescuento calcDescuento() { 
 		LocalDate fechaActual = LocalDate.now();

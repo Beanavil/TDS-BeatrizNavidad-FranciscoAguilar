@@ -32,254 +32,287 @@ import es.um.tds.utils.ComponentUtils;
 import es.um.tds.utils.StringUtils;
 import es.um.tds.vista.ModeloTabla;
 
-public class PanelNuevaLista extends JPanel{
+/**
+ * Pestaña "Nueva lista".
+ * 
+ * @author Beatriz y Francisco
+ */
+public class PanelNuevaLista extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private static final int TAM_CUADRO_TEXTO = 10;
-	//TODO No se si exportar esta variable o qué
-	private static final int COLUMNA_TITULO = 0;
-	private static final int COLUMNA_AUTOR = 1;
-	
 	private AppMusic controlador;
+	private String nombreLista;
 		
-	private JTextField txtCrear;
 	private JButton btnCrear;
 	private JButton btnEliminar;
-	
-	private JTextField txtInterprete;
-	private JTextField txtTitulo;
-	private JComboBox<Estilo> boxEstilo;
 	private JButton btnBuscar;
+	private JButton btnAdd;
+	private JButton btnRetirar;
+	private JButton btnFinalizar;
+	
+	private JTextField campoCrear;
+	private JTextField campoInterprete;
+	private JTextField campoTitulo;
 	
 	private JTable tablaIzq;
 	private JTable tablaDer;
-	
-	private JButton btnAdd;
-	private JButton btnRetirar;
 
-	private JButton btnFinalizar;
-	
-	//TODO ¿Es necesario añadir los paneles como atributos de la clase?
 	private JPanel panelTablaDer;
-	private JPanel panelInv;
+	private JPanel panelInvisible;
 	
-	private String nombreLista;
+	private JComboBox<Estilo> boxEstilo;
+	
+	private static final int TAM_CUADRO_TEXTO = 10;	
 	
 	/**
-	 * Constructor de la clase //TODO pasar todo a método initialize();
-	 * @throws DAOException 
+	 * Constructor.
 	 * @throws BDException
+	 * @throws DAOException 
 	 */
 	public PanelNuevaLista() throws BDException, DAOException{
-
 		super();
 		controlador = AppMusic.getUnicaInstancia();
+		inicialize();
+	}
+
+	/**
+	 * Inicializa el panel.
+	 */
+	private void inicialize() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		JPanel panel1 = crearPanel1();
+		JPanel panelCrear = crearPanelCrear();
 		
-		panelInv = new JPanel();
-		panelInv.setLayout(new BorderLayout());
-		panelInv.setVisible(false);
+		panelInvisible = new JPanel();
+		panelInvisible.setLayout(new BorderLayout());
+		panelInvisible.setVisible(false);
 		
-		JPanel panel2 = crearPanel2();
-		JPanel panel3 = crearPanel3();
-		JPanel panel4 = crearPanel4();
+		JPanel panelBuscar = crearPanelBuscar();
+		JPanel panelTablas = crearPanelTablas();
+		JPanel panelFinalizar = crearPanelFinalizar();
 		
-		panelInv.add(panel2, BorderLayout.NORTH);
-		panelInv.add(panel3, BorderLayout.CENTER);
-		panelInv.add(panel4, BorderLayout.SOUTH);
+		panelInvisible.add(panelBuscar, BorderLayout.NORTH);
+		panelInvisible.add(panelTablas, BorderLayout.CENTER);
+		panelInvisible.add(panelFinalizar, BorderLayout.SOUTH);
 		
-		this.add(panel1);
-		this.add(panelInv);
+		this.add(panelCrear);
+		this.add(panelInvisible);
 	}
 	
 	/**
-	 * Crea el panel con los objetos para crear una nueva playlist
+	 * Crea el panel con los elementos para crear una nueva lista.
 	 */
-	private JPanel crearPanel1() {
+	private JPanel crearPanelCrear() {
 		JPanel panel = new JPanel();
-		JLabel lblCrear = new JLabel("Nombre");
-		txtCrear = new JTextField(TAM_CUADRO_TEXTO);
-		btnCrear = new JButton("Crear");
-		btnEliminar = new JButton("Eliminar");
 		
+		// Botón crear
+		JLabel lblCrear = new JLabel("Nombre");
+		campoCrear = new JTextField(TAM_CUADRO_TEXTO);
+		lblCrear.setLabelFor(campoCrear);
+		btnCrear = new JButton("Crear");
+		
+		// Botón eliminar
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setVisible(false);
+
+		// Añadimos los elementos al panel
 		panel.add(lblCrear);
-		lblCrear.setLabelFor(txtCrear);
-		panel.add(txtCrear);
+		panel.add(campoCrear);
 		panel.add(btnCrear);
 		panel.add(btnEliminar);
-		btnEliminar.setVisible(false);
-		
+
+		//Manejadores de los botones
 		crearManejadorBotonCrear();
 		crearManejadorBotonEliminar();
+		
 		return panel;
 	}
 	
 	/**
-	 * Crea el panel con los objetos para buscar canciones según intérprete
-	 * título y estilo.
+	 * Crea el panel con los objetos para buscar canciones según intérprete, título y estilo.
 	 */
-	private JPanel crearPanel2() {
-		//Definición de los objetos necesarios
+	private JPanel crearPanelBuscar() {
+		// Definición de los objetos necesarios
 		JPanel panel = new JPanel();
 		JLabel lblTitulo = new JLabel("Título");
 		JLabel lblInterprete = new JLabel("Intérprete");
 		JLabel lblEstilo = new JLabel("Estilo");
-		txtTitulo = new JTextField(TAM_CUADRO_TEXTO);
-		txtInterprete = new JTextField(TAM_CUADRO_TEXTO);
+		
+		campoTitulo = new JTextField(TAM_CUADRO_TEXTO);
+		campoInterprete = new JTextField(TAM_CUADRO_TEXTO);
 		boxEstilo = new JComboBox<Estilo>();
 		btnBuscar = new JButton("Buscar");
 		
+		// Campo título
 		panel.add(lblTitulo);
-		lblTitulo.setLabelFor(txtTitulo);
-		panel.add(txtTitulo);
+		lblTitulo.setLabelFor(campoTitulo);
+		panel.add(campoTitulo);
 		
+		// Campo intérprete
 		panel.add(lblInterprete);
-		lblInterprete.setLabelFor(txtInterprete);
-		panel.add(txtInterprete);
+		lblInterprete.setLabelFor(campoInterprete);
+		panel.add(campoInterprete);
 		
+		// Campo estilo
 		boxEstilo.setBackground(new Color(255,255,255));
 		panel.add(lblEstilo);
 		lblEstilo.setLabelFor(boxEstilo);
-		
+		// Añadimos los elementos del ComboBox
 		for (Estilo e : Estilo.values()) {
 			boxEstilo.addItem(e);
 		}
 		boxEstilo.addItem(null);
 		boxEstilo.setSelectedItem(null);
 		panel.add(boxEstilo);
-	
 		
 		panel.add(btnBuscar);
 		crearManejadorBotonBuscar();
+		
 		return panel;
 	}
 
 	/**
-	 * Crea el panel que contiene ambas tablas
+	 * Crea el panel que contiene las tablas con las canciones de la bd y las de la lista.
 	 */
-	private JPanel crearPanel3() {
+	private JPanel crearPanelTablas() {
+		// Inicializamos el panel
 		JPanel panel = new JPanel();
 		ComponentUtils.fixedSize(panel, 350, 250);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		
+		// Tabla de canciones de la bd
 		tablaIzq = new JTable(new ModeloTabla());
 		tablaIzq.setPreferredScrollableViewportSize(new Dimension(350,70));
 		tablaIzq.setFillsViewportHeight(true);
-		
 		JScrollPane scrollPaneIzq = new JScrollPane(tablaIzq);
 		panel.add(scrollPaneIzq);
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
+		// Panel de botones para añadir o eliminar canciones de la lista
 		JPanel panelBtn = crearPanelBtn();
 		panel.add(panelBtn);
 		panel.add(Box.createRigidArea(new Dimension(10,10)));
 		
+		// Tabla de canciones de la lista en creación
 		panelTablaDer = new JPanel();
 		panelTablaDer.setBorder(new TitledBorder(null, "PlayList", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		tablaDer = new JTable(new ModeloTabla());
 		tablaDer.setPreferredScrollableViewportSize(new Dimension(350,200));
 		tablaDer.setFillsViewportHeight(true);
-		
 		JScrollPane scrollPaneDer = new JScrollPane(tablaDer);
 		panelTablaDer.add(scrollPaneDer);
 		panel.add(panelTablaDer);
+		
 		return panel;
 	}
 	
 	/**
-	 * Crea el con el botón finalizar
+	 * Crea el panel con el botón de finalizar.
 	 */
-	private JPanel crearPanel4() {
+	private JPanel crearPanelFinalizar() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER,0,10));
+		
 		btnFinalizar = new JButton("Finalizar");
+		panel.add(btnFinalizar);
 		
 		crearManejadorBotonFinalizar();
 
-		panel.add(btnFinalizar);
 		return panel;
 	}
 	
 	/**
-	 * Crea el panel que contendrá los botones añadir y retirar
-	 * @return
+	 * Crea el panel que contendrá los botones añadir y eliminar canciones de la lista.
+	 * @return Panel
 	 */
 	private JPanel crearPanelBtn() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		// Botón añadir
 		btnAdd = new JButton(">>");
-		btnRetirar = new JButton("<<");
 		panel.add(btnAdd);
+		//Botón eliminar
+		btnRetirar = new JButton("<<");
 		panel.add(btnRetirar);
+		
 		crearManejadorBotonAdd();
 		crearManejadorBotonRetirar();
+		
 		return panel;
 	}
 	
 	/**
-	 * Crear manejador para el botón "Crear"
+	 * Crear manejador para el botón de crear una lista.
 	 */
 	private void crearManejadorBotonCrear() {
 		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Cargamos las canciones del catálogo en la tabla
 				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(controlador.getCanciones());
-				nombreLista = txtCrear.getText();
+				// Obtenemos el nombre de la lista a crear/modificar
+				nombreLista = campoCrear.getText();
 				
-				//En caso de que la lista no existiese
+				// Si la lista no existe, se crea
 				if (!controlador.existeLista(nombreLista)) {
-					int result = JOptionPane.showOptionDialog(panelInv, 
-						"¿Desea crear una nueva lista?", "Crear nueva Lista",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[]{"Sí", "No"}, "default");
+					int result = JOptionPane.showOptionDialog(panelInvisible, 
+								"¿Desea crear una nueva lista?", "Crear nueva Lista",
+								JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+								new String[]{"Sí", "No"}, "default");
 					
 					if (result == JOptionPane.YES_OPTION) {
+						// Creamos la lista
 						controlador.crearLista(nombreLista);
+						// La cargamos en la tabla de la derecha
 						ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 						((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
-						panelInv.setVisible(true);
+						// Hacemos visible el panel y refrescamos la tabla derecha
+						panelInvisible.setVisible(true);
 						btnEliminar.setVisible(false);
 						tablaDer.revalidate();
 						tablaDer.repaint();
 					} else return;
 				}
 				
-				//Si la lista existe
+				// Si la lista existe, se da la opción de modificar
 				else {
-					int result = JOptionPane.showOptionDialog(panelInv, 
-							"¿Desea modificarla?", "Ya existe una lista con ese nombre",
-							JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,
-							new String[]{"Sí", "No"}, "default");
+					int result = JOptionPane.showOptionDialog(panelInvisible, 
+								"¿Desea modificarla?", "Ya existe una lista con ese nombre",
+								JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,
+								new String[]{"Sí", "No"}, "default");
 						if (result == JOptionPane.YES_OPTION) {
+							// La cargamos en la tabla de la derecha
 							ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 							((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+							// Hacemos visible el panel y refrescamos la tabla derecha
+							panelInvisible.setVisible(true);
+							btnEliminar.setVisible(true);
 							tablaDer.revalidate();
 							tablaDer.repaint();	
-							panelInv.setVisible(true);
-							btnEliminar.setVisible(true);
 						}
 				}
-				PanelMisListas.refrescar();
+				PanelMisListas.refrescar(); // refrescamos la pestaña de "Mis listas"
 			}
 		});
 	}
 	
 	/**
-	 * Crear manejador para el botón "Eliminar" //TODO
+	 * Crear manejador para el botón "Eliminar".
 	 */
 	private void crearManejadorBotonEliminar() {
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showOptionDialog(panelInv, 
-						"¿Está seguro de que desea eliminar la lista?", "Confirmar eliminar lista",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[]{"Sí", "No"}, "default");
+				int result = JOptionPane.showOptionDialog(panelInvisible, 
+							"¿Está seguro de que desea eliminar la lista?", "Confirmar eliminar lista",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
+					// Eliminamos la lista
 					ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 					controlador.eliminarLista(lista);
-					txtCrear.setText("");
-					txtTitulo.setText("");
-					txtInterprete.setText("");
+					// Vaciamos los campos y hacemos invisibles los elementos necesarios
+					campoCrear.setText("");
+					campoTitulo.setText("");
+					campoInterprete.setText("");
 					boxEstilo.setSelectedItem(null);
-					panelInv.setVisible(false);
+					panelInvisible.setVisible(false);
 					btnEliminar.setVisible(false);
 					PanelMisListas.refrescar();
 				}
@@ -288,72 +321,76 @@ public class PanelNuevaLista extends JPanel{
 	}
 	
 	/**
-	 * Crea manejador para el botón de buscar //TODO revisar junto al de Panel explorar pues son distintos
+	 * Crea manejador para el botón de buscar.
 	 */
 	private void crearManejadorBotonBuscar() {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<Cancion> canciones;
-				String titulo = txtTitulo.getText();
-				String interprete = txtInterprete.getText();
+				List<Cancion> cancionesEncontradas;
+				String titulo = campoTitulo.getText();
+				String interprete = campoInterprete.getText();
 				Estilo estilo = (boxEstilo.getSelectedItem() == null) ? null : (Estilo)boxEstilo.getSelectedItem();
+				
 				if (interprete.trim().isEmpty()) {
-					canciones = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
+					cancionesEncontradas = (estilo == null) ? new ArrayList<>(controlador.getCanciones()) : 
 						new ArrayList<>(controlador.buscarPorEstilo(estilo.getNombre()));
 				} else {
-					canciones = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
+					cancionesEncontradas = (estilo == null) ? new ArrayList<>(controlador.buscarPorInterprete(interprete)) : 
 						new ArrayList<>(controlador.buscarPorInterpreteEstilo(interprete, estilo.getNombre()));
 				}
 				// Si hay título, filtramos las canciones anteriores por título
 				if (!titulo.trim().isEmpty()) {
-					canciones = canciones.stream()
-										 .filter(c -> StringUtils
-										 .containsIgnoreCase(c.getTitulo(), titulo))
+					cancionesEncontradas = cancionesEncontradas.stream()
+										 .filter(c -> StringUtils.containsIgnoreCase(c.getTitulo(), titulo))
 										 .collect(Collectors.toList());
 				}
-				
-				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(canciones);
-				panelInv.updateUI();
+				// Actualizamos la tabla izquierda
+				((ModeloTabla)tablaIzq.getModel()).setListaCanciones(cancionesEncontradas);
+				panelInvisible.updateUI();
 			}
 		});
 	}
 	
 	/**
-	 * Crea manejador para el botón "Finalizar"
+	 * Crea manejador para el botón "Finalizar".
 	 */
 	private void crearManejadorBotonFinalizar() {
 		btnFinalizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showOptionDialog(panelInv, 
-						"¿Está seguro de que desea finalizar la creación?", "Confirmar finalizar creación",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-						new String[]{"Sí", "No"}, "default");
+				int result = JOptionPane.showOptionDialog(panelInvisible, 
+							"¿Está seguro de que desea finalizar la creación?", "Confirmar finalizar creación",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+							new String[]{"Sí", "No"}, "default");
 				if (result == JOptionPane.YES_OPTION) {
-					txtCrear.setText("");
-					txtTitulo.setText("");
-					txtInterprete.setText("");
+					// Vaciamos los campos y hacemos invisibles los elementos necesarios
+					campoCrear.setText("");
+					campoTitulo.setText("");
+					campoInterprete.setText("");
 					boxEstilo.setSelectedItem(null);
 					btnEliminar.setVisible(false);
-					panelInv.setVisible(false);
+					panelInvisible.setVisible(false);
 				}
 			}
 		});
 	}
 
 	/**
-	 * Crea el manejador para el boton "Añadir"
+	 * Crea el manejador para el boton "Añadir".
 	 */
 	private void crearManejadorBotonAdd() {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				 // Si no hay ninguna canción seleccionada, no hacemos nada
 				 int fila = tablaIzq.getSelectedRow();
 				 if (fila < 0) 
 					 return;
+				 // En caso contrario, añadimos la canción a la lista
 				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 				 Cancion cancion = ((ModeloTabla)tablaIzq.getModel()).getListaCanciones().get(fila);
 				 controlador.addCancionToLista(lista, cancion);
-				 
+				 // La mostramos en la tabla de la derecha
 				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+				 // Refrescamos la tabla derecha y la pestaña "Mis listas"
 				 tablaDer.revalidate();
 				 tablaDer.repaint();	
 				 PanelMisListas.refrescar();
@@ -362,19 +399,22 @@ public class PanelNuevaLista extends JPanel{
 	}
 	
 	/**
-	 * Crea rl manejador para el boton "Retirar"
+	 * Crea el manejador para el boton "Retirar".
 	 */
 	private void crearManejadorBotonRetirar() {
 		btnRetirar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				 // Si no hay ninguna canción seleccionada, no hacemos nada
 				 int fila = tablaDer.getSelectedRow();
 				 if (fila < 0) 
 					 return;
+				 // En caso contrario, la eliminamos la lista
 				 ListaCanciones lista = controlador.getListaCanciones(nombreLista);
 				 Cancion cancion = ((ModeloTabla)tablaDer.getModel()).getListaCanciones().get(fila);
 				 controlador.eliminarCancionFromLista(lista, cancion);
-				 
+				 // La eliminamos de la tabla de la derecha
 				 ((ModeloTabla)tablaDer.getModel()).setListaCanciones(lista.getCanciones());
+				 // Refrescamos la tabla derecha y la pestaña "Mis listas"
 				 tablaDer.revalidate();
 				 tablaDer.repaint(); 
 				 PanelMisListas.refrescar();

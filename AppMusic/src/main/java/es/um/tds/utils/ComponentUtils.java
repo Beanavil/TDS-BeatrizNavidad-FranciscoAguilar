@@ -12,7 +12,7 @@ import javax.swing.JComponent;
 public class ComponentUtils {
 
 	/**
-	 * Fija el tamaño de un componente
+	 * Fija el tamaño de un componente.
 	 */
 	public static void fixedSize(JComponent o, int x, int y) {
 		Dimension d = new Dimension(x, y);
@@ -20,5 +20,4 @@ public class ComponentUtils {
 		o.setMaximumSize(d);
 		o.setPreferredSize(d);
 	}
-
 }
