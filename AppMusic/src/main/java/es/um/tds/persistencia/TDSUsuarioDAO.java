@@ -3,15 +3,12 @@ package es.um.tds.persistencia;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import beans.Entidad;
 import beans.Propiedad;
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
-import es.um.tds.modelo.Cancion;
 import es.um.tds.modelo.ListaCanciones;
 import es.um.tds.modelo.Usuario;
 import tds.driver.FactoriaServicioPersistencia;
@@ -33,7 +30,6 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 	private static final String PREMIUM = "premium";
 	private static final String LISTASCANCIONES = "listasCanciones";
 	private static final String CANCIONESRECIENTES = "cancionesRecientes";
-	private static final String CANCIONESMASREPRODUCIDAS = "cancionesMasReproducidas";
 	private ServicioPersistencia servPersistencia;
 	private static TDSUsuarioDAO unicaInstancia;
 	private TDSListaCancionesDAO adaptadorListaCanciones;  
@@ -134,11 +130,6 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 		servPersistencia.eliminarPropiedadEntidad(eUsuario, CANCIONESRECIENTES);
 		servPersistencia.anadirPropiedadEntidad(eUsuario, CANCIONESRECIENTES, 
 				adaptadorListaCanciones.getIdsFromCanciones(usuario.getRecientes().getCanciones()));
-		
-		servPersistencia.eliminarPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS);
-		servPersistencia.anadirPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS, 
-				adaptadorListaCanciones.getIdsFromCanciones(new ArrayList<Cancion>(usuario.getMasReproducidas().keySet())));
-		
 	}
 
 	/**
@@ -192,13 +183,8 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 				adaptadorListaCanciones.getCancionesFromIds(
 						servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESRECIENTES)));
 		
-		Map<Cancion, Integer> cancionesMasReproducidas = new TreeMap<>();
-		List<Cancion> canciones = adaptadorListaCanciones.getCancionesFromIds(
-				servPersistencia.recuperarPropiedadEntidad(eUsuario, CANCIONESMASREPRODUCIDAS));
-		canciones.stream().forEach(c -> cancionesMasReproducidas.put(c, c.getNumReproducciones()));
-		
-		Usuario usuario = new Usuario(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, premium, listas,
-				cancionesRecientes, cancionesMasReproducidas);
+		Usuario usuario = new Usuario(nombre, apellidos, fechaNacimiento, email, nombreUsuario, contrasena, 
+									  premium, listas, cancionesRecientes);
 		usuario.setId(eUsuario.getId());
 		return usuario;
 	}
@@ -221,10 +207,7 @@ public class TDSUsuarioDAO implements UsuarioDAO {
 				new Propiedad(PREMIUM, String.valueOf(usuario.isPremium())),
 				new Propiedad(LISTASCANCIONES, getIdsFromListasCanciones(usuario.getListas())),
 				new Propiedad(CANCIONESRECIENTES, 
-						adaptadorListaCanciones.getIdsFromCanciones(usuario.getRecientes().getCanciones())),
-				new Propiedad(CANCIONESMASREPRODUCIDAS, 
-						adaptadorListaCanciones.getIdsFromCanciones(
-								new ArrayList<Cancion>(usuario.getMasReproducidas().keySet()))))));
+						adaptadorListaCanciones.getIdsFromCanciones(usuario.getRecientes().getCanciones())))));
 		return eUsuario;
 	}
 	

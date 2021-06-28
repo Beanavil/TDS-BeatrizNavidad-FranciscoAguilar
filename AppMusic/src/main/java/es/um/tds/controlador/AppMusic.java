@@ -2,6 +2,8 @@ package es.um.tds.controlador;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import es.um.tds.excepciones.BDException;
 import es.um.tds.excepciones.DAOException;
@@ -36,12 +38,15 @@ public final class AppMusic implements ICargadoListener {
 	
 	private static Usuario usuarioActual;
 	
+	private Map<Cancion, Integer> masReproducidas;
+	
 	/**
 	 * Constructor.
 	 * @throws BDException
 	 * @throws DAOException 
 	 */
 	private AppMusic() throws BDException, DAOException {
+		masReproducidas = new TreeMap<>();
 		try {
 			inicializarAdaptadores();
 			inicializarCatalogos();
@@ -259,9 +264,8 @@ public final class AppMusic implements ICargadoListener {
     	// Actualizamos reproducciones de la canción
     	cancion.setNumReproducciones(cancion.getNumReproducciones() + 1);
     	adaptadorCancion.update(cancion);
-    	// Actualizamos más reproducidas del usuario
-    	usuarioActual.addMasReproducida(cancion);
-    	adaptadorUsuario.update(usuarioActual);
+    	// Actualizamos lista de más reproducidas
+    	addMasReproducida(cancion);
     }
     
     /**
@@ -426,16 +430,40 @@ public final class AppMusic implements ICargadoListener {
 		return recientes;
 	}
 
+    
+    // FUNCIONALIDAD MÁS REPRODUCIDAS
+    
+    
     /**
-     * Devuelve las canciones más reproducidas por el usuario actual.
+     * Devuelve las canciones más reproducidas por los usuario.
      * @return Lista de más reproducidas
      */
 	public List<Cancion> getCancionesMasReproducidas() {
-		List<Cancion> masReproducidas = new ArrayList<>();
-		if (usuarioActual != null)
-			masReproducidas = usuarioActual.getMasReproducidas().keySet()
+		return masReproducidas.keySet()
 							  .stream()
 							  .collect(Collectors.toList());
-		return masReproducidas;
 	}
+	
+	/**
+	 * Indica si una cancion está en más reproducidas.
+	 * @param cancion Canción en cuestión
+	 * @return
+	 */
+	public boolean isMasReproducida(Cancion cancion) {
+		return masReproducidas.keySet()
+							  .stream()		
+							  .anyMatch(c -> c.getTitulo().equals(cancion.getTitulo()));
+	}
+	
+	/**
+	 * Añade una canción a las más reproducidas del usuario.
+	 * @param cancion Canción a añadir
+	 */
+	public void addMasReproducida(Cancion cancion) {
+		if (isMasReproducida(cancion))
+			masReproducidas.replace(cancion, cancion.getNumReproducciones());
+		else
+			masReproducidas.put(cancion, cancion.getNumReproducciones());
+	}
+	
 }

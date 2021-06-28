@@ -47,6 +47,9 @@ public class VentanaPrincipal {
 	
 	private ImageIcon upgIcon;
 	private ImageIcon degIcon;
+	private ImageIcon MRIcon;
+	
+	private JTabbedPane tabbedPane;
 	
 	private JPanel panelExplorar;
 	private JPanel panelNuevaLista;
@@ -54,6 +57,8 @@ public class VentanaPrincipal {
 	private JPanel panelMisListas;
 	private JPanel panelPulsador;
 	private JPanel panelMasReproducidas;
+	
+	private static final int NUMERO_TABS = 6;
 	
 	/**
 	 * Constructor.
@@ -96,7 +101,7 @@ public class VentanaPrincipal {
 		// Parte central
 		JPanel panelCentral = new JPanel();
 		panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
+		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane.setUI(new TabsColoresUI());
 		panelCentral.add(tabbedPane);
 		
@@ -190,11 +195,13 @@ public class VentanaPrincipal {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(panelCentral, "Error interno.\n", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		tabIcon = new ImageIcon(iconMasRepr);
-		image = tabIcon.getImage();
+		MRIcon = new ImageIcon(iconMasRepr);
+		image = MRIcon.getImage();
 		scaledimage = image.getScaledInstance(40, 35, java.awt.Image.SCALE_SMOOTH);
-		tabIcon = new ImageIcon(scaledimage);
-		tabbedPane.addTab("Más reproducidas", tabIcon, panelMasReproducidas);
+		MRIcon = new ImageIcon(scaledimage);
+		// Solo se muestra para los premium
+		if (controlador.isUsuarioPremium())
+			tabbedPane.addTab("Más reproducidas", MRIcon, panelMasReproducidas);
 		
 		// Parte derecha
 		JPanel panelDerecho = new JPanel();
@@ -361,6 +368,8 @@ public class VentanaPrincipal {
 						// Cambiar botón
 						btnUpgrade.setText("Hazte premium");
 						btnUpgrade.setIcon(upgIcon);
+						// Ocultar más reproducidas
+						tabbedPane.removeTabAt(NUMERO_TABS-1);
 					}
 				} else {
 					result = JOptionPane.showOptionDialog(frmVentanaPrincipal, 
@@ -373,6 +382,8 @@ public class VentanaPrincipal {
 						// Cambiar botón
 						btnUpgrade.setText("Dejar de ser premium");
 						btnUpgrade.setIcon(degIcon);
+						// Mostrar más reproducidas
+						tabbedPane.addTab("Más reproducidas", MRIcon, panelMasReproducidas);
 					}
 				}
 			}
