@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import es.um.tds.modelo.descuentos.Descuento65;
 import es.um.tds.modelo.descuentos.DescuentoNulo;
