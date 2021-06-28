@@ -213,6 +213,7 @@ public class VentanaLogin {
 					if (login) {
 							VentanaPrincipal ventanaPrincipal = new VentanaPrincipal();
 							ventanaPrincipal.mostrarVentana();
+							VentanaPrincipal.refrescar();
 							frmLogin.dispose();
 					// Si no, informamos al usuario
 					} else
