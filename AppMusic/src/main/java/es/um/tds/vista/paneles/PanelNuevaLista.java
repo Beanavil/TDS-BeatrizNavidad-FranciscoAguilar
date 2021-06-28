@@ -268,11 +268,9 @@ public class PanelNuevaLista extends JPanel {
 						btnEliminar.setVisible(false);
 						tablaDer.revalidate();
 						tablaDer.repaint();
-					} else return;
-				}
-				
+					}
 				// Si la lista existe, se da la opción de modificar
-				else {
+				} else {
 					int result = JOptionPane.showOptionDialog(panelInvisible, 
 								"¿Desea modificarla?", "Ya existe una lista con ese nombre",
 								JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,

@@ -245,11 +245,10 @@ public class PanelMisListas extends JPanel{
 	 * Refresca la pestaña de "Mis listas".
 	 */
 	public static void refrescar() {
-		// Volvemos a cargar la lista de listas de canciones y refrescamos
+		// Volvemos a cargar la lista de listas de canciones y refrescamos el UI
  		List<ListaCanciones> listas = controlador.getListasUsuario();	
 		((ModeloLista)lista.getModel()).setListaPlaylists(listas);
-		lista.repaint();
-		lista.revalidate();
+		lista.updateUI();
 		
 		/*
 		 * Si había alguna lista seleccionada anteriormente, refrescamos la tabla de la derecha 
@@ -257,6 +256,7 @@ public class PanelMisListas extends JPanel{
 		 */
 		int indice = lista.getSelectedIndex();
 		if (indice >= 0) {
+			indice = indice % lista.getModel().getSize();
 			((ModeloTabla)tabla.getModel()).setListaCanciones(listas.get(indice).getCanciones());
 		}
 		tabla.repaint();

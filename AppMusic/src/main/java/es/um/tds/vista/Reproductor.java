@@ -241,9 +241,9 @@ public class Reproductor {
 	    controlador.addReciente(cancion);
 	    PanelRecientes.refrescar();
 	    PanelMasReproducidas.refrescar();
-
+	    
 	    mediaPlayer = new MediaPlayer(media);
-	    mediaPlayer.play(); //esto falla en ubuntu
+	    mediaPlayer.play(); // esto falla en ubuntu
 
 	    
 	} catch (MalformedURLException e) {
@@ -317,5 +317,14 @@ public class Reproductor {
    */
   public JPanel getPanelReproductor() {
 	  return panelReproductor;
+  }
+  
+  /**
+   * Elimina el objeto MediaPlayer
+   */
+  public void dispose() {
+    if (mediaPlayer != null) {
+      mediaPlayer.dispose();
+    }
   }
 }
